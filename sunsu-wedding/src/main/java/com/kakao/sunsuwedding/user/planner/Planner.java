@@ -1,6 +1,6 @@
 package com.kakao.sunsuwedding.user.planner;
 
-import com.kakao.sunsuwedding.user.Grade;
+import com.kakao.sunsuwedding.user.constant.Grade;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,7 +33,8 @@ public class Planner {
     @Column
     private LocalDateTime payedAt;
 
-    @Column
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @Builder
