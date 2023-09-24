@@ -13,6 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.kakao.sunsuwedding.portfolio.dto.PortfolioUpdateRequest;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,5 +49,13 @@ public class PortfolioController {
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable Long id) {
         PortfolioDTO portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
+    }
+
+    @PutMapping("/portfolios")
+    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdateRequest request) {
+
+        // TODO: Security를 통해 전달된 플래너 정보를 이용해서 포트폴리오 업데이트 진행
+
+        return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

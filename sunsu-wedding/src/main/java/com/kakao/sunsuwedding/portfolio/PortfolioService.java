@@ -6,6 +6,7 @@ import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioInsertRequest;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioListItemDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PriceDTO;
+import com.kakao.sunsuwedding.portfolio.dto.PortfolioUpdateRequest;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -62,5 +63,18 @@ public class PortfolioService {
         PriceDTO priceDTO = null;
 
         return PortfolioDTOConverter.toPortfolioDTO(portfolio, images, priceDTO);
+    }
+
+    public void updatePortfolio(Planner planner, PortfolioUpdateRequest request) {
+        Portfolio portfolio = portfolioRepository.findByPlanner(planner)
+                .orElseThrow(() -> new Exception404("포트폴리오가 존재하지 않기 때문에 업데이트를 할 수 없습니다."));
+
+        portfolio.updateTitle(request.title());
+        portfolio.updateDescription(request.description());
+        portfolio.updateLocation(request.location());
+        portfolio.updateCareer(request.career());
+        portfolio.updatePartnerCompany(request.partnerCompany());
+
+        // TODO: PriceItemService를 통해 가격 업데이트
     }
 }
