@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioUpdateRequest;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,6 +56,14 @@ public class PortfolioController {
     public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdateRequest request) {
 
         // TODO: Security를 통해 전달된 플래너 정보를 이용해서 포트폴리오 업데이트 진행
+
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @DeleteMapping("/portfolios")
+    public ResponseEntity<?> deletePortfolio() {
+
+        // TODO: Security로 전달받은 플래너의 포트폴리오 삭제
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }

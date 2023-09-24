@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
     Optional<Portfolio> findByPlanner(Planner planner);
+    void deleteByPlanner(Planner planner);
 }

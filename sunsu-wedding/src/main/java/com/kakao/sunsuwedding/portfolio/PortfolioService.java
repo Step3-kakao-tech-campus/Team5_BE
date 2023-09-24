@@ -77,4 +77,8 @@ public class PortfolioService {
 
         // TODO: PriceItemService를 통해 가격 업데이트
     }
+
+    public void deletePortfolio(Planner planner) {
+        portfolioRepository.deleteByPlanner(planner);
+    }
 }
