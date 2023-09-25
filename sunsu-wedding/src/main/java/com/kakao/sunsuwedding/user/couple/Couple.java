@@ -1,6 +1,6 @@
 package com.kakao.sunsuwedding.user.couple;
 
-import com.kakao.sunsuwedding.user.Grade;
+import com.kakao.sunsuwedding.user.constant.Grade;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,7 +33,8 @@ public class Couple {
     @Column
     private LocalDateTime payedAt;
 
-    @Column
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @Builder
