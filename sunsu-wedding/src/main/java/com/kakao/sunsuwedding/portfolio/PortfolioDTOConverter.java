@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
-    public static PortfolioDTO toPortfolioDTO(Portfolio portfolio, Resource[] images, PriceDTO priceDTO) {
+    public static PortfolioDTO toPortfolioDTO(Portfolio portfolio, List<Resource> images, PriceDTO priceDTO) {
         return new PortfolioDTO(
                 portfolio.getId(),
                 images,
@@ -25,7 +25,7 @@ public class PortfolioDTOConverter {
         );
     }
 
-    public static List<PortfolioListItemDTO> toListItemDTO(Page<Portfolio> portfolioPage, Resource[] images) {
+    public static List<PortfolioListItemDTO> toListItemDTO(Page<Portfolio> portfolioPage, List<Resource> images) {
         List<Portfolio> portfolios = portfolioPage.getContent();
         return IntStream
                 .range(0, portfolios.size())
@@ -33,7 +33,7 @@ public class PortfolioDTOConverter {
                     Portfolio portfolio = portfolios.get(i);
                     return new PortfolioListItemDTO(
                             portfolio.getId(),
-                            images[i],
+                            images.get(i),
                             portfolio.getTitle(),
                             portfolio.getPlanner().getUsername(),
                             portfolio.getTotalPrice(),
