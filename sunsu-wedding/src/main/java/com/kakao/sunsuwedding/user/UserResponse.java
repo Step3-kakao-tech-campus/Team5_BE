@@ -28,7 +28,7 @@ public class UserResponse {
         public FindById(Planner planner) {
             this.username = planner.getUsername();
             this.email = planner.getEmail();
-            this.role = Role.COUPLE.getRoleName();
+            this.role = Role.PLANNER.getRoleName();
             this.grade = planner.getGrade().getGradeName();
             this.payedAt = planner.getPayedAt().format(DateTimeFormatter.ofPattern("YYYY.MM.dd"));
         }
