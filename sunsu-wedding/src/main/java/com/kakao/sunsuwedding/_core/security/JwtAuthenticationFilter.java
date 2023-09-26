@@ -46,39 +46,29 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             System.out.println("role : "+ roleName);
 
             Role role = Role.valueOfRole(roleName);
+            if (role == null)
+                throw new JWTDecodeException("role 잘못됨");
 
-            if (role == Role.PLANNER){
-                Planner planner = Planner.builder().id(id).build();
-                CustomPlannerDetails myPlannerDetails = new CustomPlannerDetails(planner);
-                Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                myPlannerDetails,
-                                myPlannerDetails.getPassword(),
-                                myPlannerDetails.getAuthorities()
-                        );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("디버그 : 예비 부부 인증 객체 만들어짐");
-            }
-            if (role == Role.COUPLE){
-                Couple couple = Couple.builder().id(id).build();
-                CustomCoupleDetails myCoupleDetails = new CustomCoupleDetails(couple);
-                Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                myCoupleDetails,
-                                myCoupleDetails.getPassword(),
-                                myCoupleDetails.getAuthorities()
-                        );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("디버그 : 플래너 인증 객체 만들어짐");
-            }
-            else {
-                log.error("role이 잘못됨");
-            }
+            Planner planner = (role == Role.PLANNER) ? Planner.builder().id(id).build() : null;
+            Couple couple = (role == Role.COUPLE) ? Couple.builder().id(id).build() : null;
+            CustomUserDetails myUserDetails = new CustomUserDetails(planner, couple);
 
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            myUserDetails,
+                            myUserDetails.getPassword(),
+                            myUserDetails.getAuthorities()
+                    );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.debug("디버그 : 예비 부부 인증 객체 만들어짐");
         } catch (SignatureVerificationException sve) {
             log.error("토큰 검증 실패");
         } catch (TokenExpiredException tee) {
             log.error("토큰 만료됨");
+        } catch (JWTDecodeException jde) {
+            log.error("잘못된 토큰");
+        } catch(Exception e){
+            log.error("토큰 예상치 못한 에러");
         } finally {
             chain.doFilter(request, response);
         }

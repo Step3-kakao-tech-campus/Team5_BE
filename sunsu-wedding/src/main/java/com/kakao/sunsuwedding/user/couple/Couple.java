@@ -47,4 +47,10 @@ public class Couple {
         this.grade = grade;
         this.createdAt = LocalDateTime.now();
     }
+
+    // 유저 등급 업그레이드
+    public void upgrade() {
+        this.grade = Grade.PREMIUM;
+        this.payedAt = LocalDateTime.now();
+    }
 }
