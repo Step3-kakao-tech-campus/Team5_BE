@@ -23,14 +23,14 @@ public class UserResponse {
             this.email = couple.getEmail();
             this.role = Role.COUPLE.getRoleName();
             this.grade = couple.getGrade().getGradeName();
-            this.payedAt = couple.getPayedAt().format(DateTimeFormatter.ofPattern("YYYY.MM.dd"));
+            this.payedAt = (couple.getPayedAt() == null) ? null : couple.getPayedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
         }
         public FindById(Planner planner) {
             this.username = planner.getUsername();
             this.email = planner.getEmail();
             this.role = Role.PLANNER.getRoleName();
             this.grade = planner.getGrade().getGradeName();
-            this.payedAt = planner.getPayedAt().format(DateTimeFormatter.ofPattern("YYYY.MM.dd"));
+            this.payedAt = (planner.getPayedAt() == null) ? null : planner.getPayedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
         }
     }
 }

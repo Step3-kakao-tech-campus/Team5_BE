@@ -12,7 +12,7 @@ import lombok.Setter;
 public class UserRequest {
     @Getter
     @Setter
-    public static class JoinDTO {
+    public static class SignUpDTO {
 
         @NotEmpty(message = "역할은 비어있으면 안됩니다.")
         private String role;
