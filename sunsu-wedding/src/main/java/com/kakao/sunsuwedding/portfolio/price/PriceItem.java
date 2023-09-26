@@ -12,7 +12,7 @@ import lombok.Getter;
                 attributeNodes = @NamedAttributeNode("portfolio")
         ),
         @NamedEntityGraph(
-                name = "PriceItemWithPlanner",
+                name = "PriceItemWithPortfolioAndPlanner",
                 attributeNodes = @NamedAttributeNode(value = "portfolio", subgraph = "portfolioSubgraph"),
                 subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )

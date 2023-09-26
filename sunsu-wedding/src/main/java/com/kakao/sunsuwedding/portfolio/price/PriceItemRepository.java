@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface PriceItemRepository extends JpaRepository<PriceItem, Long> {
-    @EntityGraph("PriceItemWithPortfolio")
+    @EntityGraph("PriceItemWithPortfolioAndPlanner")
     List<PriceItem> findAllByPortfolioId(Long id);
 
     void deleteAllByPortfolioPlannerId(int id);

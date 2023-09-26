@@ -3,8 +3,9 @@ package com.kakao.sunsuwedding.portfolio;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioListItemDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PriceDTO;
+import com.kakao.sunsuwedding.portfolio.dto.PriceItemDTO;
+import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -25,8 +26,7 @@ public class PortfolioDTOConverter {
         );
     }
 
-    public static List<PortfolioListItemDTO> toListItemDTO(Page<Portfolio> portfolioPage, List<Resource> images) {
-        List<Portfolio> portfolios = portfolioPage.getContent();
+    public static List<PortfolioListItemDTO> toListItemDTO(List<Portfolio> portfolios, List<Resource> images) {
         return IntStream
                 .range(0, portfolios.size())
                 .mapToObj(i -> {
@@ -41,6 +41,13 @@ public class PortfolioDTOConverter {
                             portfolio.getContractCount()
                     );
                 })
+                .toList();
+    }
+
+    public static List<PriceItemDTO> toPriceItemDTOS(List<PriceItem> priceItems) {
+        return priceItems
+                .stream()
+                .map(priceItem -> new PriceItemDTO(priceItem.getItemTitle(), priceItem.getItemPrice()))
                 .toList();
     }
 }

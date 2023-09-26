@@ -12,7 +12,7 @@ import lombok.Getter;
                 attributeNodes = @NamedAttributeNode("portfolio")
         ),
         @NamedEntityGraph(
-                name = "ImageItemWithPlanner",
+                name = "ImageItemWithPortfolioAndPlanner",
                 attributeNodes = @NamedAttributeNode(value = "portfolio", subgraph = "portfolioSubgraph"),
                 subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )
@@ -24,7 +24,6 @@ public class ImageItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
     private Portfolio portfolio;
 
     @Column(nullable = false)

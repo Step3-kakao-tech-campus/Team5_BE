@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,9 +48,9 @@ public class PortfolioService {
     }
 
     public List<PortfolioListItemDTO> getPortfolios(PageRequest pageRequest) {
-        Page<Portfolio> portfolios = portfolioRepository.findAll(pageRequest);
+        List<Portfolio> portfolios = portfolioRepository.findAll(pageRequest).getContent();
 
-        List<Resource> images = imageItemRepository.findAllThumbnailsByPortfolio(portfolios.getContent())
+        List<Resource> images = imageItemRepository.findAllByThumbnailAndPortfolioIn(true, portfolios)
                 .stream()
                 .map(PortfolioService::getImageResource)
                 .toList();
@@ -75,19 +74,18 @@ public class PortfolioService {
         이미지는 1장 이상을 필수로 등록하는 것을 원칙으로 한다면
         ImageItem 을 검색해서 empty 여부를 검사하여 이를 알아낼 수 있긴 하다
          */
-        Portfolio portfolio = portfolioRepository.findById(id)
-                .orElseThrow(() -> new Exception404("해당 포트폴리오를 찾을 수 없습니다."));
-
         List<Resource> images = imageItemRepository.findByPortfolioId(id)
                 .stream()
                 .map(PortfolioService::getImageResource)
                 .toList();
 
         List<PriceItem> priceItems = priceItemRepository.findAllByPortfolioId(id);
-        List<PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
+        List<PriceItemDTO> priceItemDTOS = PortfolioDTOConverter.toPriceItemDTOS(priceItems);
 
         Long totalPrice = PriceCalculator.execute(priceItemDTOS);
         PriceDTO priceDTO = new PriceDTO(totalPrice, priceItemDTOS);
+
+        Portfolio portfolio = priceItems.get(0).getPortfolio();
 
         return PortfolioDTOConverter.toPortfolioDTO(portfolio, images, priceDTO);
     }
@@ -106,16 +104,9 @@ public class PortfolioService {
     }
 
     public void deletePortfolio(Planner planner) {
-        portfolioRepository.deleteByPlanner(planner);
-        imageItemRepository.deleteAllByPortfolioPlannerId(planner.getId());
         priceItemRepository.deleteAllByPortfolioPlannerId(planner.getId());
-    }
-
-    private static List<PriceItemDTO> toPriceItemDTOS(List<PriceItem> priceItems) {
-        return priceItems
-                .stream()
-                .map(priceItem -> new PriceItemDTO(priceItem.getItemTitle(), priceItem.getItemPrice()))
-                .toList();
+        imageItemRepository.deleteAllByPortfolioPlannerId(planner.getId());
+        portfolioRepository.deleteByPlanner(planner);
     }
 
     private static Resource getImageResource(ImageItem imageItem) {
