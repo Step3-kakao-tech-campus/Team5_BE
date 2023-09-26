@@ -31,6 +31,7 @@ public class SecurityConfig {
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
+            builder.addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
             super.configure(builder);
         }
     }
@@ -94,8 +95,7 @@ public class SecurityConfig {
                         // 검증 필요
                         .requestMatchers(
                                 new AntPathRequestMatcher("/chat", "POST"),
-                                new AntPathRequestMatcher("/quotations/confirmAll/**", "POST"),
-                                new AntPathRequestMatcher("/payments", "POST")
+                                new AntPathRequestMatcher("/quotations/confirmAll/**", "POST")
                         ).hasRole("COUPLE")
                         .requestMatchers(
                                 new AntPathRequestMatcher("/portfolios", "POST"),

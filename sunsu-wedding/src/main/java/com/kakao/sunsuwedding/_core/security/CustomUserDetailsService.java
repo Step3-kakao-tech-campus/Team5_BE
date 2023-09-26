@@ -1,5 +1,7 @@
 package com.kakao.sunsuwedding._core.security;
 
+import com.kakao.sunsuwedding._core.errors.BaseException;
+import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -24,14 +26,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<Planner> plannerOP = plannerJPARepository.findByEmail(email);
         Optional<Couple> coupleOP = coupleJPARepository.findByEmail(email);
 
-        if (plannerOP.isPresent()) {
-            Planner plannerPS = plannerOP.get();
-            return new CustomPlannerDetails(plannerPS);
-        }
-        else if (coupleOP.isPresent()) {
-            Couple couplePS = coupleOP.get();
-            return new CustomCoupleDetails(couplePS);
-        }
-        else return null;
+        Planner plannerPS = plannerOP.orElse(null);
+        Couple couplePS = coupleOP.orElse(null);
+
+        // 잘못된 email (플래너도 아니고, 예비 부부도 아님)
+        if (plannerPS == null && couplePS == null)
+            throw new Exception400(BaseException.USER_NOT_FOUND.getMessage());
+
+        return new CustomUserDetails(plannerPS, couplePS);
     }
 }

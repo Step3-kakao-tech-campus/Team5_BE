@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 
-@AutoConfigureRestDocs(uriScheme = "http", uriHost = "localhost", uriPort = 8080)
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class UserRestControllerTest {
@@ -32,7 +30,7 @@ public class UserRestControllerTest {
     @Test
     public void user_join_success_test() throws Exception {
         // given
-        UserRequest.JoinDTO requestDTO = new UserRequest.JoinDTO();
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
         requestDTO.setEmail("ssarmango@nate.com");
         requestDTO.setRole("couple");
         requestDTO.setPassword("meta1234!");
@@ -60,9 +58,9 @@ public class UserRestControllerTest {
     @Test
     public void user_join_fail_wrong_email_test() throws Exception {
         // given
-        UserRequest.JoinDTO requestDTO = new UserRequest.JoinDTO();
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
         requestDTO.setEmail("asdfqwer");
-        requestDTO.setRole("premium");
+        requestDTO.setRole("couple");
         requestDTO.setPassword("meta1234!");
         requestDTO.setPassword2("meta1234!");
         requestDTO.setUsername("qwe");
@@ -82,13 +80,13 @@ public class UserRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("이메일 형식으로 작성해주세요:email"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("이메일 형식으로 작성해주세요"));
     }
     @DisplayName("회원가입 실패 테스트 - 잘못된 role")
     @Test
     public void user_join_fail_wrong_role_test() throws Exception {
         // given
-        UserRequest.JoinDTO requestDTO = new UserRequest.JoinDTO();
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
         requestDTO.setEmail("asdf@naver.com");
         requestDTO.setRole("asdf");
         requestDTO.setPassword("meta1234!");
@@ -110,6 +108,6 @@ public class UserRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("role은 플래너, 또는 예비 부부만 가능합니다 :asdf"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("role은 플래너, 또는 예비 부부만 가능합니다."));
     }
 }
