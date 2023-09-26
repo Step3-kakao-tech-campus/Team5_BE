@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.portfolio;
+package com.kakao.sunsuwedding.portfolio.sj;
 
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioInsertRequest;
@@ -20,12 +20,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 public class PortfolioController {
-    private final PortfolioService portfolioService;
+    private final PortfolioService_sj portfolioServiceSj;
     private static final int PAGE_SIZE = 10;
 
     @PostMapping(value = "/portfolios",
@@ -42,13 +40,13 @@ public class PortfolioController {
     @GetMapping("/portfolios")
     public ResponseEntity<?> getPortfolios(@RequestParam int page) {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
-        List<PortfolioListItemDTO> items = portfolioService.getPortfolios(pageRequest);
+        List<PortfolioListItemDTO> items = portfolioServiceSj.getPortfolios(pageRequest);
         return ResponseEntity.ok().body(ApiUtils.success(items));
     }
 
     @GetMapping("/portfolios/{id}")
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable Long id) {
-        PortfolioDTO portfolio = portfolioService.getPortfolioById(id);
+        PortfolioDTO portfolio = portfolioServiceSj.getPortfolioById(id);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 

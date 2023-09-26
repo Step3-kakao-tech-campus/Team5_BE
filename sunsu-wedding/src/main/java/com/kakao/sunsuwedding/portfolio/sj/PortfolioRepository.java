@@ -1,5 +1,6 @@
-package com.kakao.sunsuwedding.portfolio;
+package com.kakao.sunsuwedding.portfolio.sj;
 
+import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
