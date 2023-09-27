@@ -4,13 +4,23 @@ import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioListItemDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PriceDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PriceItemDTO;
+import com.kakao.sunsuwedding.portfolio.price.PriceCalculator;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
-    public static PortfolioDTO toPortfolioDTO(Portfolio portfolio, List<String> images, PriceDTO priceDTO) {
+    public static PortfolioDTO toPortfolioDTO(Portfolio portfolio, List<String> images, List<PriceItem> priceItems) {
+        List<PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
+
+        Long totalPrice = PriceCalculator.execute(priceItemDTOS);
+        PriceDTO priceDTO = new PriceDTO(totalPrice, priceItemDTOS);
+
+        return toPortfolioDTO(portfolio, images, priceDTO);
+    }
+
+    private static PortfolioDTO toPortfolioDTO(Portfolio portfolio, List<String> images, PriceDTO priceDTO) {
         return new PortfolioDTO(
                 portfolio.getId(),
                 images,
