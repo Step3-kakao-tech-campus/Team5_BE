@@ -193,7 +193,7 @@ public class UserRestControllerTest {
         UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
         requestDTO.setEmail("planner@gmail.com");
         requestDTO.setPassword("meta1234!");
-        requestDTO.setRole("planner");
+        requestDTO.setRole("planner"); 
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
