@@ -41,16 +41,32 @@ public class UserService {
                 plannerJPARepository.save(requestDTO.toPlannerEntity());
             }
         } catch (Exception e) {
-            throw new Exception500(BaseException.USER_UNEXPECTED_ERROR.getMessage());
+            throw new Exception500(BaseException.USER_UNEXPECTED_ERROR.getMessage() + e.getMessage());
         }
     }
 
-    // 테스트용 로그인 - 삭제될 예정
-    public String login(String email) {
-        Optional<Couple> couplePS = coupleJPARepository.findByEmail(email);
-        Optional<Planner> plannerPS = plannerJPARepository.findByEmail(email);
-
-        return couplePS.map(JWTProvider::create).orElseGet(() -> JWTProvider.create(plannerPS.get()));
+    public String login(UserRequest.LoginDTO requestDTO) {
+        Role role = getRole(requestDTO.getRole());
+        // 예비 부부
+        if (role == Role.COUPLE) {
+            Couple couplePS = coupleJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+                    () -> new Exception400(BaseException.USER_EMAIL_NOT_FOUND.getMessage() + requestDTO.getEmail())
+            );
+            if(!passwordEncoder.matches(requestDTO.getPassword(), couplePS.getPassword())) {
+                throw new Exception400(BaseException.USER_PASSWORD_WRONG.getMessage());
+            }
+            return JWTProvider.create(couplePS);
+        }
+        // 웨딩 플래너
+        else {
+            Planner plannerPS = plannerJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+                    () -> new Exception400(BaseException.USER_EMAIL_NOT_FOUND.getMessage() + requestDTO.getEmail())
+            );
+            if(!passwordEncoder.matches(requestDTO.getPassword(), plannerPS.getPassword())){
+                throw new Exception400(BaseException.USER_PASSWORD_WRONG.getMessage());
+            }
+            return JWTProvider.create(plannerPS);
+        }
     }
 
     public UserResponse.FindById findById(Role role, int id) {
