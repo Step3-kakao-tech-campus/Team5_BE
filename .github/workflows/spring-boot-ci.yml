@@ -30,7 +30,7 @@ jobs:
         run: ./sunsu-wedding/gradlew clean build
       - name: Run Spring Boot App for 30 seconds
         run: |
-          ./gradlew bootRun &
+          ./sunsu-wedding/gradlew bootRun &
           APP_PID=$!
           sleep 30
           kill $APP_PID
