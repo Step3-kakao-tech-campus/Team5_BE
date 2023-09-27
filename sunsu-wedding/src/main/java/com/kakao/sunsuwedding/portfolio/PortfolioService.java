@@ -2,6 +2,7 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
+import com.kakao.sunsuwedding._core.errors.exception.Exception403;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioInsertRequest;
@@ -12,11 +13,14 @@ import com.kakao.sunsuwedding.portfolio.image.ImageItem;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemRepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemRepository;
+import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -89,7 +93,13 @@ public class PortfolioService {
         // TODO: PriceItemService를 통해 가격 업데이트
     }
 
-    public void deletePortfolio(Planner planner) {
+    @Transactional
+    public void deletePortfolio(Pair<Role, Integer> info) {
+        if (!info.getFirst().getRoleName().equals(Role.PLANNER.getRoleName())) {
+            throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
+        }
+
+        Planner planner = Planner.builder().id(info.getSecond()).build();
         priceItemRepository.deleteAllByPortfolioPlannerId(planner.getId());
         imageItemRepository.deleteAllByPortfolioPlannerId(planner.getId());
         portfolioRepository.deleteByPlanner(planner);

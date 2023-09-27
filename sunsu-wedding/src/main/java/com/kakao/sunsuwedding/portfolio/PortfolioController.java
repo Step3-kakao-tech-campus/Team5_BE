@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding.portfolio;
 
+import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioInsertRequest;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,10 +56,8 @@ public class PortfolioController {
     }
 
     @DeleteMapping("/portfolios")
-    public ResponseEntity<?> deletePortfolio() {
-
-        // TODO: Security로 전달받은 플래너의 포트폴리오 삭제
-
+    public ResponseEntity<?> deletePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        portfolioService.deletePortfolio(userDetails.getInfo());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }
