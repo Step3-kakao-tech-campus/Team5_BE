@@ -193,7 +193,7 @@ public class UserRestControllerTest {
         UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
         requestDTO.setEmail("planner@gmail.com");
         requestDTO.setPassword("meta1234!");
-        requestDTO.setRole("planner"); 
+        requestDTO.setRole("planner");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -207,8 +207,8 @@ public class UserRestControllerTest {
         System.out.println("테스트 : "+responseBody);
 
         // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(jsonPath("$.success").value("false"));
+        result.andExpect(jsonPath("$.error.status").value(400));
         result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다"));
     }
 }
