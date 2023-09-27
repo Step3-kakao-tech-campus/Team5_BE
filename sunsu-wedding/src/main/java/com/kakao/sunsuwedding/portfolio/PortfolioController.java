@@ -32,7 +32,7 @@ public class PortfolioController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @GetMapping(value = "/portfolios", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    @GetMapping(value = "/portfolios")
     public ResponseEntity<?> getPortfolios(@RequestParam @Min(0) int page) {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
         List<PortfolioListItemDTO> items = portfolioService.getPortfolios(pageRequest);
