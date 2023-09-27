@@ -27,11 +27,13 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build and Test
-        run: ./sunsu-wedding/gradlew clean build
+        run: ./gradlew clean build
+        working-directory: ./sunsu-wedding
       - name: Run Spring Boot App for 30 seconds
         run: |
-          ./sunsu-wedding/gradlew bootRun &
+          ./gradlew bootRun &
           APP_PID=$!
           sleep 30
           kill $APP_PID
         continue-on-error: false
+        working-directory: ./sunsu-wedding
