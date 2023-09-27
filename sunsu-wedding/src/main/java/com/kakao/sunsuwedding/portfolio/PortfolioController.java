@@ -5,6 +5,7 @@ import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioInsertRequest;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioListItemDTO;
 import com.kakao.sunsuwedding.portfolio.dto.PortfolioUpdateRequest;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
@@ -31,15 +32,15 @@ public class PortfolioController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @GetMapping("/portfolios")
-    public ResponseEntity<?> getPortfolios(@RequestParam int page) {
+    @GetMapping(value = "/portfolios", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    public ResponseEntity<?> getPortfolios(@RequestParam @Min(0) int page) {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
         List<PortfolioListItemDTO> items = portfolioService.getPortfolios(pageRequest);
         return ResponseEntity.ok().body(ApiUtils.success(items));
     }
 
     @GetMapping("/portfolios/{id}")
-    public ResponseEntity<?> getPortfolioInDetail(@PathVariable Long id) {
+    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
         PortfolioDTO portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }

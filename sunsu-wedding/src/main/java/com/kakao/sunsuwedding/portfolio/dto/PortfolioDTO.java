@@ -1,12 +1,10 @@
 package com.kakao.sunsuwedding.portfolio.dto;
 
-import org.springframework.core.io.Resource;
-
 import java.util.List;
 
 public record PortfolioDTO(
         Long id,
-        List<Resource> images,
+        List<String> images,
         String title,
         String plannerName,
         Long contractCount,

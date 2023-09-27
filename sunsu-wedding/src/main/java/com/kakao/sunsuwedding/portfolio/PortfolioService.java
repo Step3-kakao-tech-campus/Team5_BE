@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding.portfolio;
 
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
 import com.kakao.sunsuwedding.portfolio.dto.*;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -50,42 +53,35 @@ public class PortfolioService {
     public List<PortfolioListItemDTO> getPortfolios(PageRequest pageRequest) {
         List<Portfolio> portfolios = portfolioRepository.findAll(pageRequest).getContent();
 
-        List<Resource> images = imageItemRepository.findAllByThumbnailAndPortfolioIn(true, portfolios)
+        List<String> images = imageItemRepository.findAllByThumbnailAndPortfolioIn(true, portfolios)
                 .stream()
-                .map(PortfolioService::getImageResource)
+                .map(PortfolioService::getBase64EncodedImage)
                 .toList();
 
         return PortfolioDTOConverter.toListItemDTO(portfolios, images);
     }
 
     public PortfolioDTO getPortfolioById(Long id) {
-        /*
-        여기서 고민해야할 부분
+        List<ImageItem> imageItems = imageItemRepository.findByPortfolioId(id);
+        if (imageItems.isEmpty()) {
+            throw new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage());
+        }
 
-        포트폴리오는 아래 ImageItem 과 PriceItem 을 조회할 때 join 하면 불러올 수 있는 정보
-        따라서 따로 조회하지 않아도 불러올 수 있지만,
-
-        fetch join 으로 포트폴리오를 불러오는 시간과 select 쿼리로 포트폴리오를 불러오는 시간
-        둘 중에 어떤 것이 더 좋은지 결정해야 한다.
-
-        우선 요청으로 포트폴리오 id만 넘겨받기 때문에
-        해당 포트폴리오가 존재하는지 검사하는 부분도 필요할 것 같기도 하지만
-
-        이미지는 1장 이상을 필수로 등록하는 것을 원칙으로 한다면
-        ImageItem 을 검색해서 empty 여부를 검사하여 이를 알아낼 수 있긴 하다
-         */
-        List<Resource> images = imageItemRepository.findByPortfolioId(id)
+        Portfolio portfolio = imageItems.get(0).getPortfolio();
+        List<String> images = imageItems
                 .stream()
-                .map(PortfolioService::getImageResource)
+                .map(PortfolioService::getBase64EncodedImage)
                 .toList();
+
+        if (images.isEmpty()) {
+            throw new Exception404(BaseException.PORTFOLIO_IMAGE_NOT_FOUND.getMessage());
+        }
 
         List<PriceItem> priceItems = priceItemRepository.findAllByPortfolioId(id);
         List<PriceItemDTO> priceItemDTOS = PortfolioDTOConverter.toPriceItemDTOS(priceItems);
 
         Long totalPrice = PriceCalculator.execute(priceItemDTOS);
         PriceDTO priceDTO = new PriceDTO(totalPrice, priceItemDTOS);
-
-        Portfolio portfolio = priceItems.get(0).getPortfolio();
 
         return PortfolioDTOConverter.toPortfolioDTO(portfolio, images, priceDTO);
     }
@@ -109,7 +105,18 @@ public class PortfolioService {
         portfolioRepository.deleteByPlanner(planner);
     }
 
-    private static Resource getImageResource(ImageItem imageItem) {
-        return new FileSystemResource(imageItem.getFilePath() + imageItem.getOriginalFileName());
+    private static String getBase64EncodedImage(ImageItem imageItem) {
+        Resource resource = new FileSystemResource(imageItem.getFilePath() + imageItem.getOriginalFileName());
+        if (!resource.exists()) {
+            throw new Exception404(BaseException.PORTFOLIO_IMAGE_NOT_FOUND.getMessage());
+        }
+
+        try {
+            return Base64.getEncoder().encodeToString(resource.getContentAsByteArray());
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return null;
     }
 }
