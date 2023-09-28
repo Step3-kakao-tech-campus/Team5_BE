@@ -4,7 +4,7 @@
 ![순수웨딩이란?](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/fc737fc0-a34d-434c-9d9e-370d8956313d)
 
 |내용|설명|
-|--------|----|
+|-----------|----|
 |프로젝트 이름|순수웨딩| 
 |한줄 소개|투명한 가격으로 웨딩 플래너와 예비 부부를 매칭시켜주는 서비스|
 |개발 목적| 예비 부부에게는 결혼 비용의 투명성 보장을, 웨딩 플래너에게는 더 많은 고객 유치를 위해 **순수 웨딩**을 기획했습니다. |
@@ -16,10 +16,10 @@
 ## ✅ 주요 기능
 |기능|디자인|상세설명|
 |----|------|---|
-|포트폴리오 등록| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/33ab83be-a388-449c-8a1c-75a4f85153d0" width="500" > |포트폴리오와 상세 비용을 등록하여 자신을 소개할 수 있다|
-|포트폴리오 조회| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/5ff7c1ef-a5d1-4c50-8d34-10e4cd1223d6" width="500" > |플래너의 거래 기록들과 다른 플래너들의 가격비교를 통해 적정가를 확인할 수 있다|
-|채팅 상담| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/d7c250fb-b208-4bc1-a480-9f97f3b7d290" width="500" > |온라인으로 간편하게 여러 명의 플래너와 견적 상담을 받을 수 있다|
-|견적서| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/c4dfb4d7-4410-417b-8d29-b4bccdfa3156" width="500" > |빠르고 간편하게 진행 과정에 대한 상세 내역을 확인할 수 있다|
+|포트폴리오 등록| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/33ab83be-a388-449c-8a1c-75a4f85153d0" width="800" > |포트폴리오와 상세 비용을 등록하여 자신을 소개할 수 있다|
+|포트폴리오 조회| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/5ff7c1ef-a5d1-4c50-8d34-10e4cd1223d6" width="800" > |플래너의 거래 기록들과 다른 플래너들의 가격비교를 통해 적정가를 확인할 수 있다|
+|채팅 상담| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/d7c250fb-b208-4bc1-a480-9f97f3b7d290" width="800" > |온라인으로 간편하게 여러 명의 플래너와 견적 상담을 받을 수 있다|
+|견적서| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/c4dfb4d7-4410-417b-8d29-b4bccdfa3156" width="800" > |빠르고 간편하게 진행 과정에 대한 상세 내역을 확인할 수 있다|
 
 <br>
 
@@ -44,7 +44,9 @@ cd sunsu-wedding
 
 2. 실행
 ```
-gradlew build
+./gradlew build
+cd build
+cd libs
 java -jar sunsu-wedding-0.0.1-SNAPSHOT.jar
 ```
 
