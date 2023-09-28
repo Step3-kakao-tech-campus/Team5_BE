@@ -78,6 +78,23 @@ public class PortfolioControllerTest {
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.response[1].contractCount").value("20"));
     }
 
+    @DisplayName("GET /portoflios : fail, 음수 페이지 요청")
+    @Test
+    void getPortfolios_fail_negativePageRequest() throws Exception {
+        // given
+        Long page = -1L;
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/portfolios")
+                        .param("page", String.valueOf(page))
+        );
+
+        // then
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+    }
+
     @DisplayName("GET /portfolios/{id} : success")
     @Test
     void getPortfolioById_success() throws Exception{
@@ -102,6 +119,22 @@ public class PortfolioControllerTest {
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.response.priceInfo.totalPrice").value("1000000"));
     }
 
+    @DisplayName("GET /portfolios/{id} : fail, 존재하지 않는 포트폴리오 조회 요청")
+    @Test
+    void getPortfolioById_fail_portfolioNotFound() throws Exception{
+        // given
+        Long portfolioId = 100000L;
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/portfolios/" + portfolioId)
+        );
+
+        // then
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+    }
+
     @DisplayName("DELETE /portfolios : success")
     @Test
     void deletePortfolio_success() throws Exception {
@@ -116,5 +149,21 @@ public class PortfolioControllerTest {
 
         // then
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+    }
+
+    @DisplayName("DELETE /portfolios : fail, 커플 유저가 포트폴리오 삭제 요청")
+    @Test
+    void deletePortfolio_fail_permissionDenied() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/portfolios")
+                        .header("Authorization", coupleToken)
+        );
+
+        // then
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
     }
 }
