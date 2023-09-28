@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NamedEntityGraph(name = "PortfolioWithPlanner",
                   attributeNodes = @NamedAttributeNode("planner"))
+@Table(name = "portfolio_tb")
 @Entity
 public class Portfolio {
     @Id

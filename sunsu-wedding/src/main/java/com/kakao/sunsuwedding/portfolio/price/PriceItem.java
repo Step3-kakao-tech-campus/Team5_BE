@@ -17,6 +17,7 @@ import lombok.Getter;
                 subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )
 })
+@Table(name = "priceitem_tb")
 @Entity
 public class PriceItem {
     @Id
