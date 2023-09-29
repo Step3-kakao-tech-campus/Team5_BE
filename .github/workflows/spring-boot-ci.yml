@@ -22,12 +22,13 @@ jobs:
       - name: Cache Gradle dependencies
         uses: actions/cache@v2
         with:
-          path: ~/.gradle/caches
+          path: ~/sunsu-wedding/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build and Test
         run: ./gradlew clean build
+        working-directory: ./sunsu-wedding
       - name: Run Spring Boot App for 30 seconds
         run: |
           ./gradlew bootRun &
@@ -35,3 +36,4 @@ jobs:
           sleep 30
           kill $APP_PID
         continue-on-error: false
+        working-directory: ./sunsu-wedding
