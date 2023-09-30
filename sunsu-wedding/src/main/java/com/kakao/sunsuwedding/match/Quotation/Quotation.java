@@ -1,7 +1,6 @@
-package com.kakao.sunsuwedding.match;
+package com.kakao.sunsuwedding.match.Quotation;
 
-import com.kakao.sunsuwedding.user.couple.Couple;
-import com.kakao.sunsuwedding.user.planner.Planner;
+import com.kakao.sunsuwedding.match.Match;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,26 +11,32 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="match_tb")
-public class Match {
+@Table(name="quotation_tb")
+public class Quotation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Planner planner;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Couple couple;
+    @ManyToOne
+    private Match match;
 
     @Column(nullable = false)
-    private String status;
+    private String title;
 
     @Column(nullable = false)
     private long price;
 
     @Column
-    private LocalDateTime comfirmedAt;
+    private String company;
+
+    @Column
+    private String description;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(nullable = false)
+    private LocalDateTime modifiedAt;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

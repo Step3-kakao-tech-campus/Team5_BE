@@ -3,6 +3,8 @@ package com.kakao.sunsuwedding.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
+import com.kakao.sunsuwedding._core.security.CustomUserDetails;
+import com.kakao.sunsuwedding._core.security.CustomUserDetailsService;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import com.kakao.sunsuwedding.user.couple.Couple;
@@ -20,7 +22,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -30,6 +35,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -43,12 +49,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class UserRestControllerTest {
 
+    private CustomUserDetailsService customUserDetailsService;
+
     @Autowired
     private MockMvc mvc;
 
     @Autowired
     private ObjectMapper om;
 
+    // ============ 회원가입 테스트 ============
     @DisplayName("회원가입 성공 테스트")
     @Test
     public void user_join_success_test() throws Exception {
@@ -134,6 +143,7 @@ public class UserRestControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("role은 플래너, 또는 예비 부부만 가능합니다."));
     }
 
+    // ============ 로그인 테스트 ============
     @DisplayName("로그인 성공 테스트")
     @Test
     public void user_login_success_test() throws Exception {
@@ -210,5 +220,24 @@ public class UserRestControllerTest {
         result.andExpect(jsonPath("$.success").value("false"));
         result.andExpect(jsonPath("$.error.status").value(400));
         result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다"));
+    }
+
+    // ============ 회원 탈퇴 테스트 ============
+    @DisplayName("회원 탈퇴 성공 테스트")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void user_withdraw_success_test() throws Exception {
+        // given
+
+        // when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/user")
+        );
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : "+responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
 }
