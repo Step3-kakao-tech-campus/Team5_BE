@@ -15,12 +15,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Import({
         SecurityConfig.class
 })
 @Sql("classpath:/db/teardown.sql")
 @AutoConfigureMockMvc
+@EnableWebMvc
 @SpringBootTest
 public class PortfolioControllerTest {
     private final MockMvc mockMvc;
