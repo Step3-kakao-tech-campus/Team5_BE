@@ -47,4 +47,12 @@ public class UserRestController {
         userService.upgrade(info.getFirst(), info.getSecond());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
+
+    // 회원 탈퇴
+    @DeleteMapping("")
+    public ResponseEntity<?> withdraw(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Pair<Role, Integer> info = userDetails.getInfo();
+        userService.withdraw(info.getFirst(),info.getSecond());
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
 }
