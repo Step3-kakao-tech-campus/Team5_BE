@@ -1,84 +1,126 @@
 package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
-import com.kakao.sunsuwedding._core.errors.exception.Exception404;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioInsertRequest;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioListItemDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PriceDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioUpdateRequest;
+import com.kakao.sunsuwedding.portfolio.image.ImageItem;
+import com.kakao.sunsuwedding.portfolio.price.PriceItem;
+import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
 import com.kakao.sunsuwedding.user.planner.Planner;
+import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalLong;
 
-@RequiredArgsConstructor
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class PortfolioService {
-    private final PortfolioRepository portfolioRepository;
+    private final PortfolioJPARepository portfolioJPARepository;
+    private final PriceItemJPARepository priceItemJPARepository;
+    private final PlannerJPARepository plannerJPARepository;
 
-    public void insertPortfolio(Planner planner, PortfolioInsertRequest request, MultipartFile[] images) {
+    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, int plannerId) {
+        // 요청한 플래너 탐색
+        Planner planner = plannerJPARepository.findById(plannerId)
+                .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
+
+        // TODO: 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
+
+        // 필요한 계산값 연산
+        Long totalPrice =  request.getItems().stream()
+                .mapToLong(PortfolioRequest.addDTO.ItemDTO::getItemPrice)
+                .sum();
+        Long contractCount = Long.valueOf(request.getItems().size());
+        Long avgPrice = totalPrice / contractCount;
+        OptionalLong minPrice = request.getItems().stream()
+                .mapToLong(PortfolioRequest.addDTO.ItemDTO::getItemPrice)
+                .min();
+        OptionalLong maxPrice = request.getItems().stream()
+                .mapToLong(PortfolioRequest.addDTO.ItemDTO::getItemPrice)
+                .max();
+
+        // 포트폴리오 엔티티에 저장
         Portfolio portfolio = Portfolio.builder()
                 .planner(planner)
-                .title(request.title())
-                .description(request.description())
-                .location(request.location())
-                .career(request.career())
-                .partnerCompany(request.partnerCompany())
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .location(request.getLocation())
+                .career(request.getCareer())
+                .partnerCompany(request.getPartnerCompany())
+                .totalPrice(totalPrice)
+                .contractCount(contractCount)
+                .avgPrice(avgPrice)
+                .minPrice(minPrice.orElse(0))
+                .maxPrice(maxPrice.orElse(0))
                 .build();
+        portfolioJPARepository.save(portfolio);
 
-        // TODO: image 저장
-
-        try {
-            portfolioRepository.save(portfolio);
+        // 가격 항목 엔티티에 저장
+        for (PortfolioRequest.addDTO.ItemDTO item : request.getItems()) {
+            PriceItem priceItem = PriceItem.builder()
+                    .portfolio(portfolio)
+                    .itemTitle(item.getItemTitle())
+                    .itemPrice(item.getItemPrice())
+                    .build();
+            priceItemJPARepository.save(priceItem);
         }
-        catch (DataIntegrityViolationException exception) {
-            throw new Exception400("");
+
+        // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
+        return Pair.of(portfolio, planner);
+    }
+
+
+    @Transactional
+    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, int plannerId) {
+        // 요청한 플래너 및 포트폴리오 탐색
+        Planner planner = plannerJPARepository.findById(plannerId)
+                .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
+        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
+                .orElseThrow(() -> new Exception400("해당하는 플래너의 포트폴리오를 찾을 수 없습니다: " + plannerId));
+
+        // 필요한 계산값 연산
+        Long totalPrice =  request.getItems().stream()
+                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
+                .sum();
+        Long contractCount = Long.valueOf(request.getItems().size());
+        Long avgPrice = totalPrice / contractCount;
+        OptionalLong minPrice = request.getItems().stream()
+                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
+                .min();
+        OptionalLong maxPrice = request.getItems().stream()
+                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
+                .max();
+
+        // 포트폴리오 변경사항 업데이트
+        portfolio.updateTitle(request.getTitle());
+        portfolio.updateDescription(request.getDescription());
+        portfolio.updateLocation(request.getLocation());
+        portfolio.updateCareer(request.getCareer());
+        portfolio.updatePartnerCompany(request.getPartnerCompany());
+        portfolio.updateTotalPrice(totalPrice);
+        portfolio.updateContractCount(contractCount);
+        portfolio.updateAvgPrice(avgPrice);
+        portfolio.updateMinPrice(minPrice.orElse(0));
+        portfolio.updateMaxPrice(maxPrice.orElse(0));
+
+
+        // 해당하는 가격 아이템 탐색 & 업데이트
+        List<PriceItem> priceItemList = priceItemJPARepository.findByPortfolioId(portfolio.getId());
+        for (int i = 0; i < 3; i++) {
+            PriceItem priceItem = priceItemList.get(i);
+            PortfolioRequest.updateDTO.ItemDTO item = request.getItems().get(i);
+
+            priceItem.updateItemTitle(item.getItemTitle());
+            priceItem.updateItemPrice(item.getItemPrice());
         }
-    }
 
-    public List<PortfolioListItemDTO> getPortfolios(PageRequest pageRequest) {
-        Page<Portfolio> portfolios = portfolioRepository.findAll(pageRequest);
+        // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
+        return Pair.of(portfolio, planner);
 
-        // TODO: 포트폴리오별 대표 이미지 불러오기
-        Resource[] images = null;
-
-        return PortfolioDTOConverter.toListItemDTO(portfolios, images);
-    }
-
-    public PortfolioDTO getPortfolioById(Long id) {
-        Portfolio portfolio = portfolioRepository.findById(id)
-                .orElseThrow(() -> new Exception404("해당 포트폴리오를 찾을 수 없습니다."));
-
-        // TODO: ImageItemService 에서 포트폴리오 이미지 가져오기
-        Resource[] images = null;
-
-        // TODO: PriceItemService 에서 가격 정보 가져오기
-        PriceDTO priceDTO = null;
-
-        return PortfolioDTOConverter.toPortfolioDTO(portfolio, images, priceDTO);
-    }
-
-    public void updatePortfolio(Planner planner, PortfolioUpdateRequest request) {
-        Portfolio portfolio = portfolioRepository.findByPlanner(planner)
-                .orElseThrow(() -> new Exception404("포트폴리오가 존재하지 않기 때문에 업데이트를 할 수 없습니다."));
-
-        portfolio.updateTitle(request.title());
-        portfolio.updateDescription(request.description());
-        portfolio.updateLocation(request.location());
-        portfolio.updateCareer(request.career());
-        portfolio.updatePartnerCompany(request.partnerCompany());
-
-        // TODO: PriceItemService를 통해 가격 업데이트
-    }
-
-    public void deletePortfolio(Planner planner) {
-        portfolioRepository.deleteByPlanner(planner);
     }
 }
