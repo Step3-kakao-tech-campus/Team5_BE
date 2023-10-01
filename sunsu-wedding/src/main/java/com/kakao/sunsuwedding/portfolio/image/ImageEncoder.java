@@ -10,7 +10,7 @@ import java.util.Base64;
 
 public class ImageEncoder {
     public static String encode(ImageItem imageItem) {
-        Resource resource = new FileSystemResource(imageItem.getFilePath() + imageItem.getOriginalFileName());
+        Resource resource = new FileSystemResource(imageItem.getFilePath() + imageItem.getOriginFileName());
         if (!resource.exists()) {
             throw new Exception404(BaseException.PORTFOLIO_IMAGE_NOT_FOUND.getMessage());
         }

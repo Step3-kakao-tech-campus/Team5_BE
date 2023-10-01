@@ -2,13 +2,14 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioInsertRequest;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioListItemDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioUpdateRequest;
+import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioDTO;
+import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioListItemDTO;
+import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
+import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,15 +22,16 @@ import java.util.List;
 @RestController
 public class PortfolioController {
     private final PortfolioService portfolioService;
+    private final ImageItemService imageItemService;
     private static final int PAGE_SIZE = 10;
 
-    @PostMapping(value = "/portfolios",
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createPortfolios(@RequestPart PortfolioInsertRequest request,
-                                              @RequestPart MultipartFile[] images) {
-
-        // TODO: Security를 통해 전달된 플래너 정보를 이용해서 포트폴리오 데이터베이스에 저장
-        // TODO: ImageItemService를 통해서 데이터베이스에 이미지 정보 저장
+    @PostMapping(value = "/portfolios", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
+    public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.addDTO request,
+                                           @RequestPart MultipartFile[] images,
+                                           Error errors,
+                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Pair<Portfolio, Planner> info = portfolioService.addPortfolio(request, userDetails.getPlanner().getId());
+        imageItemService.uploadImage(images, info.getFirst(), info.getSecond());
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
@@ -47,10 +49,15 @@ public class PortfolioController {
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PutMapping("/portfolios")
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdateRequest request) {
+    @PutMapping(value = "/portfolios", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
+    public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.updateDTO request,
+                                              @RequestPart MultipartFile[] images,
+                                              Error errors,
+                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Pair<Portfolio, Planner> info = portfolioService.updatePortfolio(request, userDetails.getPlanner().getId());
 
-        // TODO: Security를 통해 전달된 플래너 정보를 이용해서 포트폴리오 업데이트 진행
+        // TODO: 이미지 업데이트 처리
+        imageItemService.updateImage(images, info.getFirst(), info.getSecond());
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }

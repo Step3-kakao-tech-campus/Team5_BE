@@ -11,19 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class PortfolioRepositoryTest {
-    private final PortfolioRepository portfolioRepository;
+    private final PortfolioJPARepository portfolioJPARepository;
     private final EntityManager entityManager;
 
-    public PortfolioRepositoryTest(@Autowired PortfolioRepository portfolioRepository,
+    public PortfolioRepositoryTest(@Autowired PortfolioJPARepository portfolioJPARepository,
                                    @Autowired EntityManager entityManager) {
-        this.portfolioRepository = portfolioRepository;
+        this.portfolioJPARepository = portfolioJPARepository;
         this.entityManager = entityManager;
     }
 
     @BeforeEach
     void setUp() {
-        portfolioRepository.save(Portfolio.builder().title("test1").build());
-        portfolioRepository.save(Portfolio.builder().title("test2").build());
+        portfolioJPARepository.save(Portfolio.builder().title("test1").build());
+        portfolioJPARepository.save(Portfolio.builder().title("test2").build());
         entityManager.clear();
     }
 
@@ -31,7 +31,7 @@ public class PortfolioRepositoryTest {
     @Test
     void repositoryInsertTest() {
         // given
-        long previous_count = portfolioRepository.count();
+        long previous_count = portfolioJPARepository.count();
         Portfolio portfolio = Portfolio.builder()
                 .planner(null)
                 .title("Test Portfolio")
@@ -47,10 +47,10 @@ public class PortfolioRepositoryTest {
                 .build();
 
         // when
-        portfolioRepository.save(portfolio);
+        portfolioJPARepository.save(portfolio);
 
         // then
-        assertThat(portfolioRepository.count()).isEqualTo(previous_count + 1);
+        assertThat(portfolioJPARepository.count()).isEqualTo(previous_count + 1);
     }
 
     @DisplayName("Portfolio Repository Test : read")
@@ -60,7 +60,7 @@ public class PortfolioRepositoryTest {
         Long portfolioId = 1L;
 
         // when
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow();
+        Portfolio portfolio = portfolioJPARepository.findById(portfolioId).orElseThrow();
 
         // then
         assertThat(portfolio.getId()).isEqualTo(portfolioId);
@@ -71,7 +71,7 @@ public class PortfolioRepositoryTest {
     void repositoryUpdateTest() {
         // given
         Long portfolioId = 1L;
-        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow();
+        Portfolio portfolio = portfolioJPARepository.findById(portfolioId).orElseThrow();
     }
 
     @DisplayName("Portfolio Repository Test : delete")
@@ -79,12 +79,12 @@ public class PortfolioRepositoryTest {
     void repositoryDeleteTest() {
         // given
         Long portfolioId = 2L;
-        long previous_count = portfolioRepository.count();
+        long previous_count = portfolioJPARepository.count();
 
         // when
-        portfolioRepository.deleteById(portfolioId);
+        portfolioJPARepository.deleteById(portfolioId);
 
         // then
-        assertThat(portfolioRepository.count()).isEqualTo(previous_count - 1);
+        assertThat(portfolioJPARepository.count()).isEqualTo(previous_count - 1);
     }
 }

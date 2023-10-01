@@ -1,9 +1,9 @@
 package com.kakao.sunsuwedding.portfolio;
 
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PortfolioListItemDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PriceDTO;
-import com.kakao.sunsuwedding.portfolio.dto.PriceItemDTO;
+import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioDTO;
+import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioListItemDTO;
+import com.kakao.sunsuwedding.portfolio.dto.response.PriceDTO;
+import com.kakao.sunsuwedding.portfolio.dto.response.PriceItemDTO;
 import com.kakao.sunsuwedding.portfolio.price.PriceCalculator;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 

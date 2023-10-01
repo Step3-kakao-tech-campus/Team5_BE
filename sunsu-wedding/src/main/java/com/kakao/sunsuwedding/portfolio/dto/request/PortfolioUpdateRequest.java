@@ -1,4 +1,6 @@
-package com.kakao.sunsuwedding.portfolio.dto;
+package com.kakao.sunsuwedding.portfolio.dto.request;
+
+import com.kakao.sunsuwedding.portfolio.dto.response.PriceItemDTO;
 
 import java.util.List;
 

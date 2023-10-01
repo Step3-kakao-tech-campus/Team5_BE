@@ -4,12 +4,12 @@ import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NamedEntityGraph(name = "PortfolioWithPlanner",
-                  attributeNodes = @NamedAttributeNode("planner"))
+@NoArgsConstructor
 @Table(name = "portfolio_tb")
 @Entity
 public class Portfolio {
@@ -17,7 +17,8 @@ public class Portfolio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
+    @JoinColumn(name = "planner_id")
     private Planner planner;
 
     @Column(nullable = false)
@@ -68,9 +69,6 @@ public class Portfolio {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
-    }
-
-    protected Portfolio() {
     }
 
     public void updateTitle(String title) {

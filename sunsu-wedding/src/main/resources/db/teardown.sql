@@ -23,13 +23,13 @@ INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALU
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('5', '2', '드레스2', '300000');
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('6', '2', '메이크업2', '200000');
 
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '1', '2-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '1', '2-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '1', '2-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '1', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `original_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '1', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '1', '2-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '1', '2-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '1', '2-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '1', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '1', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');

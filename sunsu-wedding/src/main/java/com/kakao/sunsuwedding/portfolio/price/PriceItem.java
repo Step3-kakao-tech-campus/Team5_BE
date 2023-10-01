@@ -4,8 +4,10 @@ import com.kakao.sunsuwedding.portfolio.Portfolio;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "PriceItemWithPortfolio",
@@ -41,8 +43,10 @@ public class PriceItem {
         this.itemPrice = itemPrice;
     }
 
-    protected PriceItem() {
+    public void updateItemTitle(String itemTitle) {
+        this.itemTitle = itemTitle;
     }
-
-
+    public void updateItemPrice(Long itemPrice) {
+        this.itemPrice = itemPrice;
+    }
 }

@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.portfolio.dto;
+package com.kakao.sunsuwedding.portfolio.dto.response;
 
 import java.util.List;
 

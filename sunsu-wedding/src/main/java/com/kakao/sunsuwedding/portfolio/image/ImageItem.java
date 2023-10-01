@@ -4,8 +4,10 @@ import com.kakao.sunsuwedding.portfolio.Portfolio;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "ImageItemWithPortfolio",
@@ -28,7 +30,7 @@ public class ImageItem {
     private Portfolio portfolio;
 
     @Column(nullable = false)
-    private String originalFileName;
+    private String originFileName;
 
     @Column(nullable = false)
     private String filePath;
@@ -40,17 +42,22 @@ public class ImageItem {
     private boolean thumbnail;
 
     @Builder
-    public ImageItem(Long id, Portfolio portfolio, String originalFileName, String filePath, Long fileSize, boolean thumbnail) {
+    public ImageItem(Long id, Portfolio portfolio, String originFileName, String filePath, Long fileSize, boolean thumbnail) {
         this.id = id;
         this.portfolio = portfolio;
-        this.originalFileName = originalFileName;
+        this.originFileName = originFileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.thumbnail = thumbnail;
     }
 
-    protected ImageItem() {
+    public void updateOriginFileName(String originFileName) {
+        this.originFileName = originFileName;
     }
-
-
+    public void updateFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+    public void updateFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
 }
