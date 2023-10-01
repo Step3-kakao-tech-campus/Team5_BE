@@ -50,11 +50,17 @@ public class ImageItemService {
 
                 // TODO: Thumbnail인지 아닌지 확인하고 저장하는 로직
 
+                boolean thumbnail = false;
+                if (image == images[0]) {
+                    thumbnail = true;
+                }
+
                 ImageItem imageItem = ImageItem.builder()
                         .portfolio(portfolio)
                         .originFileName(originalImageName)
                         .filePath(uploadImagePath)
                         .fileSize(image.getSize())
+                        .thumbnail(thumbnail)
                         .build();
                 imageItemJPARepository.save(imageItem);
             }
@@ -100,11 +106,17 @@ public class ImageItemService {
 
                 // TODO: Thumbnail인지 아닌지 확인하고 저장하는 로직
 
+                boolean thumbnail = false;
+                if (image == images[0]) {
+                    thumbnail = true;
+                }
+
                 ImageItem imageItem = ImageItem.builder()
                         .portfolio(portfolio)
                         .originFileName(originalImageName)
                         .filePath(uploadImagePath)
                         .fileSize(image.getSize())
+                        .thumbnail(thumbnail)
                         .build();
                 imageItemJPARepository.save(imageItem);
             }
