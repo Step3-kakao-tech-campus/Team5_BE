@@ -9,7 +9,13 @@
 |한줄 소개|투명한 가격으로 웨딩 플래너와 예비 부부를 매칭시켜주는 서비스|
 |개발 목적| 예비 부부에게는 결혼 비용의 투명성 보장을, 웨딩 플래너에게는 더 많은 고객 유치를 위해 **순수 웨딩**을 기획했습니다. |
 |개발 기간|2023.09 - 2023.11|
-|팀원(BE)|김정도, 남원정, 문석준, 천영채|
+
+<br>
+
+## 👨‍👩‍👧‍👦 팀원 소개
+| [남원정](https://github.com/1jeongg) | [문석준](https://github.com/seokwns) | [천영채](https://github.com/chaee813)|[김정도](https://github.com/Rizingblare) |
+|----------|----------|----------|----------|
+| <img src="https://github.com/1jeongg.png" width="100"> | <img src="https://github.com/seokwns.png" width="100"> | <img src="https://github.com/chaee813.png" width="100"> | <img src="https://github.com/Rizingblare.png" width="100"> |
 
 <br>
 
@@ -70,9 +76,10 @@ java -jar sunsu-wedding-0.0.1-SNAPSHOT.jar
 
 <br>
 
-## 카카오 테크 캠퍼스 3단계 진행 보드
+<details>
+<summary><h2>카카오 테크 캠퍼스 3단계 진행 보드</h2></summary>
 
-</br>
+
 
 ## 배포와 관련하여
 
@@ -321,3 +328,4 @@ UI 컴포넌트의 명칭과 이를 구현하는 능력은 필수적인 커뮤�
 </div>
 
 ---
+</details>
