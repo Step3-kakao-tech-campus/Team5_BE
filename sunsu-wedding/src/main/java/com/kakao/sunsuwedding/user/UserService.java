@@ -9,10 +9,7 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
-import com.kakao.sunsuwedding.portfolio.Portfolio;
-import com.kakao.sunsuwedding.portfolio.PortfolioRepository;
-import com.kakao.sunsuwedding.portfolio.image.ImageItem;
-import com.kakao.sunsuwedding.portfolio.price.PriceItem;
+import com.kakao.sunsuwedding.portfolio.PortfolioJPARepository;
 import com.kakao.sunsuwedding.user.constant.Grade;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
@@ -35,9 +32,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;
-    private final PortfolioRepository portfolioRepository;
-    //private final ImageItemJPARepository imageItemJPARepository;
-    //private final PriceItemJPARepository priceItemJPARepository;
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
 

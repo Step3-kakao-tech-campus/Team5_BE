@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @NoArgsConstructor
-@NamedEntityGraph(name = "PortfolioWithPlanner", attributeNodes = @NamedAttributeNode("planner"))
+@Table(name = "portfolio_tb")
+@Entity
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

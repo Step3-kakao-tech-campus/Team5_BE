@@ -1,26 +1,34 @@
 package com.kakao.sunsuwedding.portfolio;
 
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
+import com.kakao.sunsuwedding._core.errors.exception.Exception403;
+import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioDTO;
+import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioListItemDTO;
+import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.ImageItem;
+import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
+import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalLong;
 
-@Service
-@Transactional
 @RequiredArgsConstructor
+@Service
 public class PortfolioService {
+
     private final PortfolioJPARepository portfolioJPARepository;
+    private final ImageItemJPARepository imageItemJPARepository;
     private final PriceItemJPARepository priceItemJPARepository;
     private final PlannerJPARepository plannerJPARepository;
 
@@ -74,6 +82,32 @@ public class PortfolioService {
         return Pair.of(portfolio, planner);
     }
 
+    public List<PortfolioListItemDTO> getPortfolios(PageRequest pageRequest) {
+        List<Portfolio> portfolios = portfolioJPARepository.findAll(pageRequest).getContent();
+
+        List<String> images = imageItemJPARepository.findAllByThumbnailAndPortfolioIn(true, portfolios)
+                .stream()
+                .map(ImageEncoder::encode)
+                .toList();
+
+        return PortfolioDTOConverter.toListItemDTO(portfolios, images);
+    }
+
+    public PortfolioDTO getPortfolioById(Long id) {
+        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(id);
+        if (imageItems.isEmpty()) {
+            throw new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage());
+        }
+
+        List<String> images = imageItems
+                .stream()
+                .map(ImageEncoder::encode)
+                .toList();
+
+        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(id);
+        Portfolio portfolio = imageItems.get(0).getPortfolio();
+        return PortfolioDTOConverter.toPortfolioDTO(portfolio, images, priceItems);
+    }
 
     @Transactional
     public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, int plannerId) {
@@ -122,5 +156,17 @@ public class PortfolioService {
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(portfolio, planner);
 
+    }
+
+    @Transactional
+    public void deletePortfolio(Pair<Role, Integer> info) {
+        if (!info.getFirst().getRoleName().equals(Role.PLANNER.getRoleName())) {
+            throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
+        }
+
+        Planner planner = Planner.builder().id(info.getSecond()).build();
+        priceItemJPARepository.deleteAllByPortfolioPlannerId(planner.getId());
+        imageItemJPARepository.deleteAllByPortfolioPlannerId(planner.getId());
+        portfolioJPARepository.deleteByPlanner(planner);
     }
 }
