@@ -4,8 +4,6 @@ import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding._core.errors.exception.Exception403;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
-import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioDTO;
-import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioListItemDTO;
 import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.ImageItem;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
@@ -82,7 +80,7 @@ public class PortfolioService {
         return Pair.of(portfolio, planner);
     }
 
-    public List<PortfolioListItemDTO> getPortfolios(PageRequest pageRequest) {
+    public List<PortfolioResponse.findAllBy> getPortfolios(PageRequest pageRequest) {
         List<Portfolio> portfolios = portfolioJPARepository.findAll(pageRequest).getContent();
 
         List<String> images = imageItemJPARepository.findAllByThumbnailAndPortfolioIn(true, portfolios)
@@ -93,7 +91,7 @@ public class PortfolioService {
         return PortfolioDTOConverter.toListItemDTO(portfolios, images);
     }
 
-    public PortfolioDTO getPortfolioById(Long id) {
+    public PortfolioResponse.findById getPortfolioById(Long id) {
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(id);
         if (imageItems.isEmpty()) {
             throw new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage());

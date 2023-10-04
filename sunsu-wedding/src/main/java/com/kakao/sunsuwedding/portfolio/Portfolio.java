@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor
-@Table(name = "portfolio_tb")
 @Entity
+@Table(name = "portfolio_tb")
+@NoArgsConstructor
+@Getter
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

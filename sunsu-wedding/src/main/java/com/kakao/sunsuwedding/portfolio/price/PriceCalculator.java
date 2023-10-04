@@ -1,11 +1,11 @@
 package com.kakao.sunsuwedding.portfolio.price;
 
-import com.kakao.sunsuwedding.portfolio.dto.response.PriceItemDTO;
+import com.kakao.sunsuwedding.portfolio.PortfolioResponse;
 
 import java.util.List;
 
 public class PriceCalculator {
-    public static Long execute(List<PriceItemDTO> priceItemDTOS) {
-        return priceItemDTOS.stream().mapToLong(PriceItemDTO::itemPrice).sum();
+    public static Long execute(List<PortfolioResponse.PriceItemDTO> priceItemDTOS) {
+        return priceItemDTOS.stream().mapToLong(PortfolioResponse.PriceItemDTO::itemPrice).sum();
     }
 }

@@ -2,8 +2,6 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
-import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioDTO;
-import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioListItemDTO;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.validation.constraints.Min;
@@ -39,13 +37,13 @@ public class PortfolioRestController {
     @GetMapping(value = "/portfolios")
     public ResponseEntity<?> getPortfolios(@RequestParam @Min(0) int page) {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
-        List<PortfolioListItemDTO> items = portfolioService.getPortfolios(pageRequest);
+        List<PortfolioResponse.findAllBy> items = portfolioService.getPortfolios(pageRequest);
         return ResponseEntity.ok().body(ApiUtils.success(items));
     }
 
     @GetMapping("/portfolios/{id}")
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
-        PortfolioDTO portfolio = portfolioService.getPortfolioById(id);
+        PortfolioResponse.findById portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
