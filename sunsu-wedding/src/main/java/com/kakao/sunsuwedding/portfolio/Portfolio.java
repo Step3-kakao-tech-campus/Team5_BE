@@ -5,13 +5,16 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "portfolio_tb")
 @NoArgsConstructor
 @Getter
+@Table(name = "portfolio_tb")
+@OnDelete(action= OnDeleteAction.CASCADE)
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
