@@ -16,8 +16,8 @@ public enum BaseException {
     USER_UNEXPECTED_ERROR("[User] 예상치 못한 문제가 발생했습니다.", 500),
     PORTFOLIO_NOT_FOUND("포트폴리오를 찾을 수 없습니다.", 404),
     PORTFOLIO_IMAGE_NOT_FOUND("포트폴리오 이미지를 불러올 수 없습니다.", 404),
-    PERMISSION_DENIED_METHOD_ACCESS("사용할 수 없는 기능입니다.", 403);
-
+    PERMISSION_DENIED_METHOD_ACCESS("사용할 수 없는 기능입니다.", 403),
+    MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 400);
 
 
     @Getter

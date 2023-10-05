@@ -3,6 +3,7 @@ package com.kakao.sunsuwedding.match.Quotation;
 import com.kakao.sunsuwedding.match.Match;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,4 +41,16 @@ public class Quotation {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Builder
+    public Quotation(long id, Match match, String title, long price, String company, String description, String status, LocalDateTime createdAt) {
+        this.id = id;
+        this.match = match;
+        this.title = title;
+        this.price = price;
+        this.company = company;
+        this.description = description;
+        this.status = (status == null? "미확정" : status);
+        this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
+    }
 }
