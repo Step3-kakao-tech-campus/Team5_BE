@@ -5,12 +5,15 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Table(name = "portfolio_tb")
+@OnDelete(action= OnDeleteAction.CASCADE)
 @Entity
 public class Portfolio {
     @Id
