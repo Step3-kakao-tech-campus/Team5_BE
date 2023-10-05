@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Entity
+@Table(name = "imageitem_tb")
 @NoArgsConstructor
 @NamedEntityGraphs({
         @NamedEntityGraph(
@@ -19,8 +20,7 @@ import lombok.NoArgsConstructor;
                 subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )
 })
-@Table(name = "imageitem_tb")
-@Entity
+@Getter
 public class ImageItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,11 +10,11 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Entity
 @NoArgsConstructor
+@Getter
 @Table(name = "portfolio_tb")
 @OnDelete(action= OnDeleteAction.CASCADE)
-@Entity
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
