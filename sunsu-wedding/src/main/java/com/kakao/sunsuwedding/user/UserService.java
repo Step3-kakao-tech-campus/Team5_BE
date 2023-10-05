@@ -32,7 +32,7 @@ public class UserService {
         sameCheckEmail(requestDTO.getEmail());
         sameCheckPassword(requestDTO.getPassword(), requestDTO.getPassword2());
         requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        Role role = getRole(requestDTO.getRole());
+        Role role = Role.valueOfRole(requestDTO.getRole());
         try {
             if (role == Role.COUPLE) {
                 coupleJPARepository.save(requestDTO.toCoupleEntity());
@@ -110,14 +110,6 @@ public class UserService {
             Couple couple = getCouple(id);
             coupleJPARepository.deleteById(id);
         }
-    }
-
-    private Role getRole(String roleName) {
-        Role role = Role.valueOfRole(roleName);
-        if (role == null){
-            throw new Exception400(BaseException.USER_ROLE_WRONG.getMessage());
-        }
-        else return role;
     }
 
     private void sameCheckPassword(String password, String password2) {
