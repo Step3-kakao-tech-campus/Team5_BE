@@ -1,7 +1,6 @@
 package com.kakao.sunsuwedding.match.Quotation;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding._core.errors.exception.Exception403;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
 import com.kakao.sunsuwedding.match.Match;
@@ -10,6 +9,8 @@ import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class QuotationService {
         }
 
         Match match = matchJPARepository.findById(matchId)
-                .orElseThrow(() -> new Exception400(BaseException.MATCHING_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
 
         quotationJPARepository.save(
                 Quotation.builder()
@@ -37,6 +38,34 @@ public class QuotationService {
     }
 
     public QuotationResponse.findAllByMatchId findQuotationsByMatchId(Long matchId) {
-        return null;
+        Match match = matchJPARepository.findById(matchId)
+                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+
+        List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
+        QuotationStatus status = getEntireQuotationStatus(quotations);
+
+        List<QuotationResponse.QuotationDTO> quotationDTOS = toFindByMatchIdDTO(quotations);
+
+        return new QuotationResponse.findAllByMatchId(status, quotationDTOS);
+    }
+
+    private static QuotationStatus getEntireQuotationStatus(List<Quotation> quotations) {
+        QuotationStatus status = QuotationStatus.CONFIRMED;
+        for (Quotation quotation : quotations) {
+            if (quotation.getStatus().equals(QuotationStatus.UNCONFIRMED)) {
+                status = QuotationStatus.UNCONFIRMED;
+                break;
+            }
+        }
+        return status;
+    }
+
+    private static List<QuotationResponse.QuotationDTO> toFindByMatchIdDTO(List<Quotation> quotations) {
+        return quotations
+                .stream()
+                .map(quotation -> new QuotationResponse.QuotationDTO(
+                        quotation.getId(), quotation.getTitle(), quotation.getPrice(), quotation.getCompany(), quotation.getDescription(), quotation.getStatus(), quotation.getModifiedAt()
+                ))
+                .toList();
     }
 }

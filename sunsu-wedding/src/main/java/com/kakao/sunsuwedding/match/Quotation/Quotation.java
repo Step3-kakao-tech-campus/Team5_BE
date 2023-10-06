@@ -34,7 +34,7 @@ public class Quotation {
     private String description;
 
     @Column(nullable = false)
-    private String status;
+    private QuotationStatus status;
 
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
@@ -43,14 +43,14 @@ public class Quotation {
     private LocalDateTime createdAt;
 
     @Builder
-    public Quotation(long id, Match match, String title, long price, String company, String description, String status, LocalDateTime createdAt) {
+    public Quotation(long id, Match match, String title, long price, String company, String description, QuotationStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.match = match;
         this.title = title;
         this.price = price;
         this.company = company;
         this.description = description;
-        this.status = (status == null? "미확정" : status);
+        this.status = (status == null? QuotationStatus.UNCONFIRMED : status);
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
     }
 }
