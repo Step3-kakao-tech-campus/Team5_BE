@@ -59,18 +59,8 @@ public class UserService {
         return JWTProvider.create(user);
     }
 
-    public UserResponse.FindById findById(int id) {
-        return new UserResponse.FindById(findUserById(id));
-    }
-
-    // 유저 등급 업그레이드
-    @Transactional
-    public void upgrade(int id) {
-        User user = findUserById(id);
-        if (user.getGrade() == Grade.PREMIUM){
-            throw new Exception400(BaseException.USER_ALREADY_PREMIUM.getMessage());
-        }
-        user.upgrade();
+    public UserResponse.FindById findById(Long userId) {
+        return new UserResponse.FindById(findUserById(userId));
     }
 
     // 회원 탈퇴

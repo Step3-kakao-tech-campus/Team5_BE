@@ -40,13 +40,6 @@ public class UserRestController {
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
-    // 유저 등급 업그레이드
-    @PostMapping("/upgrade")
-    public ResponseEntity<?> upgrade(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        userService.upgrade(userDetails.getUser().getId());
-        return ResponseEntity.ok().body(ApiUtils.success(null));
-    }
-
     // 회원 탈퇴
     @DeleteMapping("")
     public ResponseEntity<?> withdraw(@AuthenticationPrincipal CustomUserDetails userDetails) {
