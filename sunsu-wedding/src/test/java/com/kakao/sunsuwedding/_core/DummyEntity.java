@@ -12,10 +12,9 @@ import java.time.LocalDateTime;
 
 public class DummyEntity {
     protected Couple newCouple(String username){
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return Couple.builder()
                 .email(username+"@nate.com")
-                .password(passwordEncoder.encode("couple1234!"))
+                .password("couple1234!")
                 .username("couple")
                 .created_at(LocalDateTime.now())
                 .is_active(true)
@@ -23,10 +22,9 @@ public class DummyEntity {
                 .build();
     }
     protected Planner newPlanner(String username){
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return Planner.builder()
                 .email(username+"@nate.com")
-                .password(passwordEncoder.encode("planner1234!"))
+                .password("planner1234!")
                 .username("planner")
                 .created_at(LocalDateTime.now())
                 .is_active(true)

@@ -145,6 +145,7 @@ public class UserRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
+
         String responseBody = result.andReturn().getResponse().getContentAsString();
         String responseHeader = result.andReturn().getResponse().getHeader(JWTProvider.HEADER);
         logger.debug("테스트 : " + responseBody);
