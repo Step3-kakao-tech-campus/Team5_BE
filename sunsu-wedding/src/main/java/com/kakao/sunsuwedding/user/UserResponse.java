@@ -11,6 +11,7 @@ public class UserResponse {
     @Getter
     @Setter
     public static class FindById{
+        private Long userId;
         private String username;
         private String email;
         private String role;
@@ -18,6 +19,7 @@ public class UserResponse {
         private String payedAt;
 
         public FindById(User user) {
+            this.userId = user.getId();
             this.username = user.getUsername();
             this.email = user.getEmail();
             this.role = user.getDtype();
