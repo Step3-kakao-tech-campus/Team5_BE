@@ -44,7 +44,7 @@ public class QuotationService {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         QuotationStatus status = getEntireQuotationStatus(quotations);
 
-        List<QuotationResponse.QuotationDTO> quotationDTOS = toFindByMatchIdDTO(quotations);
+        List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toFindByMatchIdDTO(quotations);
 
         return new QuotationResponse.findAllByMatchId(status, quotationDTOS);
     }
@@ -58,14 +58,5 @@ public class QuotationService {
             }
         }
         return status;
-    }
-
-    private static List<QuotationResponse.QuotationDTO> toFindByMatchIdDTO(List<Quotation> quotations) {
-        return quotations
-                .stream()
-                .map(quotation -> new QuotationResponse.QuotationDTO(
-                        quotation.getId(), quotation.getTitle(), quotation.getPrice(), quotation.getCompany(), quotation.getDescription(), quotation.getStatus(), quotation.getModifiedAt()
-                ))
-                .toList();
     }
 }
