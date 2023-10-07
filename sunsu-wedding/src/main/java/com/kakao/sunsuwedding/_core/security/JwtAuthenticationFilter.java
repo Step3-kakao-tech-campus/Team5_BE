@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -36,22 +37,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
             return;
         }
-        if (!jwt.startsWith("Bearer ")) {
-            throw new JWTDecodeException("토큰 형식이 잘못되었습니다.");
-        }
         try {
             DecodedJWT decodedJWT = JWTProvider.verify(jwt);
             int id = decodedJWT.getClaim("id").asInt();
+
             String roleName = decodedJWT.getClaim("role").asString();
-            System.out.println("role : "+ roleName);
-
             Role role = Role.valueOfRole(roleName);
-            if (role == null)
-                throw new JWTDecodeException("role 잘못됨");
-
-            Planner planner = (role == Role.PLANNER) ? Planner.builder().id(id).build() : null;
-            Couple couple = (role == Role.COUPLE) ? Couple.builder().id(id).build() : null;
-            CustomUserDetails myUserDetails = new CustomUserDetails(planner, couple);
+            User user = (role == Role.PLANNER) ? Planner.builder().id(id).build() : Couple.builder().id(id).build();
+            CustomUserDetails myUserDetails = new CustomUserDetails(user);
 
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(
