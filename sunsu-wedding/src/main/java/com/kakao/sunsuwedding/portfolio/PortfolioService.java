@@ -157,8 +157,8 @@ public class PortfolioService {
     }
 
     @Transactional
-    public void deletePortfolio(Pair<Role, Integer> info) {
-        if (!info.getFirst().getRoleName().equals(Role.PLANNER.getRoleName())) {
+    public void deletePortfolio(Pair<String, Integer> info) {
+        if (!info.getFirst().equals(Role.PLANNER.getRoleName())) {
             throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
         }
 
