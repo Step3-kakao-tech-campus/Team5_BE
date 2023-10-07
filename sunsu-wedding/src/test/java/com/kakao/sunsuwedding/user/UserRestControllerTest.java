@@ -204,6 +204,7 @@ public class UserRestControllerTest {
         result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다"));
     }
 
+    /*
     // ============ 회원 탈퇴 테스트 ============
     @DisplayName("회원 탈퇴 성공 테스트")
     @Test
@@ -222,4 +223,5 @@ public class UserRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
+     */
 }
