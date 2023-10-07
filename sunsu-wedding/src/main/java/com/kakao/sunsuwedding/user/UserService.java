@@ -65,9 +65,9 @@ public class UserService {
 
     // 회원 탈퇴
     @Transactional
-    public void withdraw(int id) {
-        findUserById(id);
-        userJPARepository.deleteById(id);
+    public void withdraw(Long userId) {
+        findUserById(userId);
+        userJPARepository.deleteById(userId);
     }
 
     private void sameCheckPassword(String password, String password2) {
@@ -84,8 +84,8 @@ public class UserService {
         }
     }
 
-    private User findUserById(int id){
-        return userJPARepository.findById(id).orElseThrow(
+    private User findUserById(Long userId){
+        return userJPARepository.findById(userId).orElseThrow(
                 () -> new Exception404(BaseException.USER_NOT_FOUND.getMessage())
         );
     }

@@ -30,7 +30,7 @@ public class PortfolioService {
     private final PriceItemJPARepository priceItemJPARepository;
     private final PlannerJPARepository plannerJPARepository;
 
-    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, int plannerId) {
+    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
@@ -108,7 +108,7 @@ public class PortfolioService {
     }
 
     @Transactional
-    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, int plannerId) {
+    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, Long plannerId) {
         // 요청한 플래너 및 포트폴리오 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
@@ -157,7 +157,7 @@ public class PortfolioService {
     }
 
     @Transactional
-    public void deletePortfolio(Pair<String, Integer> info) {
+    public void deletePortfolio(Pair<String, Long> info) {
         if (!info.getFirst().equals(Role.PLANNER.getRoleName())) {
             throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
         }

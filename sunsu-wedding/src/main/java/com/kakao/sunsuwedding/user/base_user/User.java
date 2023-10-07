@@ -22,7 +22,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(length = 100, nullable = false, unique = true)
     private String email;
@@ -48,7 +48,7 @@ public class User {
     private String order_id;
 
     @Column
-    private int payed_amount;
+    private Long payed_amount;
 
     @Column
     private LocalDateTime payed_at;
@@ -59,6 +59,13 @@ public class User {
         this.payed_at = LocalDateTime.now();
     }
 
+    // 결제 정보 저장 (주문 번호, 금액)
+    public void savePaymentInfo(String order_id, Long payed_amount){
+        this.order_id = order_id;
+        this.payed_amount = payed_amount;
+    }
+
+    // planner인지 couple인지 @DiscriminatorColumn의 내용을 보고 알려줌
     @Transient
     public String getDtype(){
         DiscriminatorValue val = this.getClass().getAnnotation( DiscriminatorValue.class );
