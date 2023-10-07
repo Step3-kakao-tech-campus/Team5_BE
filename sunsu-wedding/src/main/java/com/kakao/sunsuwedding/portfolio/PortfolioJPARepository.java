@@ -20,5 +20,5 @@ public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long> {
     void deleteByPlanner(Planner planner);
 
     @Query("select p from Portfolio p where p.planner.id = :plannerId")
-    Optional<Portfolio> findByPlannerId(@Param("plannerId") int plannerId);
+    Optional<Portfolio> findByPlannerId(@Param("plannerId") Long plannerId);
 }

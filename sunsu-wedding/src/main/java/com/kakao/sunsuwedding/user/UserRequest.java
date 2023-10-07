@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding.user;
 
+import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Grade;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -8,6 +9,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 public class UserRequest {
     @Getter
@@ -41,15 +44,18 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
+                    .is_active(true)
+                    .created_at(LocalDateTime.now())
                     .build();
         }
-
         public Planner toPlannerEntity() {
             return Planner.builder()
                     .email(email)
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
+                    .is_active(true)
+                    .created_at(LocalDateTime.now())
                     .build();
         }
     }
