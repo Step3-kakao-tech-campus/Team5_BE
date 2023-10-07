@@ -23,6 +23,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ApiUtils.error(errors.get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    // database에 잘못된 값이 들어온 경우
+    // 예: unique 값인데 같은 게 또 들어온 경우
     @ExceptionHandler({SQLException.class, DataAccessException.class})
     public ResponseEntity<?> databaseException(){
         BaseException e = BaseException.DATABASE_ERROR;
