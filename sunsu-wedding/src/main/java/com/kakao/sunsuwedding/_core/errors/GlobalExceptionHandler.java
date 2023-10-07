@@ -2,6 +2,7 @@ package com.kakao.sunsuwedding._core.errors;
 
 import com.kakao.sunsuwedding._core.errors.exception.*;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @ControllerAdvice
@@ -19,6 +21,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> validationException(MethodArgumentNotValidException e) {
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         return new ResponseEntity<>(ApiUtils.error(errors.get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({SQLException.class, DataAccessException.class})
+    public ResponseEntity<?> databaseException(){
+        BaseException e = BaseException.DATABASE_ERROR;
+        return new ResponseEntity<>(ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception400.class)
