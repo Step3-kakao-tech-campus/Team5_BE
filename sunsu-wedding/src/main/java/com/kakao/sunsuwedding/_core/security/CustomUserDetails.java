@@ -22,7 +22,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(user.getDtype()));
     }
-    public Pair<String, Integer> getInfo() {
+    public Pair<String, Long> getInfo() {
         return Pair.of(user.getDtype(), user.getId());
     }
 

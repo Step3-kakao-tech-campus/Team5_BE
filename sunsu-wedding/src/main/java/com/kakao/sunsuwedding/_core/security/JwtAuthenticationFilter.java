@@ -39,11 +39,11 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
         try {
             DecodedJWT decodedJWT = JWTProvider.verify(jwt);
-            int id = decodedJWT.getClaim("id").asInt();
+            Long userId = decodedJWT.getClaim("id").asLong();
 
             String roleName = decodedJWT.getClaim("role").asString();
             Role role = Role.valueOfRole(roleName);
-            User user = (role == Role.PLANNER) ? Planner.builder().id(id).build() : Couple.builder().id(id).build();
+            User user = (role == Role.PLANNER) ? Planner.builder().id(userId).build() : Couple.builder().id(userId).build();
             CustomUserDetails myUserDetails = new CustomUserDetails(user);
 
             Authentication authentication =

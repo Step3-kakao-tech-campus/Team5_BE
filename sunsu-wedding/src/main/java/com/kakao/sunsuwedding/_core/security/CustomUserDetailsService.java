@@ -1,7 +1,6 @@
 package com.kakao.sunsuwedding._core.security;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userJPARepository.findByEmailNative(email).orElseThrow(
-                () -> new Exception400(BaseException.USER_EMAIL_NOT_FOUND.getMessage())
+                () -> new UsernameNotFoundException(BaseException.USER_EMAIL_NOT_FOUND.getMessage())
         );
 
         return new CustomUserDetails(user);
