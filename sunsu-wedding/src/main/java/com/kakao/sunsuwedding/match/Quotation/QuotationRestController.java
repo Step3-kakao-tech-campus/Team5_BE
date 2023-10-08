@@ -44,7 +44,7 @@ public class QuotationRestController {
     @PutMapping("/{quotationId}")
     public ResponseEntity<?> updateQuotation(@PathVariable Long quotationId,
                                              @RequestParam Long matchId,
-                                             @RequestBody QuotationRequest.update request) {
+                                             @Valid @RequestBody QuotationRequest.update request) {
         quotationService.update(matchId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
