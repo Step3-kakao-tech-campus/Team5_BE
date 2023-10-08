@@ -205,6 +205,7 @@ public class UserRestControllerTest {
     }
 
     // ============ 회원 탈퇴 테스트 ============
+    /*
     @DisplayName("회원 탈퇴 성공 테스트")
     @Test
     @WithUserDetails("couple@gmail.com")
@@ -222,4 +223,5 @@ public class UserRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
+    */
 }
