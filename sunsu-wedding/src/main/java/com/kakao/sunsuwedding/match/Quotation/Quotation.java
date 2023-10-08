@@ -34,8 +34,10 @@ public class Quotation {
     private String description;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private QuotationStatus status;
 
+    @Column
     private LocalDateTime modifiedAt;
 
     @Column(nullable = false)
