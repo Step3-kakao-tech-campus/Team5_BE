@@ -18,8 +18,8 @@ public class QuotationService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
 
-    public void insertQuotation(Pair<Role, Integer> info, Long matchId, QuotationRequest.addQuotation request) {
-        if (!info.getFirst().getRoleName().equals(Role.PLANNER.getRoleName())) {
+    public void insertQuotation(Pair<String, Long> info, Long matchId, QuotationRequest.addQuotation request) {
+        if (!info.getFirst().equals(Role.PLANNER.getRoleName())) {
             throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
         }
 
