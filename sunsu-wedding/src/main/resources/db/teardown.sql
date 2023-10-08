@@ -4,7 +4,8 @@ truncate table couple_tb;
 truncate table portfolio_tb;
 truncate table imageitem_tb;
 truncate table priceitem_tb;
---truncate table match_tb;
+truncate table match_tb;
+truncate table quotation_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 -- planner 비밀번호 : planner1234!
@@ -35,3 +36,11 @@ INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`,
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '1', '2-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '1', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '1', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '1', '2', 'UNCONFIRMED', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '1', '3', 'UNCONFIRMED', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+
+INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('1', '1', 'test', '1000000', 'abc', 'asdf', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('2', '1', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('3', '2', 'test', '1000000', 'abc', 'asdf', 'UNCONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('4', '2', 'test2', '1000000', 'abc2', 'asdf2', 'UNCONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
