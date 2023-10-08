@@ -26,9 +26,9 @@ public class MatchRestController {
     }
 
     // Match Delete : isActive 필드 false
-    @DeleteMapping("/{matchId}")
-    public ResponseEntity<?> deleteChat(@PathVariable Long matchId) {
-        matchService.deleteChat(matchId);
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteChat(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam Long matchId) {
+        matchService.deleteChat(userDetails.getInfo(), matchId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }
