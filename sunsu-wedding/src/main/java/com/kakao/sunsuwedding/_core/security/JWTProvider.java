@@ -6,9 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.kakao.sunsuwedding.user.constant.Role;
-import com.kakao.sunsuwedding.user.couple.Couple;
-import com.kakao.sunsuwedding.user.planner.Planner;
+import com.kakao.sunsuwedding.user.base_user.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -21,21 +19,12 @@ public class JWTProvider {
     public static final String HEADER = "Authorization";
     public static final String SECRET = "MySecretKey";
 
-    public static String create(Couple couple) {
+    public static String create(User user) {
         String jwt = JWT.create()
-                .withSubject(couple.getEmail())
+                .withSubject(user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
-                .withClaim("id", couple.getId())
-                .withClaim("role", Role.COUPLE.getRoleName())
-                .sign(Algorithm.HMAC512(SECRET));
-        return TOKEN_PREFIX + jwt;
-    }
-    public static String create(Planner planner) {
-        String jwt = JWT.create()
-                .withSubject(planner.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
-                .withClaim("id", planner.getId())
-                .withClaim("role", Role.PLANNER.getRoleName())
+                .withClaim("id", user.getId())
+                .withClaim("role", user.getDtype())
                 .sign(Algorithm.HMAC512(SECRET));
         return TOKEN_PREFIX + jwt;
     }
