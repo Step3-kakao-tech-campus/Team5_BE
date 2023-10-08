@@ -50,14 +50,4 @@ public class ImageItem {
         this.fileSize = fileSize;
         this.thumbnail = thumbnail;
     }
-
-    public void updateOriginFileName(String originFileName) {
-        this.originFileName = originFileName;
-    }
-    public void updateFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-    public void updateFileSize(Long fileSize) {
-        this.fileSize = fileSize;
-    }
 }

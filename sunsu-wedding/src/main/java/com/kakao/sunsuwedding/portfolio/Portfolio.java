@@ -73,44 +73,4 @@ public class Portfolio {
         this.maxPrice = maxPrice;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
     }
-
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-
-    public void updateDescription(String description) {
-        this.description = description;
-    }
-
-    public void updateLocation(String location) {
-        this.location = location;
-    }
-
-    public void updateCareer(String career) {
-        this.career = career;
-    }
-
-    public void updatePartnerCompany(String partnerCompany) {
-        this.partnerCompany = partnerCompany;
-    }
-
-    public void updateTotalPrice(Long totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public void updateContractCount(Long contractCount) {
-        this.contractCount = contractCount;
-    }
-
-    public void updateAvgPrice(Long avgPrice) {
-        this.avgPrice = avgPrice;
-    }
-
-    public void updateMinPrice(Long minPrice) {
-        this.minPrice = minPrice;
-    }
-
-    public void updateMaxPrice(Long maxPrice) {
-        this.maxPrice = maxPrice;
-    }
 }
