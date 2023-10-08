@@ -6,6 +6,7 @@ import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,11 @@ public class UserJPARepositoryTest extends DummyEntity {
         userJPARepository.save(newCouple("zxcv"));
         em.clear();
     }
-
+    @AfterEach
+    void afterEach() {
+        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1")
+                .executeUpdate();
+    }
     @DisplayName("사용자 id로 찾기 - 성공")
     @Test
     public void findById_success_test() {
