@@ -283,4 +283,23 @@ public class QuotationRestControllerTest {
         // then
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
+
+    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : success")
+    @Test
+    void quotationsConfirm_success() throws Exception {
+        // given
+        Long matchId = 2L;
+        Long quotationId = 3L;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirm/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("true"));
+    }
 }
