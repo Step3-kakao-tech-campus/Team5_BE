@@ -17,7 +17,7 @@ public class QuotationRestController {
 
     @PostMapping("")
     public ResponseEntity<?> createQuotation(@RequestParam Long matchId,
-                                             @Valid @RequestBody QuotationRequest.addQuotation request) {
+                                             @Valid @RequestBody QuotationRequest.add request) {
         quotationService.insertQuotation(matchId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
@@ -38,6 +38,14 @@ public class QuotationRestController {
     public ResponseEntity<?> confirm(@PathVariable Long quotationId,
                                      @RequestParam Long matchId) {
         quotationService.confirm(matchId, quotationId);
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @PutMapping("/{quotationId}")
+    public ResponseEntity<?> updateQuotation(@PathVariable Long quotationId,
+                                             @RequestParam Long matchId,
+                                             @RequestBody QuotationRequest.update request) {
+        quotationService.update(matchId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

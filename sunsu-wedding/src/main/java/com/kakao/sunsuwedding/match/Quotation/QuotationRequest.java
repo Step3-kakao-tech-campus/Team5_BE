@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 public class QuotationRequest {
-    public record addQuotation(
+    public record add(
             @NotNull(message = "견적 제목은 비어있으면 안됩니다.")
             @Length(min = 2, max = 50, message = "견적 제목은 2자 이상 50자 이하만 가능합니다.")
             String title,
@@ -18,6 +18,13 @@ public class QuotationRequest {
             String company,
 
             @Length(max = 500, message = "상세설명은 500자 이하만 가능합니다.")
+            String description
+    ) {}
+
+    public record update(
+            String title,
+            Long price,
+            String company,
             String description
     ) {}
 }
