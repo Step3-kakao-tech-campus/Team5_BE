@@ -1,6 +1,5 @@
 package com.kakao.sunsuwedding.user;
 
-import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Grade;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -9,8 +8,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 public class UserRequest {
     @Getter
@@ -44,18 +41,15 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
-                    .is_active(true)
-                    .created_at(LocalDateTime.now())
                     .build();
         }
+
         public Planner toPlannerEntity() {
             return Planner.builder()
                     .email(email)
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
-                    .is_active(true)
-                    .created_at(LocalDateTime.now())
                     .build();
         }
     }
@@ -63,6 +57,9 @@ public class UserRequest {
     @Getter
     @Setter
     public static class LoginDTO {
+
+        @NotEmpty(message = "역할은 비어있으면 안됩니다.")
+        private String role;
 
         @NotEmpty(message = "이메일은 비어있으면 안됩니다.")
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")

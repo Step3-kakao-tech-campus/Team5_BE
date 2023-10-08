@@ -1,18 +1,32 @@
 package com.kakao.sunsuwedding.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kakao.sunsuwedding._core.errors.BaseException;
+import com.kakao.sunsuwedding._core.errors.exception.Exception400;
+import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.security.CustomUserDetailsService;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding.user.couple.Couple;
+import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
+import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,6 +34,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @Import({
@@ -32,7 +49,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class UserRestControllerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserRestControllerTest.class);
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
@@ -63,7 +79,7 @@ public class UserRestControllerTest {
         );
 
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        System.out.println("테스트 : "+responseBody);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -91,7 +107,7 @@ public class UserRestControllerTest {
         );
 
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        System.out.println("테스트 : "+responseBody);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -119,7 +135,7 @@ public class UserRestControllerTest {
         );
 
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        System.out.println("테스트 : "+responseBody);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -135,6 +151,7 @@ public class UserRestControllerTest {
         UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
         requestDTO.setEmail("planner@gmail.com");
         requestDTO.setPassword("planner1234!");
+        requestDTO.setRole("planner");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -144,11 +161,10 @@ public class UserRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
-
         String responseBody = result.andReturn().getResponse().getContentAsString();
         String responseHeader = result.andReturn().getResponse().getHeader(JWTProvider.HEADER);
-        logger.debug("테스트 : " + responseBody);
-        logger.debug("테스트 : " + responseHeader);
+        System.out.println("테스트 : "+responseBody);
+        System.out.println("테스트 : "+responseHeader);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -161,6 +177,7 @@ public class UserRestControllerTest {
         UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
         requestDTO.setEmail("ssar@nate.com");
         requestDTO.setPassword("meta1234!");
+        requestDTO.setRole("couple");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -171,7 +188,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        System.out.println("테스트 : "+responseBody);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -186,6 +203,7 @@ public class UserRestControllerTest {
         UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
         requestDTO.setEmail("planner@gmail.com");
         requestDTO.setPassword("meta1234!");
+        requestDTO.setRole("planner");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -196,7 +214,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        System.out.println("테스트 : "+responseBody);
 
         // then
         result.andExpect(jsonPath("$.success").value("false"));
@@ -204,9 +222,7 @@ public class UserRestControllerTest {
         result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다"));
     }
 
-    /*
     // ============ 회원 탈퇴 테스트 ============
-    /*
     @DisplayName("회원 탈퇴 성공 테스트")
     @Test
     @WithUserDetails("couple@gmail.com")
@@ -219,10 +235,9 @@ public class UserRestControllerTest {
                         .delete("/user")
         );
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        System.out.println("테스트 : "+responseBody);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
-   */
 }

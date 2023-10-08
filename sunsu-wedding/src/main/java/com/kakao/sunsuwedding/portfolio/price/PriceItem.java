@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "priceitem_tb")
+@Getter
 @NoArgsConstructor
 @NamedEntityGraphs({
         @NamedEntityGraph(
@@ -20,7 +19,8 @@ import lombok.NoArgsConstructor;
                 subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )
 })
-@Getter
+@Table(name = "priceitem_tb")
+@Entity
 public class PriceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +43,10 @@ public class PriceItem {
         this.itemPrice = itemPrice;
     }
 
+    public void updateItemTitle(String itemTitle) {
+        this.itemTitle = itemTitle;
+    }
+    public void updateItemPrice(Long itemPrice) {
+        this.itemPrice = itemPrice;
+    }
 }
