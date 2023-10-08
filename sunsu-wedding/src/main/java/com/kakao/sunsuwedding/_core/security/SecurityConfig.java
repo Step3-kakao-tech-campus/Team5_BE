@@ -3,6 +3,7 @@ package com.kakao.sunsuwedding._core.security;
 import com.kakao.sunsuwedding._core.errors.exception.Exception401;
 import com.kakao.sunsuwedding._core.errors.exception.Exception403;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,21 +18,24 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+
+    private final JwtExceptionFilter jwtExceptionFilter;
+    private final FilterResponseUtils filterResponseUtils;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    public static class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
-            builder.addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
+            builder.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
             super.configure(builder);
         }
     }
@@ -62,14 +66,14 @@ public class SecurityConfig {
         // 8. 인증 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.authenticationEntryPoint((request, response, authException) -> {
-                    FilterResponseUtils.unAuthorized(response, new Exception401("인증되지 않았습니다"));
+                    filterResponseUtils.unAuthorized(response, new Exception401("인증되지 않았습니다"));
                 })
         );
 
         // 9. 권한 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    FilterResponseUtils.forbidden(response, new Exception403("권한이 없습니다"));
+                    filterResponseUtils.forbidden(response, new Exception403("권한이 없습니다"));
                 })
         );
 
@@ -90,20 +94,21 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/user/**"),
                                 new AntPathRequestMatcher("/portfolios/**"),
                                 new AntPathRequestMatcher("/chat/**"),
-                                new AntPathRequestMatcher("/quotations/**")
-                        ).authenticated()
+                                new AntPathRequestMatcher("/quotations/**"),
+                                new AntPathRequestMatcher("/payments/**")
+                                ).authenticated()
                         // 검증 필요
                         .requestMatchers(
                                 new AntPathRequestMatcher("/chat", "POST"),
                                 new AntPathRequestMatcher("/quotations/confirmAll/**", "POST")
-                        ).hasRole("COUPLE")
+                        ).hasRole("couple")
                         .requestMatchers(
                                 new AntPathRequestMatcher("/portfolios", "POST"),
                                 new AntPathRequestMatcher("/portfolios", "PUT"),
                                 new AntPathRequestMatcher("/portfolios", "DELETE"),
                                 new AntPathRequestMatcher("/quotations/**", "PUT"),
                                 new AntPathRequestMatcher("/quotations/**", "POST")
-                        ).hasRole("PLANNER")
+                        ).hasRole("planner")
                         .anyRequest().permitAll()
         );
 

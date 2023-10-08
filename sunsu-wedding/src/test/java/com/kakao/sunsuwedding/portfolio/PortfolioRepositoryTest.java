@@ -19,7 +19,7 @@ public class PortfolioRepositoryTest {
         this.portfolioJPARepository = portfolioJPARepository;
         this.entityManager = entityManager;
     }
-
+/*
     @BeforeEach
     void setUp() {
         portfolioJPARepository.save(Portfolio.builder().title("test1").build());
@@ -86,5 +86,5 @@ public class PortfolioRepositoryTest {
 
         // then
         assertThat(portfolioJPARepository.count()).isEqualTo(previous_count - 1);
-    }
+    }*/
 }

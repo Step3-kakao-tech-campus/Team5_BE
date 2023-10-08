@@ -28,7 +28,7 @@ public class PortfolioRestController {
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pair<Portfolio, Planner> info = portfolioService.addPortfolio(request, userDetails.getPlanner().getId());
+        Pair<Portfolio, Planner> info = portfolioService.addPortfolio(request, userDetails.getUser().getId());
         imageItemService.uploadImage(images, info.getFirst(), info.getSecond());
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
@@ -52,7 +52,7 @@ public class PortfolioRestController {
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pair<Portfolio, Planner> info = portfolioService.updatePortfolio(request, userDetails.getPlanner().getId());
+        Pair<Portfolio, Planner> info = portfolioService.updatePortfolio(request, userDetails.getUser().getId());
 
         // TODO: 이미지 업데이트 처리
         imageItemService.updateImage(images, info.getFirst(), info.getSecond());
