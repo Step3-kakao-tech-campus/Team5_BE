@@ -36,7 +36,7 @@ INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`,
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '1', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '1', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
 
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '3', 'UNCONFIRMED', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '3', 'CONFIRMED', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '2', '4', 'UNCONFIRMED', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('1', '1', 'test', '1000000', 'abc', 'asdf', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
