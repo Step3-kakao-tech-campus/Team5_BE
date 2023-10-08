@@ -6,6 +6,10 @@ import com.kakao.sunsuwedding._core.errors.exception.Exception404;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.match.Quotation.QuotationStatus;
+import com.kakao.sunsuwedding.user.couple.Couple;
+import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
+import com.kakao.sunsuwedding.user.planner.Planner;
+import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MatchService {
+    private final CoupleJPARepository coupleJPARepository;
+    private final PlannerJPARepository plannerJPARepository;
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
 
@@ -70,5 +76,18 @@ public class MatchService {
 
             return Pair.of(allConfirmed, totalPrice);
         }
+    }
+
+    public void addChat(Pair<String, Long> user, MatchRequest.AddMatchDTO requestDTO) {
+        Long coupleId = user.getSecond();
+        Long plannerId = requestDTO.getPlannerId();
+
+        Couple couple = coupleJPARepository.findById(coupleId).orElseThrow(
+                () -> new Exception404(BaseException.USER_NOT_FOUND.getMessage() + " couple")
+        );
+        Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
+                () -> new Exception404(BaseException.USER_NOT_FOUND.getMessage() + " couple")
+        );
+        matchJPARepository.save(requestDTO.toMatchEntity(couple, planner));
     }
 }
