@@ -5,7 +5,7 @@ import java.util.List;
 
 public class QuotationResponse {
     public record findAllByMatchId(
-            QuotationStatus status,
+            String status,
             List<QuotationDTO> quotations
     ) {}
 
@@ -15,7 +15,7 @@ public class QuotationResponse {
             Long price,
             String company,
             String description,
-            QuotationStatus status,
+            String status,
             LocalDateTime modifiedAt
     ) {}
 }

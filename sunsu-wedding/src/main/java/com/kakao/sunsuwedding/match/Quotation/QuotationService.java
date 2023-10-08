@@ -46,7 +46,7 @@ public class QuotationService {
 
         List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toFindByMatchIdDTO(quotations);
 
-        return new QuotationResponse.findAllByMatchId(status, quotationDTOS);
+        return new QuotationResponse.findAllByMatchId(status.toString(), quotationDTOS);
     }
 
     private static QuotationStatus getEntireQuotationStatus(List<Quotation> quotations) {
