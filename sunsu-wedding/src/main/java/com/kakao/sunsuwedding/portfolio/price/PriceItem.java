@@ -43,10 +43,4 @@ public class PriceItem {
         this.itemPrice = itemPrice;
     }
 
-    public void updateItemTitle(String itemTitle) {
-        this.itemTitle = itemTitle;
-    }
-    public void updateItemPrice(Long itemPrice) {
-        this.itemPrice = itemPrice;
-    }
 }

@@ -30,12 +30,14 @@ public class PortfolioService {
     private final PriceItemJPARepository priceItemJPARepository;
     private final PlannerJPARepository plannerJPARepository;
 
-    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, int plannerId) {
+    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
 
         // TODO: 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
+        portfolioJPARepository.findByPlannerId(plannerId)
+                .ifPresent(presentPortfolio -> new Exception400("해당 플래너의 포트폴리오가 이미 존재합니다: " + plannerId));
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
@@ -108,7 +110,7 @@ public class PortfolioService {
     }
 
     @Transactional
-    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, int plannerId) {
+    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, Long plannerId) {
         // 요청한 플래너 및 포트폴리오 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
@@ -128,18 +130,22 @@ public class PortfolioService {
                 .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
                 .max();
 
-        // 포트폴리오 변경사항 업데이트
-        portfolio.updateTitle(request.getTitle());
-        portfolio.updateDescription(request.getDescription());
-        portfolio.updateLocation(request.getLocation());
-        portfolio.updateCareer(request.getCareer());
-        portfolio.updatePartnerCompany(request.getPartnerCompany());
-        portfolio.updateTotalPrice(totalPrice);
-        portfolio.updateContractCount(contractCount);
-        portfolio.updateAvgPrice(avgPrice);
-        portfolio.updateMinPrice(minPrice.orElse(0));
-        portfolio.updateMaxPrice(maxPrice.orElse(0));
-
+        // 불변 객체 패턴을 고려한 포트폴리오 변경사항 업데이트
+        Portfolio updatedPortfolio = Portfolio.builder()
+                .id(portfolio.getId())
+                .planner(planner)
+                .title(request.getTitle() != null ? request.getTitle() : portfolio.getTitle())
+                .description(request.getDescription() != null ? request.getDescription() : portfolio.getDescription())
+                .location(request.getLocation() != null ? request.getLocation() : portfolio.getLocation())
+                .career(request.getCareer() != null ? request.getCareer() : portfolio.getCareer())
+                .partnerCompany(request.getPartnerCompany() != null ? request.getPartnerCompany() : portfolio.getPartnerCompany())
+                .totalPrice(totalPrice)
+                .contractCount(contractCount)
+                .avgPrice(avgPrice)
+                .minPrice(minPrice.orElse(0))
+                .maxPrice(maxPrice.orElse(0))
+                .build();
+        portfolioJPARepository.save(updatedPortfolio);
 
         // 해당하는 가격 아이템 탐색 & 업데이트
         List<PriceItem> priceItemList = priceItemJPARepository.findByPortfolioId(portfolio.getId());
@@ -147,18 +153,24 @@ public class PortfolioService {
             PriceItem priceItem = priceItemList.get(i);
             PortfolioRequest.updateDTO.ItemDTO item = request.getItems().get(i);
 
-            priceItem.updateItemTitle(item.getItemTitle());
-            priceItem.updateItemPrice(item.getItemPrice());
+            PriceItem updatedPriceItem = PriceItem.builder()
+                    .id(priceItem.getId())
+                    .portfolio(portfolio)
+                    .itemTitle(item.getItemTitle() != null ? item.getItemTitle() : priceItem.getItemTitle())
+                    .itemPrice(item.getItemPrice() != null ? item.getItemPrice() : priceItem.getItemPrice())
+                    .build();
+
+            priceItemJPARepository.save(updatedPriceItem);
         }
 
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
-        return Pair.of(portfolio, planner);
+        return Pair.of(updatedPortfolio, planner);
 
     }
 
     @Transactional
-    public void deletePortfolio(Pair<Role, Integer> info) {
-        if (!info.getFirst().getRoleName().equals(Role.PLANNER.getRoleName())) {
+    public void deletePortfolio(Pair<String, Long> info) {
+        if (!info.getFirst().equals(Role.PLANNER.getRoleName())) {
             throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
         }
 
