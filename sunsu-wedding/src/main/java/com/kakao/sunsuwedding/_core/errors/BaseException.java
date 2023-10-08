@@ -20,7 +20,8 @@ public enum BaseException {
     DATABASE_ERROR("데이터베이스 에러입니다", 500),
     QUOTATIONS_NOT_ALL_CONFIRMED("확정되지 않은 견적서가 있습니다.",400),
     NO_QUOTATION_TO_CONFIRM("확정할 견적서가 없습니다",400),
-    MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 400);
+    MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 400),
+    QUOTATION_NOT_FOUND("해당 견적서를 찾을 수 없습니다.", 404);
 
     @Getter
     private final String message;

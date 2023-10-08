@@ -1,6 +1,6 @@
 package com.kakao.sunsuwedding.portfolio;
 
-import com.kakao.sunsuwedding.portfolio.price.PriceCalculator;
+import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public class PortfolioDTOConverter {
     public static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images, List<PriceItem> priceItems) {
         List<PortfolioResponse.PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
 
-        Long totalPrice = PriceCalculator.execute(priceItemDTOS);
+        Long totalPrice = PriceCalculator.calculatePortfolioPrice(priceItemDTOS);
         PortfolioResponse.PriceDTO priceDTO = new PortfolioResponse.PriceDTO(totalPrice, priceItemDTOS);
 
         return toPortfolioDTO(portfolio, images, priceDTO);

@@ -1,13 +1,11 @@
 package com.kakao.sunsuwedding.match.Quotation;
 
-import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.match.MatchService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,10 +16,9 @@ public class QuotationRestController {
     private final MatchService matchService;
 
     @PostMapping("")
-    public ResponseEntity<?> createQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @RequestParam Long matchId,
+    public ResponseEntity<?> createQuotation(@RequestParam Long matchId,
                                              @Valid @RequestBody QuotationRequest.addQuotation request) {
-        quotationService.insertQuotation(userDetails.getInfo(), matchId, request);
+        quotationService.insertQuotation(matchId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -34,6 +31,13 @@ public class QuotationRestController {
     @PostMapping("/confirmAll/{matchId}")
     public ResponseEntity<?> confirmAll(@PathVariable Long matchId) {
         matchService.confirmAll(matchId);
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @PostMapping("/confirm/{quotationId}")
+    public ResponseEntity<?> confirm(@PathVariable Long quotationId,
+                                     @RequestParam Long matchId) {
+        quotationService.confirm(matchId, quotationId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }
