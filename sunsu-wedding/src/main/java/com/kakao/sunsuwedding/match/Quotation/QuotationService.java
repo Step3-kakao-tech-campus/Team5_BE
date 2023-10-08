@@ -26,10 +26,6 @@ public class QuotationService {
         Match match = matchJPARepository.findById(matchId)
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
 
-        if (!info.getFirst().getRoleName().equals(Role.PLANNER.getRoleName())) {
-            throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
-        }
-
         quotationJPARepository.save(
                 Quotation.builder()
                         .match(match)

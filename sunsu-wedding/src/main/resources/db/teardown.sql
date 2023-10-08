@@ -40,5 +40,5 @@ INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`,
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_at`, `created_at`) VALUES ('1', '1', '2', '미확정', '1000000', '2023-10-08 08:30:12.00');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_at`, `created_at`) VALUES ('2', '1', '3', '미확정', '1000000', '2023-10-08 08:30:12.00');
 
-INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`) VALUES ('1', '1', 'test', '1000000', 'abc', 'asdf', '미확정', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00');
-INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`) VALUES ('2', '1', 'test2', '1000000', 'abc2', 'asdf2', '미확정', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00');
+INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`) VALUES ('1', '1', 'test', '1000000', 'abc', 'asdf', '미완료', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00');
+INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`) VALUES ('2', '1', 'test2', '1000000', 'abc2', 'asdf2', '미완료', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00');

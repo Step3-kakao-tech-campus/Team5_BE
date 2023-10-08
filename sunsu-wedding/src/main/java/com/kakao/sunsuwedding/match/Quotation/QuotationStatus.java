@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum QuotationStatus {
-    CONFIRMED("확정"),
-    UNCONFIRMED("미확정");
+    CONFIRMED("완료"),
+    UNCONFIRMED("미완료");
 
     @Getter
     private final String status;
