@@ -4,14 +4,17 @@ import com.kakao.sunsuwedding._core.DummyEntity;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+@AutoConfigureDataJpa
 @DataJpaTest
 public class CoupleJPARepositoryTest extends DummyEntity {
 
@@ -24,25 +27,32 @@ public class CoupleJPARepositoryTest extends DummyEntity {
     @BeforeEach
     public void setUp(){
         coupleJPARepository.save(newCouple("ssar"));
+        em.clear();
     }
 
-    @DisplayName("이메일 찾기 - 성공")
+    @AfterEach
+    void afterEach() {
+        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1")
+                .executeUpdate();
+    }
+
+    @DisplayName("사용자 id로 찾기 - 성공")
     @Test
-    public void findByEmail_success_test() {
+    public void findById_success_test() {
         // given
-        String email = "ssar@nate.com";
+        Long userId = 1L;
 
         // when
-        Couple couplePS = coupleJPARepository.findByEmail(email).orElseThrow(
-                () -> new RuntimeException("해당 이메일을 찾을 수 없습니다.")
+        Couple couple = coupleJPARepository.findById(userId).orElseThrow(
+                () -> new RuntimeException("해당 사용자를 찾을 수 없습니다.")
         );
 
         // then (상태 검사)
-        Assertions.assertThat(couplePS.getId()).isEqualTo(1);
-        Assertions.assertThat(couplePS.getEmail()).isEqualTo("ssar@nate.com");
-        Assertions.assertThat(BCrypt.checkpw("couple1234!", couplePS.getPassword())).isEqualTo(true);
-        Assertions.assertThat(couplePS.getUsername()).isEqualTo("couple");
-        Assertions.assertThat(couplePS.getGrade().getGradeName()).isEqualTo("normal");
+        assertThat(couple.getId()).isEqualTo(1);
+        assertThat(couple.getEmail()).isEqualTo("ssar@nate.com");
+        assertThat(couple.getPassword()).isEqualTo("couple1234!");
+        assertThat(couple.getUsername()).isEqualTo("couple");
+        assertThat(couple.getGrade().getGradeName()).isEqualTo("normal");
     }
 
 }

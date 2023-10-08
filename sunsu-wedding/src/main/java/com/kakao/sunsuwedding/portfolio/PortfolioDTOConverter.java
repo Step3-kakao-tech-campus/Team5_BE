@@ -1,9 +1,5 @@
 package com.kakao.sunsuwedding.portfolio;
 
-import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioDTO;
-import com.kakao.sunsuwedding.portfolio.dto.response.PortfolioListItemDTO;
-import com.kakao.sunsuwedding.portfolio.dto.response.PriceDTO;
-import com.kakao.sunsuwedding.portfolio.dto.response.PriceItemDTO;
 import com.kakao.sunsuwedding.portfolio.price.PriceCalculator;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 
@@ -11,17 +7,17 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
-    public static PortfolioDTO toPortfolioDTO(Portfolio portfolio, List<String> images, List<PriceItem> priceItems) {
-        List<PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
+    public static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images, List<PriceItem> priceItems) {
+        List<PortfolioResponse.PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
 
         Long totalPrice = PriceCalculator.execute(priceItemDTOS);
-        PriceDTO priceDTO = new PriceDTO(totalPrice, priceItemDTOS);
+        PortfolioResponse.PriceDTO priceDTO = new PortfolioResponse.PriceDTO(totalPrice, priceItemDTOS);
 
         return toPortfolioDTO(portfolio, images, priceDTO);
     }
 
-    private static PortfolioDTO toPortfolioDTO(Portfolio portfolio, List<String> images, PriceDTO priceDTO) {
-        return new PortfolioDTO(
+    private static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images, PortfolioResponse.PriceDTO priceDTO) {
+        return new PortfolioResponse.findById(
                 portfolio.getId(),
                 images,
                 portfolio.getTitle(),
@@ -35,12 +31,12 @@ public class PortfolioDTOConverter {
         );
     }
 
-    public static List<PortfolioListItemDTO> toListItemDTO(List<Portfolio> portfolios, List<String> images) {
+    public static List<PortfolioResponse.findAllBy> toListItemDTO(List<Portfolio> portfolios, List<String> images) {
         return IntStream
                 .range(0, portfolios.size())
                 .mapToObj(i -> {
                     Portfolio portfolio = portfolios.get(i);
-                    return new PortfolioListItemDTO(
+                    return new PortfolioResponse.findAllBy(
                             portfolio.getId(),
                             images.get(i),
                             portfolio.getTitle(),
@@ -53,10 +49,10 @@ public class PortfolioDTOConverter {
                 .toList();
     }
 
-    public static List<PriceItemDTO> toPriceItemDTOS(List<PriceItem> priceItems) {
+    public static List<PortfolioResponse.PriceItemDTO> toPriceItemDTOS(List<PriceItem> priceItems) {
         return priceItems
                 .stream()
-                .map(priceItem -> new PriceItemDTO(priceItem.getItemTitle(), priceItem.getItemPrice()))
+                .map(priceItem -> new PortfolioResponse.PriceItemDTO(priceItem.getItemTitle(), priceItem.getItemPrice()))
                 .toList();
     }
 }
