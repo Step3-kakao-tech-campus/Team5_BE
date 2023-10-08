@@ -31,7 +31,7 @@ public class Match {
     private long price;
 
     @Column
-    private LocalDateTime comfirmedAt;
+    private LocalDateTime confirmedAt;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
