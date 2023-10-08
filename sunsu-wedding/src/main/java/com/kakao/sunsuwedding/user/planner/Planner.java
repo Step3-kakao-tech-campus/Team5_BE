@@ -1,26 +1,56 @@
 package com.kakao.sunsuwedding.user.planner;
 
-import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Grade;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@DiscriminatorValue(value = "planner")
-@SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
-public class Planner extends User {
+@Table(name="planner_tb")
+public class Planner {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(length = 100, nullable = false, unique = true)
+    private String email;
+
+    @Column(length = 256, nullable = false)
+    private String password;
+
+    @Column(length = 45, nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime payedAt;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 
     @Builder
-    public Planner(Long id, String email, String password, String username, Grade grade, boolean is_active, LocalDateTime created_at, String order_id, Long payed_amount, LocalDateTime payed_at) {
-        super(id, email, password, username, grade, is_active, created_at, order_id, payed_amount, payed_at);
+    public Planner(int id, String email, String password, String username, LocalDateTime payedAt, Grade grade) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.payedAt = payedAt;
+        this.grade = grade;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // 유저 등급 업그레이드
+    public void upgrade() {
+        this.grade = Grade.PREMIUM;
+        this.payedAt = LocalDateTime.now();
     }
 }

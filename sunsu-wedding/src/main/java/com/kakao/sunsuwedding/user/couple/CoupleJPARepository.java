@@ -2,6 +2,8 @@ package com.kakao.sunsuwedding.user.couple;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CoupleJPARepository extends JpaRepository<Couple, Long> {
+import java.util.Optional;
 
+public interface CoupleJPARepository extends JpaRepository<Couple, Integer> {
+    Optional<Couple> findByEmail(String email);
 }

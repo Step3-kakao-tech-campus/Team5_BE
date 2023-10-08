@@ -1,20 +1,18 @@
 package com.kakao.sunsuwedding.user;
 
 import com.kakao.sunsuwedding._core.DummyEntity;
+import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterEach;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@AutoConfigureDataJpa
 @DataJpaTest
 public class PlannerJPARepositoryTest extends DummyEntity {
 
@@ -27,31 +25,25 @@ public class PlannerJPARepositoryTest extends DummyEntity {
     @BeforeEach
     public void setUp(){
         plannerJPARepository.save(newPlanner("ssar"));
-        em.clear();
-    }
-    @AfterEach
-    void afterEach() {
-        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1")
-            .executeUpdate();
     }
 
-    @DisplayName("사용자 id로 찾기 - 성공")
+    @DisplayName("이메일 찾기 - 성공")
     @Test
-    public void findById_success_test() {
+    public void findByEmail_success_test() {
         // given
-        Long userId = 1L;
+        String email = "ssar@nate.com";
 
         // when
-        Planner planner = plannerJPARepository.findById(userId).orElseThrow(
-                () -> new RuntimeException("해당 플래너를 찾을 수 없습니다.")
+        Planner plannerPS = plannerJPARepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("해당 이메일을 찾을 수 없습니다.")
         );
 
         // then (상태 검사)
-        assertThat(planner.getId()).isEqualTo(1);
-        assertThat(planner.getEmail()).isEqualTo("ssar@nate.com");
-        assertThat(planner.getPassword()).isEqualTo("planner1234!");
-        assertThat(planner.getUsername()).isEqualTo("planner");
-        assertThat(planner.getGrade().getGradeName()).isEqualTo("normal");
+        Assertions.assertThat(plannerPS.getId()).isEqualTo(1);
+        Assertions.assertThat(plannerPS.getEmail()).isEqualTo("ssar@nate.com");
+        Assertions.assertThat(BCrypt.checkpw("planner1234!", plannerPS.getPassword())).isEqualTo(true);
+        Assertions.assertThat(plannerPS.getUsername()).isEqualTo("planner");
+        Assertions.assertThat(plannerPS.getGrade().getGradeName()).isEqualTo("normal");
     }
 
 }

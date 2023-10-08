@@ -16,5 +16,5 @@ public interface PriceItemJPARepository extends JpaRepository<PriceItem, Long> {
     @EntityGraph("PriceItemWithPortfolioAndPlanner")
     List<PriceItem> findAllByPortfolioId(Long id);
 
-    void deleteAllByPortfolioPlannerId(Long id);
+    void deleteAllByPortfolioPlannerId(int id);
 }
