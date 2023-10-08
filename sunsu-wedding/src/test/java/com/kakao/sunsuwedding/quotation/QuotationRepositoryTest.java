@@ -4,6 +4,7 @@ import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.match.Quotation.QuotationStatus;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AutoConfigureDataJpa
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DataJpaTest
 public class QuotationRepositoryTest {
     private final QuotationJPARepository quotationJPARepository;
@@ -35,6 +37,13 @@ public class QuotationRepositoryTest {
         quotationJPARepository.saveAll(quotations);
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @AfterEach
+    void afterEach() {
+        entityManager
+                .createNativeQuery("ALTER TABLE quotation_tb ALTER COLUMN `id` RESTART WITH 1")
+                .executeUpdate();
     }
 
     @DisplayName("create test")
@@ -67,5 +76,36 @@ public class QuotationRepositoryTest {
 
         // then
         assertThat(quotation.getTitle()).isEqualTo("test title");
+    }
+
+    @DisplayName("update test")
+    @Test
+    void updateTest() {
+        // given
+        Long quotationId = 1L;
+        Quotation quotation = quotationJPARepository.findById(quotationId).orElseThrow();
+        String updated_title = "update title";
+        quotation.updateTitle(updated_title);
+
+        // when
+        Quotation updatedQuotation = quotationJPARepository.save(quotation);
+
+        // then
+        assertThat(updatedQuotation.getTitle()).isEqualTo(updated_title);
+    }
+
+    @DisplayName("delete test")
+    @Test
+    void deleteTest() {
+        // given
+        Long quotationId = 1L;
+        long previous_counts = quotationJPARepository.count();
+        Quotation quotation = quotationJPARepository.findById(quotationId).orElseThrow();
+
+        // when
+        quotationJPARepository.delete(quotation);
+
+        // then
+        assertThat(quotationJPARepository.count()).isEqualTo(previous_counts - 1);
     }
 }
