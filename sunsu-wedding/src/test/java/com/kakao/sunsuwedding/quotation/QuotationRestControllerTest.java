@@ -102,6 +102,141 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("true"));
     }
 
+    @DisplayName("POST /quotations : fail, 제목 글자수 위반")
+    @Test
+    void post_quotations_fail_titleTextSize() throws Exception {
+        // given
+        Long matchId = 1L;
+        QuotationRequest.addQuotation request = new QuotationRequest.addQuotation(
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb",
+                1500000L,
+                "abc studio",
+                "very good"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations")
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("POST /quotations : fail, 제목 글자수 위반")
+    @Test
+    void post_quotations_fail_emptyTitle() throws Exception {
+        // given
+        Long matchId = 1L;
+        QuotationRequest.addQuotation request = new QuotationRequest.addQuotation(
+                null,
+                1500000L,
+                "abc studio",
+                "very good"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations")
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("POST /quotations : fail, 제목 글자수 위반")
+    @Test
+    void post_quotations_fail_titleSizeZero() throws Exception {
+        // given
+        Long matchId = 1L;
+        QuotationRequest.addQuotation request = new QuotationRequest.addQuotation(
+                "",
+                1500000L,
+                "abc studio",
+                "very good"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations")
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("POST /quotations : fail, 견적가격 음수")
+    @Test
+    void post_quotations_fail_negativePrice() throws Exception {
+        // given
+        Long matchId = 1L;
+        QuotationRequest.addQuotation request = new QuotationRequest.addQuotation(
+                "my wedding",
+                -1500000L,
+                "abc studio",
+                "very good"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations")
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("POST /quotations : fail, 견적가격 누락")
+    @Test
+    void post_quotations_fail_emptyPrice() throws Exception {
+        // given
+        Long matchId = 1L;
+        QuotationRequest.addQuotation request = new QuotationRequest.addQuotation(
+                "my wedding",
+                null,
+                "abc studio",
+                "very good"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations")
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
     @DisplayName("GET /quotations : success")
     @Test
     void get_quotations_success() throws Exception {
@@ -129,5 +264,23 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.response.quotations[1].company").value("abc2"));
         resultActions.andExpect(jsonPath("$.response.quotations[1].description").value("asdf2"));
         resultActions.andExpect(jsonPath("$.response.quotations[1].status").value("완료"));
+    }
+
+    @DisplayName("GET /quotations : fail, 음수 matchId")
+    @Test
+    void get_quotations_fail_negativeMatchId() throws Exception {
+        // given
+        Long matchId = -1L;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/quotations")
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 }
