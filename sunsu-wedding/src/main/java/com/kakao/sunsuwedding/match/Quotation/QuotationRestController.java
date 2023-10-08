@@ -4,6 +4,7 @@ import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.match.MatchService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,8 +26,7 @@ public class QuotationRestController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> findQuotations(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                           @RequestParam Long matchId) {
+    public ResponseEntity<?> findQuotations(@RequestParam @Min(1) Long matchId) {
         QuotationResponse.findAllByMatchId response = quotationService.findQuotationsByMatchId(matchId);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
