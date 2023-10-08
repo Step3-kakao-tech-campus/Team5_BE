@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,9 +62,7 @@ public class QuotationService {
 
         if (isAllConfirmed) {
             Long totalPrice = PriceCalculator.calculateQuotationPrice(quotations);
-            match.updateStatus(MatchStatus.CONFIRMED);
-            match.updatePrice(totalPrice);
-            match.updateConfirmedAt(LocalDateTime.now());
+            match.updateStatusConfirmed(totalPrice);
             matchJPARepository.save(match);
         }
     }
@@ -84,10 +81,7 @@ public class QuotationService {
 
         Boolean isPriceChanged = (quotation.getPrice().equals(request.price()));
 
-        quotation.updateTitle(request.title());
-        quotation.updatePrice(request.price());
-        quotation.updateCompany(request.company());
-        quotation.updateDescription(request.description());
+        quotation.update(request);
         quotationJPARepository.save(quotation);
 
         if (isPriceChanged) {

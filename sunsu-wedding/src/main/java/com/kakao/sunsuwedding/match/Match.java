@@ -71,4 +71,10 @@ public class Match {
     public void updateIsActive(Boolean is_active) {
         this.is_active = is_active;
     }
+
+    public void updateStatusConfirmed(Long price) {
+        this.status = MatchStatus.CONFIRMED;
+        this.price = price;
+        this.confirmed_at = LocalDateTime.now();
+    }
 }
