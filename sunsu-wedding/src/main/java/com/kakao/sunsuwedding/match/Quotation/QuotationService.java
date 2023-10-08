@@ -48,27 +48,25 @@ public class QuotationService {
         return new QuotationResponse.findAllByMatchId(status.toString(), quotationDTOS);
     }
 
+    @Transactional
     public void confirm(Long matchId, Long quotationId) {
         Match match = matchJPARepository.findById(matchId)
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
-        Quotation quotation = quotations
-                .stream()
-                .filter(iter -> Objects.equals(iter.getId(), quotationId))
-                .findFirst()
-                .orElseThrow(() -> new Exception404(BaseException.QUOTATION_NOT_FOUND.getMessage()));
+        Quotation quotation = getQuotationById(quotationId, quotations);
+        
         quotation.updateStatus(QuotationStatus.CONFIRMED);
+        quotationJPARepository.save(quotation);
 
-        Boolean isAllConfirmed = quotations
-                .stream()
-                .allMatch(iter -> iter.getStatus().equals(QuotationStatus.CONFIRMED));
+        Boolean isAllConfirmed = checkQuotationConfirmed(quotations);
 
         if (isAllConfirmed) {
             Long totalPrice = PriceCalculator.calculateQuotationPrice(quotations);
             match.updateStatus(MatchStatus.CONFIRMED);
             match.updatePrice(totalPrice);
             match.updateConfirmedAt(LocalDateTime.now());
+            matchJPARepository.save(match);
         }
     }
 
@@ -78,11 +76,7 @@ public class QuotationService {
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
-        Quotation quotation = quotations
-                .stream()
-                .filter(iter -> Objects.equals(iter.getId(), quotationId))
-                .findFirst()
-                .orElseThrow(() -> new Exception404(BaseException.QUOTATION_NOT_FOUND.getMessage()));
+        Quotation quotation = getQuotationById(quotationId, quotations);
 
         if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
             throw new Exception403(BaseException.QUOTATION_CHANGE_DENIED.getMessage());
@@ -94,7 +88,6 @@ public class QuotationService {
         quotation.updatePrice(request.price());
         quotation.updateCompany(request.company());
         quotation.updateDescription(request.description());
-
         quotationJPARepository.save(quotation);
 
         if (isPriceChanged) {
@@ -102,5 +95,19 @@ public class QuotationService {
             match.updatePrice(price);
             matchJPARepository.save(match);
         }
+    }
+
+    private static Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
+        return quotations
+                .stream()
+                .filter(iter -> Objects.equals(iter.getId(), quotationId))
+                .findFirst()
+                .orElseThrow(() -> new Exception404(BaseException.QUOTATION_NOT_FOUND.getMessage()));
+    }
+
+    private static Boolean checkQuotationConfirmed(List<Quotation> quotations) {
+        return quotations
+                .stream()
+                .allMatch(iter -> iter.getStatus().equals(QuotationStatus.CONFIRMED));
     }
 }
