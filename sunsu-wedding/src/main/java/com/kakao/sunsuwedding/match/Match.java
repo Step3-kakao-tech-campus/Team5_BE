@@ -7,12 +7,16 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
+@Where(clause = "is_active = true")
 @Table(name="match_tb")
 public class Match {
     @Id
@@ -42,7 +46,7 @@ public class Match {
     private Boolean is_active;
 
     @Builder
-    public void Match(Long id, Planner planner, Couple couple, Long price) {
+    public Match(Long id, Planner planner, Couple couple, Long price) {
         this.id = id;
         this.planner = planner;
         this.couple = couple;

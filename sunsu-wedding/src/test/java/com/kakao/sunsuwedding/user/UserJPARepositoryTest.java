@@ -6,14 +6,17 @@ import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@AutoConfigureDataJpa
 @DataJpaTest
 public class UserJPARepositoryTest extends DummyEntity {
 
@@ -26,8 +29,13 @@ public class UserJPARepositoryTest extends DummyEntity {
     @BeforeEach
     public void setUp(){
         userJPARepository.save(newCouple("zxcv"));
+        em.clear();
     }
-
+    @AfterEach
+    void afterEach() {
+        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1")
+                .executeUpdate();
+    }
     @DisplayName("사용자 id로 찾기 - 성공")
     @Test
     public void findById_success_test() {

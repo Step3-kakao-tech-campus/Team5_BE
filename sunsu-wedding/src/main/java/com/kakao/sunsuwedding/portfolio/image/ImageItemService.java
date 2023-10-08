@@ -25,7 +25,7 @@ public class ImageItemService {
 
     private final ImageItemJPARepository imageItemJPARepository;
 
-    private String setDirectoryPath(int id, String username) {
+    private String setDirectoryPath(Long id, String username) {
         String separator = System.getProperty("file.separator");
         String baseDirectory = System.getProperty("user.dir") + separator + "gallery" + separator;
         String uploadDirectory = baseDirectory + id + "_" + username + separator;
