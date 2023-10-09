@@ -23,7 +23,8 @@ public enum BaseException {
     NOT_CONFIRMED_ALL_QUOTATIONS("견적서 전체 확정을 해야 합니다.", 400),
     MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 404),
     QUOTATION_NOT_FOUND("해당 견적서를 찾을 수 없습니다.", 404),
-    QUOTATION_CHANGE_DENIED("견적서가 이미 확정되어 수정할 수 없습니다.", 403);
+    QUOTATION_CHANGE_DENIED("견적서가 이미 확정되어 수정할 수 없습니다.", 403),
+    QUOTATION_ALREADY_CONFIRMED("견적서가 확정된 상태입니다.", 403);
 
     @Getter
     private final String message;

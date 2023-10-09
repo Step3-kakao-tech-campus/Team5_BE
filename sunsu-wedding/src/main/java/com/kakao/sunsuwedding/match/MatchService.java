@@ -43,7 +43,7 @@ public class MatchService {
         // 모든 견적서 확정 완료 시
         if (result.getFirst()) {
             match.updateStatus(MatchStatus.CONFIRMED);
-            match.updatePrice(result.getSecond());
+            match.updateConfirmedPrice(result.getSecond());
             match.updateConfirmedAt(LocalDateTime.now());
         }
         // 확정되지 않은 견적서가 있을 때
@@ -104,7 +104,7 @@ public class MatchService {
     private void permissionCheck(Pair<String, Long> info, Match match) {
         String role = info.getFirst();
         Long id = info.getSecond();
-        if (role.equals(Role.PLANNER)) {
+        if (role.equals(Role.PLANNER.getRoleName())) {
             if (!match.getPlanner().getId().equals(id))
                 throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
         }

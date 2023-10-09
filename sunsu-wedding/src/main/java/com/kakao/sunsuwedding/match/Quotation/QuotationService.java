@@ -44,7 +44,7 @@ public class QuotationService {
 
         List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toFindByMatchIdDTO(quotations);
 
-        return new QuotationResponse.findAllByMatchId(status.toString(), quotationDTOS);
+        return new QuotationResponse.findAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
     }
 
     @Transactional
@@ -54,17 +54,25 @@ public class QuotationService {
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
+
+        if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
+            throw new Exception403(BaseException.QUOTATION_ALREADY_CONFIRMED.getMessage());
+        }
         
         quotation.updateStatus(QuotationStatus.CONFIRMED);
         quotationJPARepository.save(quotation);
 
         Boolean isAllConfirmed = checkQuotationConfirmed(quotations);
+        Long totalPrice = PriceCalculator.calculateConfirmedQuotationPrice(quotations);
 
         if (isAllConfirmed) {
-            Long totalPrice = PriceCalculator.calculateQuotationPrice(quotations);
             match.updateStatusConfirmed(totalPrice);
-            matchJPARepository.save(match);
         }
+        else {
+            match.updateConfirmedPrice(totalPrice);
+        }
+
+        matchJPARepository.save(match);
     }
 
     @Transactional
@@ -79,7 +87,7 @@ public class QuotationService {
             throw new Exception403(BaseException.QUOTATION_CHANGE_DENIED.getMessage());
         }
 
-        Boolean isPriceChanged = (quotation.getPrice().equals(request.price()));
+        Boolean isPriceChanged = (!quotation.getPrice().equals(request.price()));
 
         quotation.update(request);
         quotationJPARepository.save(quotation);
