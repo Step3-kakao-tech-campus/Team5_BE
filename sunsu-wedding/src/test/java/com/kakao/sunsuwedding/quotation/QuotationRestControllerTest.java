@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding.quotation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import com.kakao.sunsuwedding.match.Quotation.QuotationRequest;
 import com.kakao.sunsuwedding.user.UserRequest;
@@ -351,6 +352,8 @@ public class QuotationRestControllerTest {
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
         resultActions.andExpect(jsonPath("$.response.status").value("완료"));
+        resultActions.andExpect(jsonPath("$.response.totalPrice").value(1000000));
+        resultActions.andExpect(jsonPath("$.response.confirmedPrice").value(1000000));
         resultActions.andExpect(jsonPath("$.response.quotations[0].title").value("test"));
         resultActions.andExpect(jsonPath("$.response.quotations[0].price").value("1000000"));
         resultActions.andExpect(jsonPath("$.response.quotations[0].company").value("abc"));
@@ -406,6 +409,25 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = -2L;
         Long quotationId = -3L;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirm/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 이미 확정된 견적서를 다시 확정 요청")
+    @Test
+    void post_quotationsConfirm_fail_alreadyConfirmed() throws Exception {
+        // given
+        Long matchId = 1L;
+        Long quotationId = 1L;
 
         // when
         ResultActions resultActions = mvc.perform(
