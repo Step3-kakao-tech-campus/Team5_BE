@@ -1,11 +1,13 @@
 package com.kakao.sunsuwedding.match.Quotation;
 
+import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.match.MatchService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,9 +30,9 @@ public class QuotationRestController {
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
-    @PostMapping("/confirmAll/{matchId}")
-    public ResponseEntity<?> confirmAll(@PathVariable @Min(1) Long matchId) {
-        matchService.confirmAll(matchId);
+    @PostMapping("/confirmAll")
+    public ResponseEntity<?> confirmAll(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam Long matchId) {
+        matchService.confirmAll(userDetails.getInfo(), matchId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
