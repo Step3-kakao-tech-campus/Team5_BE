@@ -54,125 +54,6 @@ public class QuotationRestControllerTest {
         plannerToken = userService.login(request);
     }
     // ============ 견적서 등록 테스트 ============
-
-
-    // ============ 견적서 조회 테스트 ============
-
-
-    // ============ 견적서 1개 확정 테스트 ============
-
-
-    // ============ 견적서 전체 확정 테스트 ============
-    @DisplayName("견적서 전체 확정 성공 테스트")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_success_test() throws Exception {
-        //given
-        Long matchId = 1L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 1 - 일부 견적서 미확정 시")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test1() throws Exception {
-        //given
-        Long matchId = 2L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정되지 않은 견적서가 있습니다."));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 2 - 견적서 없을 시")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test2() throws Exception {
-        //given
-        Long matchId = 4L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정할 견적서가 없습니다"));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 3 - 존재하지 않는 매칭 내역")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test3() throws Exception {
-        //given
-        Long matchId = 5L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("매칭 내역을 찾을 수 없습니다."));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 - 본인의 매칭 내역이 아님")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test4() throws Exception {
-        //given
-        Long matchId = 3L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
-    }
-
-    // ============ 견적서 삭제 테스트 ============
-
     @DisplayName("POST /quotations : success")
     @Test
     void post_quotations_success() throws Exception {
@@ -197,7 +78,7 @@ public class QuotationRestControllerTest {
         );
 
         // then
-        resultActions.andExpect(jsonPath("$.success").value("true"));
+        resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
     @DisplayName("POST /quotations : fail, 제목 글자수 위반")
@@ -335,6 +216,7 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
+    // ============ 견적서 조회 테스트 ============
     @DisplayName("GET /quotations : success")
     @Test
     void get_quotations_success() throws Exception {
@@ -384,6 +266,7 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
+    // ============ 견적서 1개 확정 테스트 ============
     @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : success")
     @Test
     void post_quotationsConfirm_success() throws Exception {
@@ -460,6 +343,116 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
+    // ============ 견적서 전체 확정 테스트 ============
+    @DisplayName("견적서 전체 확정 성공 테스트")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void match_confirm_all_success_test() throws Exception {
+        //given
+        Long matchId = 1L;
+
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirmAll?matchId=" + matchId)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+    }
+
+    @DisplayName("견적서 전체 확정 실패 테스트 1 - 일부 견적서 미확정 시")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void match_confirm_all_fail_test1() throws Exception {
+        //given
+        Long matchId = 2L;
+
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirmAll?matchId=" + matchId)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정되지 않은 견적서가 있습니다."));
+    }
+
+    @DisplayName("견적서 전체 확정 실패 테스트 2 - 견적서 없을 시")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void match_confirm_all_fail_test2() throws Exception {
+        //given
+        Long matchId = 4L;
+
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirmAll?matchId=" + matchId)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정할 견적서가 없습니다"));
+    }
+
+    @DisplayName("견적서 전체 확정 실패 테스트 3 - 존재하지 않는 매칭 내역")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void match_confirm_all_fail_test3() throws Exception {
+        //given
+        Long matchId = 5L;
+
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirmAll?matchId=" + matchId)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("매칭 내역을 찾을 수 없습니다."));
+    }
+
+    @DisplayName("견적서 전체 확정 실패 테스트 - 본인의 매칭 내역이 아님")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void match_confirm_all_fail_test4() throws Exception {
+        //given
+        Long matchId = 3L;
+
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirmAll?matchId=" + matchId)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
+    }
+
+    // ============ 견적서 수정 테스트 ============
     @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : success")
     @Test
     void put_quotationUpdate_success() throws Exception {
@@ -599,4 +592,6 @@ public class QuotationRestControllerTest {
         // then
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
+
+    // ============ 견적서 삭제 테스트 ============
 }

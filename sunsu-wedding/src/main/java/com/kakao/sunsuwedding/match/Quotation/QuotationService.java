@@ -24,6 +24,10 @@ public class QuotationService {
         Match match = matchJPARepository.findById(matchId)
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
 
+        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
+            throw new Exception403(BaseException.MATCHING_ALREADY_CONFIRMED.getMessage());
+        }
+
         quotationJPARepository.save(
                 Quotation.builder()
                         .match(match)
