@@ -31,9 +31,9 @@ public class QuotationRestController {
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
-    @PostMapping("/confirmAll/{matchId}")
-    public ResponseEntity<?> confirmAll(@PathVariable Long matchId) {
-        matchService.confirmAll(matchId);
+    @PostMapping("/confirmAll")
+    public ResponseEntity<?> confirmAll(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam Long matchId) {
+        matchService.confirmAll(userDetails.getInfo(), matchId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }
