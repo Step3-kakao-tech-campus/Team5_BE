@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "portfolio_tb")
 @OnDelete(action= OnDeleteAction.CASCADE)
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
-@Where(clause = "is_active = true")
+//@Where(clause = "is_active = true")
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +60,7 @@ public class Portfolio {
     private LocalDateTime createdAt;
 
     @Column(columnDefinition = "boolean default true")
-    private boolean is_active;
+    private boolean is_active = true;
 
     @Builder
     public Portfolio(Long id, Planner planner, String title, String description, String location, String career, String partnerCompany, Long totalPrice, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice, LocalDateTime createdAt) {

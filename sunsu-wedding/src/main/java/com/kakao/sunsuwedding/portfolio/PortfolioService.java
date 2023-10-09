@@ -37,7 +37,7 @@ public class PortfolioService {
 
         // 액티브 유저인지 확인
         if (!planner.is_active())
-            throw new Exception400("서비스를 탈퇴한 웨딩 플래너의 요청입니다: " + plannerId);
+            throw new Exception400("서비스를 탈퇴한 웨딩 플래너에 대한 요청입니다: " + plannerId);
 
         // 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
         Portfolio existPortfolio = portfolioJPARepository.findByPlannerId(plannerId)
@@ -124,11 +124,15 @@ public class PortfolioService {
 
         // 액티브 유저인지 확인
         if (!planner.is_active())
-            throw new Exception400("서비스를 탈퇴한 웨딩 플래너의 요청입니다: " + plannerId);
+            throw new Exception400("서비스를 탈퇴한 웨딩 플래너에 대한 요청입니다: " + plannerId);
 
         // 플래너의 포트폴리오 탐색
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
                 .orElseThrow(() -> new Exception400("해당하는 플래너의 포트폴리오를 찾을 수 없습니다: " + plannerId));
+
+        // 활성화된 포트폴리오인지 확인
+        if (!portfolio.is_active())
+            throw new Exception400("삭제된 포트폴리오에 대한 요청입니다: " + portfolio.getId());
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
