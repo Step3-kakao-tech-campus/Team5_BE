@@ -1,7 +1,6 @@
 package com.kakao.sunsuwedding.match;
 
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
-import com.kakao.sunsuwedding.user.UserRestControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -42,7 +41,7 @@ public class MatchRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     public void match_delete_success_test() throws Exception {
         //given
-        Long matchId = 2L;
+        Long matchId = 1L;
 
         //when
         ResultActions result = mvc.perform(
@@ -62,7 +61,7 @@ public class MatchRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     public void match_delete_fail_test1() throws Exception {
         //given
-        Long matchId = 1L;
+        Long matchId = 2L;
 
         //when
         ResultActions result = mvc.perform(
