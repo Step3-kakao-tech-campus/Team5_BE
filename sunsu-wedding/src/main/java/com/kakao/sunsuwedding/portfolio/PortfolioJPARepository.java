@@ -15,8 +15,6 @@ import java.util.Optional;
 public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long> {
     Page<Portfolio> findAll(Pageable pageable);
 
-    Optional<Portfolio> findByPlanner(Planner planner);
-
     void deleteByPlanner(Planner planner);
 
     @Query("select p from Portfolio p where p.planner.id = :plannerId")

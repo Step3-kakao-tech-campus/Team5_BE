@@ -2,11 +2,11 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "portfolio_tb")
 @OnDelete(action= OnDeleteAction.CASCADE)
+@SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
+@Where(clause = "is_active = true")
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,6 +58,9 @@ public class Portfolio {
 
     @Column
     private LocalDateTime createdAt;
+
+    @Column(columnDefinition = "boolean default true")
+    private boolean is_active;
 
     @Builder
     public Portfolio(Long id, Planner planner, String title, String description, String location, String career, String partnerCompany, Long totalPrice, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice, LocalDateTime createdAt) {

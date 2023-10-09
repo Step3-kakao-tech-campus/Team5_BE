@@ -35,9 +35,16 @@ public class PortfolioService {
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
 
-        // TODO: 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
-        portfolioJPARepository.findByPlannerId(plannerId)
-                .ifPresent(presentPortfolio -> new Exception400("해당 플래너의 포트폴리오가 이미 존재합니다: " + plannerId));
+        // 액티브 유저인지 확인
+        if (!planner.is_active())
+            throw new Exception400("서비스를 탈퇴한 웨딩 플래너의 요청입니다: " + plannerId);
+
+        // 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
+        Portfolio existPortfolio = portfolioJPARepository.findByPlannerId(plannerId)
+                .orElse(new Portfolio());
+
+        if (existPortfolio.getId() != null)
+            throw new Exception400("해당 플래너의 포트폴리오가 이미 존재합니다: " + plannerId);
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
@@ -111,9 +118,15 @@ public class PortfolioService {
 
     @Transactional
     public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, Long plannerId) {
-        // 요청한 플래너 및 포트폴리오 탐색
+        // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
+
+        // 액티브 유저인지 확인
+        if (!planner.is_active())
+            throw new Exception400("서비스를 탈퇴한 웨딩 플래너의 요청입니다: " + plannerId);
+
+        // 플래너의 포트폴리오 탐색
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
                 .orElseThrow(() -> new Exception400("해당하는 플래너의 포트폴리오를 찾을 수 없습니다: " + plannerId));
 

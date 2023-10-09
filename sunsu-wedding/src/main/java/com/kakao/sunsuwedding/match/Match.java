@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
+@SQLDelete(sql = "UPDATE match_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Table(name="match_tb")
 public class Match {
