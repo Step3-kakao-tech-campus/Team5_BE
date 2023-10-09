@@ -18,9 +18,10 @@ public class QuotationRestController {
     private final MatchService matchService;
 
     @PostMapping("")
-    public ResponseEntity<?> createQuotation(@RequestParam @Min(1) Long matchId,
+    public ResponseEntity<?> createQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                             @RequestParam @Min(1) Long matchId,
                                              @Valid @RequestBody QuotationRequest.add request) {
-        quotationService.insertQuotation(matchId, request);
+        quotationService.insertQuotation(userDetails.getInfo(), matchId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -37,17 +38,19 @@ public class QuotationRestController {
     }
 
     @PostMapping("/confirm/{quotationId}")
-    public ResponseEntity<?> confirm(@PathVariable @Min(1) Long quotationId,
+    public ResponseEntity<?> confirm(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                     @PathVariable @Min(1) Long quotationId,
                                      @RequestParam @Min(1) Long matchId) {
-        quotationService.confirm(matchId, quotationId);
+        quotationService.confirm(userDetails.getInfo(), matchId, quotationId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @PutMapping("/{quotationId}")
-    public ResponseEntity<?> updateQuotation(@PathVariable @Min(1) Long quotationId,
+    public ResponseEntity<?> updateQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                             @PathVariable @Min(1) Long quotationId,
                                              @RequestParam @Min(1) Long matchId,
                                              @Valid @RequestBody QuotationRequest.update request) {
-        quotationService.update(matchId, quotationId, request);
+        quotationService.update(userDetails.getInfo(), matchId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

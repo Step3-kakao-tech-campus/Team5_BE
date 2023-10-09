@@ -8,6 +8,7 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +21,12 @@ public class QuotationService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
 
-    public void insertQuotation(Long matchId, QuotationRequest.add request) {
+    public void insertQuotation(Pair<String, Long> info, Long matchId, QuotationRequest.add request) {
         Match match = matchJPARepository.findById(matchId)
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+
+        // 해당 매칭 내역의 플래너와 견적서 추가를 요청한 플래너가 같은지 검사
+        checkPermission(info, match);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new Exception403(BaseException.MATCHING_ALREADY_CONFIRMED.getMessage());
@@ -51,10 +55,12 @@ public class QuotationService {
         return new QuotationResponse.findAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
     }
 
-    @Transactional
-    public void confirm(Long matchId, Long quotationId) {
+    public void confirm(Pair<String, Long> info, Long matchId, Long quotationId) {
         Match match = matchJPARepository.findById(matchId)
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+
+        // 해당 매칭 내역의 플래너와 견적서 추가를 요청한 플래너가 같은지 검사
+        checkPermission(info, match);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
@@ -65,24 +71,14 @@ public class QuotationService {
         
         quotation.updateStatus(QuotationStatus.CONFIRMED);
         quotationJPARepository.save(quotation);
-
-        Boolean isAllConfirmed = checkQuotationConfirmed(quotations);
-        Long totalPrice = PriceCalculator.calculateConfirmedQuotationPrice(quotations);
-
-        if (isAllConfirmed) {
-            match.updateStatusConfirmed(totalPrice);
-        }
-        else {
-            match.updateConfirmedPrice(totalPrice);
-        }
-
-        matchJPARepository.save(match);
     }
 
     @Transactional
-    public void update(Long matchId, Long quotationId, QuotationRequest.update request) {
+    public void update(Pair<String, Long> info, Long matchId, Long quotationId, QuotationRequest.update request) {
         Match match = matchJPARepository.findById(matchId)
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+
+        checkPermission(info, match);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
@@ -100,6 +96,13 @@ public class QuotationService {
             Long price = PriceCalculator.calculateQuotationPrice(quotations);
             match.updatePrice(price);
             matchJPARepository.save(match);
+        }
+    }
+
+    private static void checkPermission(Pair<String, Long> info, Match match) {
+        Long plannerId = info.getSecond();
+        if (!match.getPlanner().getId().equals(plannerId)) {
+            throw new Exception403(BaseException.QUOTATION_ACCESS_DENIED.getMessage());
         }
     }
 

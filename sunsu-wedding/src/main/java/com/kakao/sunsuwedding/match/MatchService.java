@@ -17,7 +17,6 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -42,9 +41,7 @@ public class MatchService {
 
         // 모든 견적서 확정 완료 시
         if (result.getFirst()) {
-            match.updateStatus(MatchStatus.CONFIRMED);
-            match.updateConfirmedPrice(result.getSecond());
-            match.updateConfirmedAt(LocalDateTime.now());
+            match.updateStatusConfirmed(result.getSecond());
         }
         // 확정되지 않은 견적서가 있을 때
         else {

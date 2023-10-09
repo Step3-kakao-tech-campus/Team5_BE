@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
+@SQLDelete(sql = "UPDATE match_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Table(name="match_tb")
 public class Match {
@@ -60,24 +60,12 @@ public class Match {
         this.is_active = true;
     }
 
-    public void updateStatus(MatchStatus status) {
-        this.status = status;
-    }
-
     public void updatePrice(Long price) {
         this.price = price;
     }
 
     public void updateConfirmedPrice(Long price) {
         this.confirmedPrice = price;
-    }
-
-    public void updateConfirmedAt(LocalDateTime confirmed_at) {
-        this.confirmed_at = confirmed_at;
-    }
-
-    public void updateIsActive(Boolean is_active) {
-        this.is_active = is_active;
     }
 
     public void updateStatusConfirmed(Long price) {
