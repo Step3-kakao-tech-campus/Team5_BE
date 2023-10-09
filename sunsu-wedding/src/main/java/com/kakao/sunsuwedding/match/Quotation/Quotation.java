@@ -88,4 +88,12 @@ public class Quotation {
         this.is_active = is_active;
         this.modified_at = LocalDateTime.now();
     }
+
+    public void update(QuotationRequest.update request) {
+        this.title = request.title();
+        this.price = request.price();
+        this.company = request.company();
+        this.description = request.description();
+        this.modified_at = LocalDateTime.now();
+    }
 }

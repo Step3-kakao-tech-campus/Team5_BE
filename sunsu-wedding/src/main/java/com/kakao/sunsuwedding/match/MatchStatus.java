@@ -11,4 +11,8 @@ public enum MatchStatus {
 
     @Getter
     private final String status;
+
+    public String toString() {
+        return status;
+    }
 }
