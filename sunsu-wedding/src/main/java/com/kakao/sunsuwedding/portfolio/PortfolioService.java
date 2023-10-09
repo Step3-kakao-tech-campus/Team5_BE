@@ -115,9 +115,6 @@ public class PortfolioService {
 
         // 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
         List<Match> matches = matchJPARepository.findLatestTenByPlanner(portfolio.getPlanner());
-        if (matches.isEmpty()) {
-            throw new Exception404(BaseException.PAYMENT_HISTORY_NOT_FOUND.getMessage());
-        }
         List<Long> matchIds = matches.stream().map(match -> match.getId()).toList();
         List<Quotation> quotations = quotationJPARepository.findAllByMatchIds(matchIds);
 
