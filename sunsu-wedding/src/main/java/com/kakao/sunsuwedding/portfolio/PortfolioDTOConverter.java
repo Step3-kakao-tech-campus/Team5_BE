@@ -1,7 +1,5 @@
 package com.kakao.sunsuwedding.portfolio;
 
-import com.kakao.sunsuwedding.match.Match;
-import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.portfolio.price.PriceCalculator;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 
@@ -9,25 +7,16 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
-    public static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images, List<PriceItem> priceItems,
-                                                            List<Match> matches, List<Quotation> quotations) {
-
+    public static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images, List<PriceItem> priceItems) {
         List<PortfolioResponse.PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
 
-        Long totalPrice = PriceCalculator.execute(priceItemDTOS);
+        Long totalPrice = PriceCalculator.calculatePortfolioPrice(priceItemDTOS);
         PortfolioResponse.PriceDTO priceDTO = new PortfolioResponse.PriceDTO(totalPrice, priceItemDTOS);
 
-        // 거래 내역
-        List<PortfolioResponse.PaymentDTO> paymentDTOS = toPaymentDTOS(matches, quotations);
-        PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO =
-                new PortfolioResponse.PaymentHistoryDTO(portfolio.getAvgPrice(), portfolio.getMinPrice(),
-                        portfolio.getMaxPrice(), paymentDTOS);
-
-        return toPortfolioDTO(portfolio, images, priceDTO, paymentHistoryDTO);
+        return toPortfolioDTO(portfolio, images, priceDTO);
     }
 
-    private static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images,
-                    PortfolioResponse.PriceDTO priceDTO, PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO) {
+    private static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images, PortfolioResponse.PriceDTO priceDTO) {
         return new PortfolioResponse.findById(
                 portfolio.getId(),
                 images,
@@ -38,9 +27,7 @@ public class PortfolioDTOConverter {
                 portfolio.getLocation(),
                 portfolio.getDescription(),
                 portfolio.getCareer(),
-                portfolio.getPartnerCompany(),
-                paymentHistoryDTO
-
+                portfolio.getPartnerCompany()
         );
     }
 
@@ -66,28 +53,6 @@ public class PortfolioDTOConverter {
         return priceItems
                 .stream()
                 .map(priceItem -> new PortfolioResponse.PriceItemDTO(priceItem.getItemTitle(), priceItem.getItemPrice()))
-                .toList();
-    }
-
-    public static List<PortfolioResponse.PaymentItemDTO> toPaymentItemDTOS(List<Quotation> quotations) {
-        return quotations
-                .stream()
-                .map(quotation -> new PortfolioResponse.PaymentItemDTO(quotation.getTitle(), quotation.getPrice(),
-                        quotation.getCompany(), quotation.getDescription()))
-                .toList();
-    }
-
-    public static List<PortfolioResponse.PaymentDTO> toPaymentDTOS(List<Match> matches, List<Quotation> quotations) {
-        return matches.stream()
-                .map(match -> {
-                    List<Quotation> matchingQuotations = quotations.stream()
-                            .filter(quotation ->
-                                    quotation.getMatch().getId().equals(match.getId()))
-                            .toList();
-                    return new PortfolioResponse.PaymentDTO(match.getPrice(),
-                                                            match.getConfirmed_at().toString().substring(0, 6), // 월까지만 제공
-                                                            toPaymentItemDTOS(matchingQuotations));
-                })
                 .toList();
     }
 }
