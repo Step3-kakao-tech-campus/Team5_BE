@@ -16,7 +16,7 @@ public class QuotationRestController {
     private final MatchService matchService;
 
     @PostMapping("")
-    public ResponseEntity<?> createQuotation(@RequestParam Long matchId,
+    public ResponseEntity<?> createQuotation(@RequestParam @Min(1) Long matchId,
                                              @Valid @RequestBody QuotationRequest.add request) {
         quotationService.insertQuotation(matchId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
@@ -29,21 +29,21 @@ public class QuotationRestController {
     }
 
     @PostMapping("/confirmAll/{matchId}")
-    public ResponseEntity<?> confirmAll(@PathVariable Long matchId) {
+    public ResponseEntity<?> confirmAll(@PathVariable @Min(1) Long matchId) {
         matchService.confirmAll(matchId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @PostMapping("/confirm/{quotationId}")
-    public ResponseEntity<?> confirm(@PathVariable Long quotationId,
-                                     @RequestParam Long matchId) {
+    public ResponseEntity<?> confirm(@PathVariable @Min(1) Long quotationId,
+                                     @RequestParam @Min(1) Long matchId) {
         quotationService.confirm(matchId, quotationId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @PutMapping("/{quotationId}")
-    public ResponseEntity<?> updateQuotation(@PathVariable Long quotationId,
-                                             @RequestParam Long matchId,
+    public ResponseEntity<?> updateQuotation(@PathVariable @Min(1) Long quotationId,
+                                             @RequestParam @Min(1) Long matchId,
                                              @Valid @RequestBody QuotationRequest.update request) {
         quotationService.update(matchId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));

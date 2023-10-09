@@ -303,17 +303,37 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("true"));
     }
 
+    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 음수 id 요청")
+    @Test
+    void post_quotationsConfirm_fail_negativeId() throws Exception {
+        // given
+        Long matchId = -2L;
+        Long quotationId = -3L;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirm/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
     @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : success")
     @Test
     void put_quotationUpdate_success() throws Exception {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        String updatedTitle = "updated title";
-        Long updatedPrice = 500000L;
-        String updatedCompany = "updated company";
-        String updatedDescription = "updated description";
-        QuotationRequest.update request = new QuotationRequest.update(updatedTitle, updatedPrice, updatedCompany, updatedDescription);
+        QuotationRequest.update request = new QuotationRequest.update(
+                "updated title",
+                500000L,
+                "updated company",
+                "updated description"
+        );
         String requestBody = objectMapper.writeValueAsString(request);
 
         // when
@@ -328,5 +348,89 @@ public class QuotationRestControllerTest {
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
+    }
+
+    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 타이틀 누락")
+    @Test
+    void put_quotationUpdate_fail_emptyTitle() throws Exception {
+        // given
+        Long matchId = 2L;
+        Long quotationId = 3L;
+        QuotationRequest.update request = new QuotationRequest.update(
+                "",
+                500000L,
+                "updated company",
+                "updated description"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 가격 누락")
+    @Test
+    void put_quotationUpdate_fail_emptyPrice() throws Exception {
+        // given
+        Long matchId = 2L;
+        Long quotationId = 3L;
+        QuotationRequest.update request = new QuotationRequest.update(
+                "updated title",
+                null,
+                "updated company",
+                "updated description"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 음수 가격으로 변경 요청")
+    @Test
+    void put_quotationUpdate_fail_negativePrice() throws Exception {
+        // given
+        Long matchId = 2L;
+        Long quotationId = 3L;
+        QuotationRequest.update request = new QuotationRequest.update(
+                "updated title",
+                -1000000L,
+                "updated company",
+                "updated description"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 }
