@@ -4,6 +4,7 @@ import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding._core.errors.exception.Exception403;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.match.Quotation.QuotationStatus;
@@ -117,23 +118,16 @@ public class MatchService {
     }
 
     private void updateConfirmedPrices(Planner planner) {
-        List<Match> confirmedMatches = matchJPARepository.findAllByPlanner(planner);
+        List<Match> matches = matchJPARepository.findAllByPlanner(planner);
+
         // 건수, 평균, 최소, 최대 가격 구하기
-        Long contractCount = confirmedMatches.stream()
+        Long contractCount = matches.stream()
                 .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
                 .count();
-        Long avgPrice = confirmedMatches.stream()
-                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .mapToLong(Match::getConfirmedPrice)
-                .sum() / contractCount;
-        Long minPrice = confirmedMatches.stream()
-                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .mapToLong(Match::getConfirmedPrice)
-                .min().orElse(0);
-        Long maxPrice = confirmedMatches.stream()
-                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .mapToLong(Match::getConfirmedPrice)
-                .max().orElse(0);
+        Long avgPrice = PriceCalculator.calculateAvgPrice(matches, contractCount);
+        Long minPrice = PriceCalculator.calculateMinPrice(matches);
+        Long maxPrice = PriceCalculator.calculateMaxPrice(matches);
+
         // portfolio 단에서 값 업데이트
         portfolioService.updateConfirmedPrices(planner, contractCount, avgPrice, minPrice, maxPrice);
     }
