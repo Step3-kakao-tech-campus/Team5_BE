@@ -309,8 +309,8 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotationsConfirm_fail_alreadyConfirmed() throws Exception {
         // given
-        Long matchId = 1L;
-        Long quotationId = 1L;
+        Long matchId = 5L;
+        Long quotationId = 6L;
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -327,6 +327,25 @@ public class QuotationRestControllerTest {
     @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 존재하지 않는 견적서 확정 요청")
     @Test
     void post_quotationsConfirm_fail_quotationNotExist() throws Exception {
+        // given
+        Long matchId = 1L;
+        Long quotationId = 100L;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/quotations/confirm/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 다른 플래너의 견적서 확정 요청")
+    @Test
+    void post_quotationsConfirm_fail_permissionDenied() throws Exception {
         // given
         Long matchId = 1L;
         Long quotationId = 100L;
@@ -571,6 +590,34 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 100L;
+        QuotationRequest.update request = new QuotationRequest.update(
+                "updated title",
+                1000000L,
+                "updated company",
+                "updated description"
+        );
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+                        .param("matchId", String.valueOf(matchId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 다른 플래너의 견적서 수정 요청")
+    @Test
+    void put_quotationUpdate_fail_permissionDenied() throws Exception {
+        // given
+        Long matchId = 5L;
+        Long quotationId = 6L;
         QuotationRequest.update request = new QuotationRequest.update(
                 "updated title",
                 1000000L,
