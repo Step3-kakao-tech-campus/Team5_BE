@@ -6,6 +6,8 @@ import java.util.List;
 public class QuotationResponse {
     public record findAllByMatchId(
             String status,
+            Long totalPrice,
+            Long confirmedPrice,
             List<QuotationDTO> quotations
     ) {}
 

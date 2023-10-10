@@ -24,7 +24,9 @@ public class PortfolioResponse {
             String location,
             String description,
             String career,
-            String partnerCompany
+            String partnerCompany,
+            PaymentHistoryDTO paymentsHistory
+
     ) {
     }
 
@@ -37,6 +39,29 @@ public class PortfolioResponse {
     public record PriceItemDTO(
             String itemTitle,
             Long itemPrice
+    ) {
+    }
+
+    public record PaymentHistoryDTO(
+            Long avgPrice,
+            Long minPrice,
+            Long maxPrice,
+            List<PaymentDTO> payments
+    ) {
+    }
+
+    public record PaymentDTO(
+            Long price,
+            String confirmedAt,
+            List<PaymentItemDTO> paymentItems
+    ) {
+    }
+
+    public record PaymentItemDTO(
+            String paymentTitle,
+            Long paymentPrice,
+            String paymentCompany,
+            String paymentDescription
     ) {
     }
 }

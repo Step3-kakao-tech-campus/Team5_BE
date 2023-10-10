@@ -4,6 +4,10 @@ import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding._core.errors.exception.Exception403;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding.match.Match;
+import com.kakao.sunsuwedding.match.MatchJPARepository;
+import com.kakao.sunsuwedding.match.Quotation.Quotation;
+import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.ImageItem;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
@@ -28,6 +32,8 @@ public class PortfolioService {
     private final PortfolioJPARepository portfolioJPARepository;
     private final ImageItemJPARepository imageItemJPARepository;
     private final PriceItemJPARepository priceItemJPARepository;
+    private final MatchJPARepository matchJPARepository;
+    private final QuotationJPARepository quotationJPARepository;
     private final PlannerJPARepository plannerJPARepository;
 
     public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, Long plannerId) {
@@ -109,7 +115,13 @@ public class PortfolioService {
 
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(id);
         Portfolio portfolio = imageItems.get(0).getPortfolio();
-        return PortfolioDTOConverter.toPortfolioDTO(portfolio, images, priceItems);
+
+        // 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
+        List<Match> matches = matchJPARepository.findLatestTenByPlanner(portfolio.getPlanner());
+        List<Long> matchIds = matches.stream().map(match -> match.getId()).toList();
+        List<Quotation> quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+
+        return PortfolioDTOConverter.toPortfolioDTO(portfolio, images, priceItems, matches, quotations);
     }
 
     @Transactional
