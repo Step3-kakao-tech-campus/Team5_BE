@@ -113,10 +113,4 @@ public class QuotationService {
                 .findFirst()
                 .orElseThrow(() -> new Exception404(BaseException.QUOTATION_NOT_FOUND.getMessage()));
     }
-
-    private static Boolean checkQuotationConfirmed(List<Quotation> quotations) {
-        return quotations
-                .stream()
-                .allMatch(iter -> iter.getStatus().equals(QuotationStatus.CONFIRMED));
-    }
 }
