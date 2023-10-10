@@ -10,13 +10,13 @@ import org.hibernate.annotations.*;
 
 import java.time.LocalDateTime;
 
-@Entity
-@NoArgsConstructor
 @Getter
-@Table(name = "portfolio_tb")
-@OnDelete(action= OnDeleteAction.CASCADE)
+@NoArgsConstructor
+@Entity
+//@OnDelete(action= OnDeleteAction.CASCADE)
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
-//@Where(clause = "is_active = true")
+@Where(clause = "is_active = true")
+@Table(name = "portfolio_tb")
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
