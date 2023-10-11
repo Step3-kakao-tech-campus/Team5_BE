@@ -86,7 +86,7 @@ public class PortfolioService {
         return Pair.of(portfolio, planner);
     }
 
-    public List<PortfolioResponse.findAllBy> getPortfolios(PageRequest pageRequest) {
+    public List<PortfolioResponse.FindAllDTO> getPortfolios(PageRequest pageRequest) {
         List<Portfolio> portfolios = portfolioJPARepository.findAllByOrderByCreatedAtDesc(pageRequest).getContent();
 
         List<String> images = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios)
@@ -94,10 +94,10 @@ public class PortfolioService {
                 .map(ImageEncoder::encode)
                 .toList();
 
-        return PortfolioDTOConverter.toListItemDTO(portfolios, images);
+        return PortfolioDTOConverter.FindAllDTOConvertor(portfolios, images);
     }
 
-    public PortfolioResponse.findById getPortfolioById(Long id) {
+    public PortfolioResponse.FindByIdDTO getPortfolioById(Long id) {
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(id);
         if (imageItems.isEmpty()) {
             throw new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage());
@@ -117,7 +117,7 @@ public class PortfolioService {
         List<Long> matchIds = matches.stream().map(Match::getId).toList();
         List<Quotation> quotations = quotationJPARepository.findAllByMatchIds(matchIds);
 
-        return PortfolioDTOConverter.toPortfolioDTO(planner, portfolio, images, priceItems, matches, quotations);
+        return PortfolioDTOConverter.FindByIdDTOConvertor(planner, portfolio, images, priceItems, matches, quotations);
     }
 
     @Transactional
@@ -195,28 +195,30 @@ public class PortfolioService {
         portfolioJPARepository.deleteByPlanner(planner);
     }
 
-    /*
-    public PortfolioResponse.myPortfolioDTO myPortfolio(Long plannerId) {
+
+    public PortfolioResponse.MyPortfolioDTO myPortfolio(Long plannerId) {
+        // 요청한 플래너 탐색
+        Planner planner = plannerJPARepository.findById(plannerId)
+                .orElseThrow(() -> new Exception404(BaseException.USER_NOT_FOUND.getMessage()));
+
         // 플래너의 포트폴리오 탐색
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
                 .orElseThrow(() -> new Exception400(BaseException.PORTFOLIO_NOT_FOUND.getMessage()));
 
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolio.getId());
         if (imageItems.isEmpty()) {
-            throw new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage());
+            throw new Exception404(BaseException.PORTFOLIO_IMAGE_NOT_FOUND.getMessage());
         }
 
-        List<String> images = imageItems
+        List<String> encodedImages = imageItems
                 .stream()
                 .map(ImageEncoder::encode)
                 .toList();
 
-        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(id);
-        Portfolio portfolio = imageItems.get(0).getPortfolio();
-        Planner planner = portfolio.getPlanner();
+        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
 
 
-        return PortfolioDTOConverter.toMyPortfolioDTO();
+        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
     }
-    */
+
 }
