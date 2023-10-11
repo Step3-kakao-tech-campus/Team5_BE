@@ -66,6 +66,7 @@ public class Match {
 
     public void updateConfirmedPrice(Long price) {
         this.confirmedPrice = price;
+        this.confirmed_at = LocalDateTime.now();
     }
 
     public void updateStatusConfirmed(Long price) {

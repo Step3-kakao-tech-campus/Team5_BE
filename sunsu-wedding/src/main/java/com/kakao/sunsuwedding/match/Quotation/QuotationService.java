@@ -21,16 +21,18 @@ public class QuotationService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
 
+    @Transactional
     public void insertQuotation(Pair<String, Long> info, Long matchId, QuotationRequest.add request) {
-        Match match = matchJPARepository.findById(matchId)
-                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
-
-        // 해당 매칭 내역의 플래너와 견적서 추가를 요청한 플래너가 같은지 검사
-        checkPermission(info, match);
+        Match match = getMatchByIdAndPlannerId(info, matchId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new Exception403(BaseException.MATCHING_ALREADY_CONFIRMED.getMessage());
         }
+
+        // 기존 매칭 가격에서 해당 견적서 가격 업데이터
+        Long previousPrice = match.getPrice();
+        match.updatePrice(previousPrice + request.price());
+        matchJPARepository.save(match);
 
         quotationJPARepository.save(
                 Quotation.builder()
@@ -55,37 +57,32 @@ public class QuotationService {
         return new QuotationResponse.findAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
     }
 
+    @Transactional
     public void confirm(Pair<String, Long> info, Long matchId, Long quotationId) {
-        Match match = matchJPARepository.findById(matchId)
-                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
-
-        // 해당 매칭 내역의 플래너와 견적서 추가를 요청한 플래너가 같은지 검사
-        checkPermission(info, match);
+        Match match = getMatchByIdAndPlannerId(info, matchId);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
 
-        if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
-            throw new Exception403(BaseException.QUOTATION_ALREADY_CONFIRMED.getMessage());
-        }
-        
+        checkQuotationEditable(quotation);
+
+        // 확정 가격 업데이트
+        Long previousConfirmedPrice = match.getConfirmedPrice();
+        match.updateConfirmedPrice(previousConfirmedPrice + quotation.getPrice());
+        matchJPARepository.save(match);
+
         quotation.updateStatus(QuotationStatus.CONFIRMED);
         quotationJPARepository.save(quotation);
     }
 
     @Transactional
     public void update(Pair<String, Long> info, Long matchId, Long quotationId, QuotationRequest.update request) {
-        Match match = matchJPARepository.findById(matchId)
-                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
-
-        checkPermission(info, match);
+        Match match = getMatchByIdAndPlannerId(info, matchId);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
 
-        if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
-            throw new Exception403(BaseException.QUOTATION_CHANGE_DENIED.getMessage());
-        }
+        checkQuotationEditable(quotation);
 
         Boolean isPriceChanged = (!quotation.getPrice().equals(request.price()));
 
@@ -99,11 +96,19 @@ public class QuotationService {
         }
     }
 
-    private static void checkPermission(Pair<String, Long> info, Match match) {
+    private Match getMatchByIdAndPlannerId(Pair<String, Long> info, Long matchId) {
+        // 매칭 내역이 존재하지 않을 때는 404 에러를 내보내야 하고
+        // 해당 매칭 내역에 접근할 수 없다면 403 에러를 내보내야 하기 때문에
+        // 매칭 ID 로만 조회 후 권한 체크
+        Match match = matchJPARepository.findById(matchId)
+                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+
         Long plannerId = info.getSecond();
         if (!match.getPlanner().getId().equals(plannerId)) {
             throw new Exception403(BaseException.QUOTATION_ACCESS_DENIED.getMessage());
         }
+
+        return match;
     }
 
     private static Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
@@ -112,5 +117,11 @@ public class QuotationService {
                 .filter(iter -> Objects.equals(iter.getId(), quotationId))
                 .findFirst()
                 .orElseThrow(() -> new Exception404(BaseException.QUOTATION_NOT_FOUND.getMessage()));
+    }
+
+    private static void checkQuotationEditable(Quotation quotation) {
+        if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
+            throw new Exception403(BaseException.QUOTATION_ALREADY_CONFIRMED.getMessage());
+        }
     }
 }
