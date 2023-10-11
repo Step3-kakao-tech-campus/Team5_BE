@@ -3,7 +3,6 @@ package com.kakao.sunsuwedding.portfolio;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +18,6 @@ public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long> {
 
     @Query("select p from Portfolio p where p.planner.id = :plannerId")
     Optional<Portfolio> findByPlannerId(@Param("plannerId") Long plannerId);
+
+    Optional<Portfolio> findByPlanner(Planner planner);
 }
