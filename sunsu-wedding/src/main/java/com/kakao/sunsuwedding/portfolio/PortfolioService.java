@@ -92,9 +92,9 @@ public class PortfolioService {
     }
 
     public List<PortfolioResponse.findAllBy> getPortfolios(PageRequest pageRequest) {
-        List<Portfolio> portfolios = portfolioJPARepository.findAll(pageRequest).getContent();
+        List<Portfolio> portfolios = portfolioJPARepository.findAllByOrderByCreatedAtDesc(pageRequest).getContent();
 
-        List<String> images = imageItemJPARepository.findAllByThumbnailAndPortfolioIn(true, portfolios)
+        List<String> images = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios)
                 .stream()
                 .map(ImageEncoder::encode)
                 .toList();

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long> {
-    Page<Portfolio> findAll(Pageable pageable);
+    Page<Portfolio> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     void deleteByPlanner(Planner planner);
 

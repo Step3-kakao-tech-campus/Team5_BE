@@ -30,11 +30,11 @@ INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`,
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
 INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '1', '2-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '1', '2-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '1', '2-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '1', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '1', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '2', '2-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '2', '2-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '2', '2-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '2', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '2', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
 
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', 'CONFIRMED', '1000000', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '2', '4', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
