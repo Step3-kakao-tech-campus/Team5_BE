@@ -78,4 +78,11 @@ public class Portfolio {
         this.maxPrice = maxPrice;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
     }
+
+    public void updateConfirmedPrices(Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {
+        this.contractCount = contractCount;
+        this.avgPrice = avgPrice;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+    }
 }

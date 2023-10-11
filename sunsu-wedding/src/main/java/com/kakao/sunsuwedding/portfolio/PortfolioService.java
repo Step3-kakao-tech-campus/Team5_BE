@@ -70,10 +70,10 @@ public class PortfolioService {
                 .career(request.getCareer())
                 .partnerCompany(request.getPartnerCompany())
                 .totalPrice(totalPrice)
-                .contractCount(contractCount)
-                .avgPrice(avgPrice)
-                .minPrice(minPrice.orElse(0))
-                .maxPrice(maxPrice.orElse(0))
+                .contractCount(0L)
+                .avgPrice(0L)
+                .minPrice(0L)
+                .maxPrice(0L)
                 .build();
         portfolioJPARepository.save(portfolio);
 
@@ -138,14 +138,6 @@ public class PortfolioService {
         Long totalPrice =  request.getItems().stream()
                 .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
                 .sum();
-        Long contractCount = Long.valueOf(request.getItems().size());
-        Long avgPrice = totalPrice / contractCount;
-        OptionalLong minPrice = request.getItems().stream()
-                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
-                .min();
-        OptionalLong maxPrice = request.getItems().stream()
-                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
-                .max();
 
         // 불변 객체 패턴을 고려한 포트폴리오 변경사항 업데이트
         Portfolio updatedPortfolio = Portfolio.builder()
@@ -157,10 +149,10 @@ public class PortfolioService {
                 .career(request.getCareer() != null ? request.getCareer() : portfolio.getCareer())
                 .partnerCompany(request.getPartnerCompany() != null ? request.getPartnerCompany() : portfolio.getPartnerCompany())
                 .totalPrice(totalPrice)
-                .contractCount(contractCount)
-                .avgPrice(avgPrice)
-                .minPrice(minPrice.orElse(0))
-                .maxPrice(maxPrice.orElse(0))
+                .contractCount(portfolio.getContractCount())
+                .avgPrice(portfolio.getAvgPrice())
+                .minPrice(portfolio.getMinPrice())
+                .maxPrice(portfolio.getMaxPrice())
                 .build();
         portfolioJPARepository.save(updatedPortfolio);
 
@@ -183,6 +175,15 @@ public class PortfolioService {
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(updatedPortfolio, planner);
 
+    }
+
+    @Transactional
+    public void updateConfirmedPrices(Planner planner, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {
+        Portfolio portfolio = portfolioJPARepository.findByPlanner(planner)
+                .orElseThrow(() -> new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage()));
+
+        portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
+        portfolioJPARepository.save(portfolio);
     }
 
     @Transactional
