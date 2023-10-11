@@ -4,12 +4,14 @@ import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
+import com.kakao.sunsuwedding.user.planner.Planner;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
-    public static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio,
+    public static PortfolioResponse.findById toPortfolioDTO(Planner planner,
+                                                            Portfolio portfolio,
                                                             List<String> images, List<PriceItem> priceItems,
                                                             List<Match> matches, List<Quotation> quotations) {
         List<PortfolioResponse.PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
@@ -23,14 +25,15 @@ public class PortfolioDTOConverter {
                 new PortfolioResponse.PaymentHistoryDTO(portfolio.getAvgPrice(), portfolio.getMinPrice(),
                         portfolio.getMaxPrice(), paymentDTOS);
 
-        return toPortfolioDTO(portfolio, images, priceDTO, paymentHistoryDTO);
+        return toPortfolioDTO(planner, portfolio, images, priceDTO, paymentHistoryDTO);
     }
 
-    private static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images,
+    private static PortfolioResponse.findById toPortfolioDTO(Planner planner, Portfolio portfolio, List<String> images,
                                                              PortfolioResponse.PriceDTO priceDTO,
                                                              PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO) {
         return new PortfolioResponse.findById(
                 portfolio.getId(),
+                planner.getId(),
                 images,
                 portfolio.getTitle(),
                 portfolio.getPlanner().getUsername(),

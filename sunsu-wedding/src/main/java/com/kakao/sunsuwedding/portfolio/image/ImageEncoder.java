@@ -20,7 +20,7 @@ public class ImageEncoder {
             return Base64.getEncoder().encodeToString(resource.getContentAsByteArray());
         }
         catch (IOException exception) {
-            throw new Exception500("이미지 인코딩 과정에서 오류가 발생했습니다.");
+            throw new Exception500(BaseException.PORTFOLIO_IMAGE_ENCODING_ERROR.getMessage());
         }
     }
 }

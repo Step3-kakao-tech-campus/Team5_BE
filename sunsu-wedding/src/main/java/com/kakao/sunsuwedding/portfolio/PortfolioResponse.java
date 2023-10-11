@@ -16,6 +16,7 @@ public class PortfolioResponse {
 
     public record findById(
             Long id,
+            Long userId,
             List<String> images,
             String title,
             String plannerName,
