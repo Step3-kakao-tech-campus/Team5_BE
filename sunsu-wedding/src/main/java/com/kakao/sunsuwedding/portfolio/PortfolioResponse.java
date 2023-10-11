@@ -16,6 +16,7 @@ public class PortfolioResponse {
 
     public record findById(
             Long id,
+            Long userId,
             List<String> images,
             String title,
             String plannerName,
@@ -61,6 +62,18 @@ public class PortfolioResponse {
             Long paymentPrice,
             String paymentCompany,
             String paymentDescription
+    ) {
+    }
+
+    public record myPortfolioDTO(
+            String plannerName,
+            List<String> imageItems,
+            List<PriceItemDTO> priceItems,
+            String title,
+            String description,
+            String location,
+            String career,
+            String partnerCompany
     ) {
     }
 }
