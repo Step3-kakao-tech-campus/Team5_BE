@@ -26,7 +26,6 @@ public class PortfolioResponse {
             String career,
             String partnerCompany,
             PaymentHistoryDTO paymentsHistory
-
     ) {
     }
 
