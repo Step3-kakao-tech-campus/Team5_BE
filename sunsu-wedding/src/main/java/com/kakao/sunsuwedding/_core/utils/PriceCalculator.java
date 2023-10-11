@@ -28,6 +28,7 @@ public class PriceCalculator {
     }
 
     public static Long calculateAvgPrice(List<Match> matches, Long contractCount) {
+        if (contractCount.equals(0L)) return 0L;
         return matches.stream()
                 .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
                 .mapToLong(Match::getConfirmedPrice)
