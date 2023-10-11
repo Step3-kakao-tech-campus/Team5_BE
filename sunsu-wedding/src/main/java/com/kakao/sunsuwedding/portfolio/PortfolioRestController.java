@@ -54,7 +54,6 @@ public class PortfolioRestController {
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         Pair<Portfolio, Planner> info = portfolioService.updatePortfolio(request, userDetails.getUser().getId());
 
-        // TODO: 이미지 업데이트 처리
         imageItemService.updateImage(images, info.getFirst(), info.getSecond());
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
@@ -65,4 +64,12 @@ public class PortfolioRestController {
         portfolioService.deletePortfolio(userDetails.getInfo());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
+
+    /*
+    @GetMapping("/myportfolio")
+    public ResponseEntity<?> myPortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        PortfolioResponse.myPortfolioDTO myPortfolio = portfolioService.myPortfolio(userDetails.getUser().getId());
+        return ResponseEntity.ok().body(ApiUtils.success(myPortfolio));
+    }
+     */
 }

@@ -194,4 +194,29 @@ public class PortfolioService {
         imageItemJPARepository.deleteAllByPortfolioPlannerId(planner.getId());
         portfolioJPARepository.deleteByPlanner(planner);
     }
+
+    /*
+    public PortfolioResponse.myPortfolioDTO myPortfolio(Long plannerId) {
+        // 플래너의 포트폴리오 탐색
+        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
+                .orElseThrow(() -> new Exception400(BaseException.PORTFOLIO_NOT_FOUND.getMessage()));
+
+        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolio.getId());
+        if (imageItems.isEmpty()) {
+            throw new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage());
+        }
+
+        List<String> images = imageItems
+                .stream()
+                .map(ImageEncoder::encode)
+                .toList();
+
+        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(id);
+        Portfolio portfolio = imageItems.get(0).getPortfolio();
+        Planner planner = portfolio.getPlanner();
+
+
+        return PortfolioDTOConverter.toMyPortfolioDTO();
+    }
+    */
 }

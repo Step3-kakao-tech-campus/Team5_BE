@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 // 모든 에러의 메시지를 관리
 @RequiredArgsConstructor
 public enum BaseException {
-    USER_NOT_FOUND("서비스를 탈퇴했거나 가입하지 않은 플래너의 요청입니다.", 404),
+    USER_NOT_FOUND("서비스를 탈퇴했거나 가입하지 않은 유저의 요청입니다.", 404),
     USER_EMAIL_EXIST("동일한 이메일이 존재합니다.", 400),
     USER_EMAIL_NOT_FOUND("이메일을 찾을 수 없습니다 : ", 400),
     USER_ROLE_WRONG("role은 플래너, 또는 예비 부부만 가능합니다.", 400),

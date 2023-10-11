@@ -64,4 +64,16 @@ public class PortfolioResponse {
             String paymentDescription
     ) {
     }
+
+    public record myPortfolioDTO(
+            String plannerName,
+            List<String> imageItems,
+            List<PriceItemDTO> priceItems,
+            String title,
+            String description,
+            String location,
+            String career,
+            String partnerCompany
+    ) {
+    }
 }
