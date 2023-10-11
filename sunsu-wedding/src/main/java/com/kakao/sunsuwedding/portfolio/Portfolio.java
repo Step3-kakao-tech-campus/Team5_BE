@@ -10,20 +10,20 @@ import org.hibernate.annotations.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor
 @Entity
-//@OnDelete(action= OnDeleteAction.CASCADE)
+@NoArgsConstructor
+@Getter
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Table(name = "portfolio_tb")
+@NamedEntityGraph(name = "PortfolioWithPlanner",
+                  attributeNodes = @NamedAttributeNode("planner"))
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "planner_id")
     private Planner planner;
 
     @Column(nullable = false)
