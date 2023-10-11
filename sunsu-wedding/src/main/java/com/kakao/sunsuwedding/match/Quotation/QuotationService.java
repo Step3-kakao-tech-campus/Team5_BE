@@ -22,7 +22,7 @@ public class QuotationService {
     private final QuotationJPARepository quotationJPARepository;
 
     @Transactional
-    public void insertQuotation(Pair<String, Long> info, Long matchId, QuotationRequest.add request) {
+    public void insertQuotation(Pair<String, Long> info, Long matchId, QuotationRequest.Add request) {
         Match match = getMatchByIdAndPlannerId(info, matchId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
@@ -45,7 +45,7 @@ public class QuotationService {
         );
     }
 
-    public QuotationResponse.findAllByMatchId findQuotationsByMatchId(Long matchId) {
+    public QuotationResponse.FindAllByMatchId findQuotationsByMatchId(Long matchId) {
         Match match = matchJPARepository.findById(matchId)
                 .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
 
@@ -54,7 +54,7 @@ public class QuotationService {
 
         List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toFindByMatchIdDTO(quotations);
 
-        return new QuotationResponse.findAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
+        return new QuotationResponse.FindAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
     }
 
     @Transactional
@@ -63,8 +63,6 @@ public class QuotationService {
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
-
-        checkQuotationEditable(quotation);
 
         // 확정 가격 업데이트
         Long previousConfirmedPrice = match.getConfirmedPrice();
@@ -76,13 +74,11 @@ public class QuotationService {
     }
 
     @Transactional
-    public void update(Pair<String, Long> info, Long matchId, Long quotationId, QuotationRequest.update request) {
+    public void update(Pair<String, Long> info, Long matchId, Long quotationId, QuotationRequest.Update request) {
         Match match = getMatchByIdAndPlannerId(info, matchId);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
-
-        checkQuotationEditable(quotation);
 
         Boolean isPriceChanged = (!quotation.getPrice().equals(request.price()));
 
@@ -112,16 +108,16 @@ public class QuotationService {
     }
 
     private static Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
-        return quotations
+        Quotation quotation = quotations
                 .stream()
                 .filter(iter -> Objects.equals(iter.getId(), quotationId))
                 .findFirst()
                 .orElseThrow(() -> new Exception404(BaseException.QUOTATION_NOT_FOUND.getMessage()));
-    }
 
-    private static void checkQuotationEditable(Quotation quotation) {
         if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
             throw new Exception403(BaseException.QUOTATION_ALREADY_CONFIRMED.getMessage());
         }
+
+        return quotation;
     }
 }

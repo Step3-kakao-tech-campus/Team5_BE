@@ -59,7 +59,7 @@ public class QuotationRestControllerTest {
     void post_quotations_success() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 1500000L,
                 "abc studio",
@@ -86,7 +86,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_titleTextSize() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb",
                 1500000L,
                 "abc studio",
@@ -113,7 +113,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_emptyTitle() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 null,
                 1500000L,
                 "abc studio",
@@ -140,7 +140,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_titleSizeZero() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "",
                 1500000L,
                 "abc studio",
@@ -167,7 +167,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_negativePrice() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 -1500000L,
                 "abc studio",
@@ -194,7 +194,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_emptyPrice() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 null,
                 "abc studio",
@@ -478,7 +478,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 500000L,
                 "updated company",
@@ -506,7 +506,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "",
                 500000L,
                 "updated company",
@@ -534,7 +534,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 null,
                 "updated company",
@@ -562,7 +562,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 -1000000L,
                 "updated company",
@@ -590,7 +590,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 100L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 1000000L,
                 "updated company",
@@ -618,7 +618,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 5L;
         Long quotationId = 6L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 1000000L,
                 "updated company",

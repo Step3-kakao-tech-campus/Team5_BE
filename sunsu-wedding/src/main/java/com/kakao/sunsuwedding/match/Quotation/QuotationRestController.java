@@ -20,19 +20,19 @@ public class QuotationRestController {
     @PostMapping("")
     public ResponseEntity<?> createQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @RequestParam @Min(1) Long matchId,
-                                             @Valid @RequestBody QuotationRequest.add request) {
+                                             @Valid @RequestBody QuotationRequest.Add request) {
         quotationService.insertQuotation(userDetails.getInfo(), matchId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping("")
     public ResponseEntity<?> findQuotations(@RequestParam @Min(1) Long matchId) {
-        QuotationResponse.findAllByMatchId response = quotationService.findQuotationsByMatchId(matchId);
+        QuotationResponse.FindAllByMatchId response = quotationService.findQuotationsByMatchId(matchId);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @PostMapping("/confirmAll")
-    public ResponseEntity<?> confirmAll(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam Long matchId) {
+    public ResponseEntity<?> confirmAll(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam @Min(1) Long matchId) {
         matchService.confirmAll(userDetails.getInfo(), matchId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
@@ -49,7 +49,7 @@ public class QuotationRestController {
     public ResponseEntity<?> updateQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @PathVariable @Min(1) Long quotationId,
                                              @RequestParam @Min(1) Long matchId,
-                                             @Valid @RequestBody QuotationRequest.update request) {
+                                             @Valid @RequestBody QuotationRequest.Update request) {
         quotationService.update(userDetails.getInfo(), matchId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
