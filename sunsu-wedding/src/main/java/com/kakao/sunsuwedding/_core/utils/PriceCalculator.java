@@ -1,5 +1,7 @@
 package com.kakao.sunsuwedding._core.utils;
 
+import com.kakao.sunsuwedding.match.Match;
+import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationStatus;
 import com.kakao.sunsuwedding.portfolio.PortfolioResponse;
@@ -23,5 +25,26 @@ public class PriceCalculator {
             else return 0L;
         })
         .sum();
+    }
+
+    public static Long calculateAvgPrice(List<Match> matches, Long contractCount) {
+        return matches.stream()
+                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
+                .mapToLong(Match::getConfirmedPrice)
+                .sum() / contractCount;
+    }
+
+    public static Long calculateMinPrice(List<Match> matches) {
+        return matches.stream()
+                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
+                .mapToLong(Match::getConfirmedPrice)
+                .min().orElse(0);
+    }
+
+    public static Long calculateMaxPrice(List<Match> matches) {
+        return matches.stream()
+                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
+                .mapToLong(Match::getConfirmedPrice)
+                .max().orElse(0);
     }
 }

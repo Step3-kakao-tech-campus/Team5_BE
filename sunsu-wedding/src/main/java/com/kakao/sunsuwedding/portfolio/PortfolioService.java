@@ -39,11 +39,14 @@ public class PortfolioService {
     public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
+                .orElseThrow(() -> new Exception400("서비스를 탈퇴했거나 가입하지 않은 플래너의 요청입니다: " + plannerId));
 
-        // TODO: 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
-        portfolioJPARepository.findByPlannerId(plannerId)
-                .ifPresent(presentPortfolio -> new Exception400("해당 플래너의 포트폴리오가 이미 존재합니다: " + plannerId));
+        // 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
+        Portfolio existPortfolio = portfolioJPARepository.findByPlannerId(plannerId)
+                .orElse(new Portfolio());
+
+        if (existPortfolio.getId() != null)
+            throw new Exception400("해당 플래너의 포트폴리오가 이미 존재합니다. 포트폴리오는 플래너당 하나만 생성할 수 있습니다: " + plannerId);
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
@@ -67,10 +70,10 @@ public class PortfolioService {
                 .career(request.getCareer())
                 .partnerCompany(request.getPartnerCompany())
                 .totalPrice(totalPrice)
-                .contractCount(contractCount)
-                .avgPrice(avgPrice)
-                .minPrice(minPrice.orElse(0))
-                .maxPrice(maxPrice.orElse(0))
+                .contractCount(0L)
+                .avgPrice(0L)
+                .minPrice(0L)
+                .maxPrice(0L)
                 .build();
         portfolioJPARepository.save(portfolio);
 
@@ -123,24 +126,18 @@ public class PortfolioService {
 
     @Transactional
     public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, Long plannerId) {
-        // 요청한 플래너 및 포트폴리오 탐색
+        // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new Exception400("플래너를 찾을 수 없습니다: " + plannerId));
+                .orElseThrow(() -> new Exception400("서비스를 탈퇴했거나 가입하지 않은 플래너의 요청입니다: " + plannerId));
+
+        // 플래너의 포트폴리오 탐색
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new Exception400("해당하는 플래너의 포트폴리오를 찾을 수 없습니다: " + plannerId));
+                .orElseThrow(() -> new Exception400("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다: " + plannerId));
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
                 .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
                 .sum();
-        Long contractCount = Long.valueOf(request.getItems().size());
-        Long avgPrice = totalPrice / contractCount;
-        OptionalLong minPrice = request.getItems().stream()
-                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
-                .min();
-        OptionalLong maxPrice = request.getItems().stream()
-                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
-                .max();
 
         // 불변 객체 패턴을 고려한 포트폴리오 변경사항 업데이트
         Portfolio updatedPortfolio = Portfolio.builder()
@@ -152,10 +149,10 @@ public class PortfolioService {
                 .career(request.getCareer() != null ? request.getCareer() : portfolio.getCareer())
                 .partnerCompany(request.getPartnerCompany() != null ? request.getPartnerCompany() : portfolio.getPartnerCompany())
                 .totalPrice(totalPrice)
-                .contractCount(contractCount)
-                .avgPrice(avgPrice)
-                .minPrice(minPrice.orElse(0))
-                .maxPrice(maxPrice.orElse(0))
+                .contractCount(portfolio.getContractCount())
+                .avgPrice(portfolio.getAvgPrice())
+                .minPrice(portfolio.getMinPrice())
+                .maxPrice(portfolio.getMaxPrice())
                 .build();
         portfolioJPARepository.save(updatedPortfolio);
 
@@ -178,6 +175,15 @@ public class PortfolioService {
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(updatedPortfolio, planner);
 
+    }
+
+    @Transactional
+    public void updateConfirmedPrices(Planner planner, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {
+        Portfolio portfolio = portfolioJPARepository.findByPlanner(planner)
+                .orElseThrow(() -> new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage()));
+
+        portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
+        portfolioJPARepository.save(portfolio);
     }
 
     @Transactional

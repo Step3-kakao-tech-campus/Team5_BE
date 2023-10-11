@@ -4,9 +4,11 @@ import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception400;
 import com.kakao.sunsuwedding._core.errors.exception.Exception403;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.match.Quotation.QuotationStatus;
+import com.kakao.sunsuwedding.portfolio.PortfolioService;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
@@ -27,6 +29,7 @@ public class MatchService {
     private final PlannerJPARepository plannerJPARepository;
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
+    private final PortfolioService portfolioService;
 
     // Match Update : 확정 상태, 가격, 확정 날짜
     @Transactional
@@ -42,6 +45,9 @@ public class MatchService {
         // 모든 견적서 확정 완료 시
         if (result.getFirst()) {
             match.updateStatusConfirmed(result.getSecond());
+            matchJPARepository.save(match);
+            // 견적서 전체 확정 후 플래너 포트폴리오의 avg, min, max price 업데이트 하기
+            updateConfirmedPrices(match.getPlanner());
         }
         // 확정되지 않은 견적서가 있을 때
         else {
@@ -109,5 +115,20 @@ public class MatchService {
             if (!match.getCouple().getId().equals(id))
                 throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
         }
+    }
+
+    private void updateConfirmedPrices(Planner planner) {
+        List<Match> matches = matchJPARepository.findAllByPlanner(planner);
+
+        // 건수, 평균, 최소, 최대 가격 구하기
+        Long contractCount = matches.stream()
+                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
+                .count();
+        Long avgPrice = PriceCalculator.calculateAvgPrice(matches, contractCount);
+        Long minPrice = PriceCalculator.calculateMinPrice(matches);
+        Long maxPrice = PriceCalculator.calculateMaxPrice(matches);
+
+        // portfolio 단에서 값 업데이트
+        portfolioService.updateConfirmedPrices(planner, contractCount, avgPrice, minPrice, maxPrice);
     }
 }

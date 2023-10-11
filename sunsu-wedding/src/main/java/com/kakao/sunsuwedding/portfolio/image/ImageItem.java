@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-@Entity
-@Table(name = "imageitem_tb")
+@Getter
 @NoArgsConstructor
+@Entity
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "ImageItemWithPortfolio",
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
                 subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )
 })
-@Getter
+@Table(name = "imageitem_tb")
 public class ImageItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
