@@ -106,7 +106,7 @@ public class MatchRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     public void match_delete_fail_test3() throws Exception {
         //given
-        Long matchId = 5L;
+        Long matchId = 10L;
 
         //when
         ResultActions result = mvc.perform(
