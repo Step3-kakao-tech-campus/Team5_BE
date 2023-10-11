@@ -37,13 +37,13 @@ public class PortfolioRestController {
     @GetMapping(value = "/portfolios")
     public ResponseEntity<?> getPortfolios(@RequestParam @Min(0) int page) {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
-        List<PortfolioResponse.findAllBy> items = portfolioService.getPortfolios(pageRequest);
+        List<PortfolioResponse.FindAllDTO> items = portfolioService.getPortfolios(pageRequest);
         return ResponseEntity.ok().body(ApiUtils.success(items));
     }
 
     @GetMapping("/portfolios/{id}")
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
-        PortfolioResponse.findById portfolio = portfolioService.getPortfolioById(id);
+        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
@@ -65,11 +65,9 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    /*
     @GetMapping("/myportfolio")
     public ResponseEntity<?> myPortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        PortfolioResponse.myPortfolioDTO myPortfolio = portfolioService.myPortfolio(userDetails.getUser().getId());
+        PortfolioResponse.MyPortfolioDTO myPortfolio = portfolioService.myPortfolio(userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(myPortfolio));
     }
-     */
 }
