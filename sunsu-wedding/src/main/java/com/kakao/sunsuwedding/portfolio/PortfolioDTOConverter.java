@@ -4,33 +4,36 @@ import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
+import com.kakao.sunsuwedding.user.planner.Planner;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
-    public static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio,
+    public static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Planner planner,
+                                                            Portfolio portfolio,
                                                             List<String> images, List<PriceItem> priceItems,
                                                             List<Match> matches, List<Quotation> quotations) {
-        List<PortfolioResponse.PriceItemDTO> priceItemDTOS = toPriceItemDTOS(priceItems);
+        List<PortfolioResponse.PriceItemDTO> priceItemDTOS = PriceItemDTOConvertor(priceItems);
 
         Long totalPrice = PriceCalculator.calculatePortfolioPrice(priceItemDTOS);
         PortfolioResponse.PriceDTO priceDTO = new PortfolioResponse.PriceDTO(totalPrice, priceItemDTOS);
 
         // 거래 내역
-        List<PortfolioResponse.PaymentDTO> paymentDTOS = toPaymentDTOS(matches, quotations);
+        List<PortfolioResponse.PaymentDTO> paymentDTOS = PaymentDTOConvertor(matches, quotations);
         PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO =
                 new PortfolioResponse.PaymentHistoryDTO(portfolio.getAvgPrice(), portfolio.getMinPrice(),
                         portfolio.getMaxPrice(), paymentDTOS);
 
-        return toPortfolioDTO(portfolio, images, priceDTO, paymentHistoryDTO);
+        return FindByIdDTOConvertor(planner, portfolio, images, priceDTO, paymentHistoryDTO);
     }
 
-    private static PortfolioResponse.findById toPortfolioDTO(Portfolio portfolio, List<String> images,
+    private static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Planner planner, Portfolio portfolio, List<String> images,
                                                              PortfolioResponse.PriceDTO priceDTO,
                                                              PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO) {
-        return new PortfolioResponse.findById(
+        return new PortfolioResponse.FindByIdDTO(
                 portfolio.getId(),
+                planner.getId(),
                 images,
                 portfolio.getTitle(),
                 portfolio.getPlanner().getUsername(),
@@ -44,12 +47,12 @@ public class PortfolioDTOConverter {
         );
     }
 
-    public static List<PortfolioResponse.findAllBy> toListItemDTO(List<Portfolio> portfolios, List<String> images) {
+    public static List<PortfolioResponse.FindAllDTO> FindAllDTOConvertor(List<Portfolio> portfolios, List<String> images) {
         return IntStream
                 .range(0, portfolios.size())
                 .mapToObj(i -> {
                     Portfolio portfolio = portfolios.get(i);
-                    return new PortfolioResponse.findAllBy(
+                    return new PortfolioResponse.FindAllDTO(
                             portfolio.getId(),
                             images.get(i),
                             portfolio.getTitle(),
@@ -62,22 +65,29 @@ public class PortfolioDTOConverter {
                 .toList();
     }
 
-    public static List<PortfolioResponse.PriceItemDTO> toPriceItemDTOS(List<PriceItem> priceItems) {
+    public static List<PortfolioResponse.PriceItemDTO> PriceItemDTOConvertor(List<PriceItem> priceItems) {
         return priceItems
                 .stream()
                 .map(priceItem -> new PortfolioResponse.PriceItemDTO(priceItem.getItemTitle(), priceItem.getItemPrice()))
                 .toList();
     }
 
-    public static List<PortfolioResponse.PaymentItemDTO> toPaymentItemDTOS(List<Quotation> quotations) {
-        return quotations
-                .stream()
-                .map(quotation -> new PortfolioResponse.PaymentItemDTO(quotation.getTitle(), quotation.getPrice(),
-                        quotation.getCompany(), quotation.getDescription()))
-                .toList();
+    public static PortfolioResponse.MyPortfolioDTO MyPortfolioDTOConvertor(Planner planner,
+                                                                           Portfolio portfolio,
+                                                                           List<String> images, List<PriceItem> priceItems) {
+        return new PortfolioResponse.MyPortfolioDTO(
+                planner.getUsername(),
+                images,
+                PriceItemDTOConvertor(priceItems),
+                portfolio.getTitle(),
+                portfolio.getDescription(),
+                portfolio.getLocation(),
+                portfolio.getCareer(),
+                portfolio.getPartnerCompany()
+        );
     }
 
-    public static List<PortfolioResponse.PaymentDTO> toPaymentDTOS(List<Match> matches, List<Quotation> quotations) {
+    public static List<PortfolioResponse.PaymentDTO> PaymentDTOConvertor(List<Match> matches, List<Quotation> quotations) {
         return matches.stream()
                 .map(match -> {
                     List<Quotation> matchingQuotations = quotations.stream()
@@ -86,8 +96,17 @@ public class PortfolioDTOConverter {
                             .toList();
                     return new PortfolioResponse.PaymentDTO(match.getConfirmedPrice(),
                             match.getConfirmed_at().toString().substring(0, 7), // 월까지만 제공
-                            toPaymentItemDTOS(matchingQuotations));
+                            PaymentItemDTOConvertor(matchingQuotations));
                 })
                 .toList();
     }
+
+    public static List<PortfolioResponse.PaymentItemDTO> PaymentItemDTOConvertor(List<Quotation> quotations) {
+        return quotations
+                .stream()
+                .map(quotation -> new PortfolioResponse.PaymentItemDTO(quotation.getTitle(), quotation.getPrice(),
+                        quotation.getCompany(), quotation.getDescription()))
+                .toList();
+    }
+
 }

@@ -3,7 +3,7 @@ package com.kakao.sunsuwedding.portfolio;
 import java.util.List;
 
 public class PortfolioResponse {
-    public record findAllBy(
+    public record FindAllDTO(
             Long id,
             String image,
             String title,
@@ -14,8 +14,9 @@ public class PortfolioResponse {
     ) {
     }
 
-    public record findById(
+    public record FindByIdDTO(
             Long id,
+            Long userId,
             List<String> images,
             String title,
             String plannerName,
@@ -61,6 +62,18 @@ public class PortfolioResponse {
             Long paymentPrice,
             String paymentCompany,
             String paymentDescription
+    ) {
+    }
+
+    public record MyPortfolioDTO(
+            String plannerName,
+            List<String> imageItems,
+            List<PriceItemDTO> priceItems,
+            String title,
+            String description,
+            String location,
+            String career,
+            String partnerCompany
     ) {
     }
 }
