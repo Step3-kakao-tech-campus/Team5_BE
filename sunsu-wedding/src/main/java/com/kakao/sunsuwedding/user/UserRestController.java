@@ -3,6 +3,7 @@ package com.kakao.sunsuwedding.user;
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
+import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,24 +36,14 @@ public class UserRestController {
     // 유저 정보 조회
     @GetMapping("/info")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pair<Role, Integer> info = userDetails.getInfo();
-        UserResponse.FindById responseDTO = userService.findById(info.getFirst(), info.getSecond());
+        UserResponse.FindById responseDTO = userService.findById(userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
-    }
-
-    // 유저 등급 업그레이드
-    @PostMapping("/upgrade")
-    public ResponseEntity<?> upgrade(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pair<Role, Integer> info = userDetails.getInfo();
-        userService.upgrade(info.getFirst(), info.getSecond());
-        return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     // 회원 탈퇴
     @DeleteMapping("")
     public ResponseEntity<?> withdraw(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pair<Role, Integer> info = userDetails.getInfo();
-        userService.withdraw(info.getFirst(),info.getSecond());
+        userService.withdraw(userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }
