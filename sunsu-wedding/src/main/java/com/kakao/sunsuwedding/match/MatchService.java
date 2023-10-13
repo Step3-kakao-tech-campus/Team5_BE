@@ -96,10 +96,10 @@ public class MatchService {
         Long plannerId = requestDTO.getPlannerId();
 
         Couple couple = coupleJPARepository.findById(coupleId).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND + " couple")
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " couple")
         );
         Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND + " planner")
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " planner")
         );
         matchJPARepository.save(requestDTO.toMatchEntity(couple, planner));
     }
