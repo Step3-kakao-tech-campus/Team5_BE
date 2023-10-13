@@ -44,6 +44,8 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
+                    .order_id("")
+                    .payed_amount(0L)
                     .is_active(true)
                     .created_at(LocalDateTime.now())
                     .build();
@@ -54,6 +56,8 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
+                    .order_id("")
+                    .payed_amount(0L)
                     .is_active(true)
                     .created_at(LocalDateTime.now())
                     .build();
