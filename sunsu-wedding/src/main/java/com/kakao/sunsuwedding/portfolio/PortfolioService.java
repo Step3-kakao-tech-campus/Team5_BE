@@ -8,6 +8,8 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
+import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.ImageItem;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
@@ -18,13 +20,13 @@ import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalLong;
 
 @RequiredArgsConstructor
 @Service
@@ -86,15 +88,39 @@ public class PortfolioService {
         return Pair.of(portfolio, planner);
     }
 
-    public List<PortfolioResponse.FindAllDTO> getPortfolios(PageRequest pageRequest) {
-        List<Portfolio> portfolios = portfolioJPARepository.findAllByOrderByCreatedAtDesc(pageRequest).getContent();
+    public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request) {
+        Pageable pageable = PageRequest.ofSize(request.size());
+        List<Portfolio> portfolios = new ArrayList<>();
 
-        List<String> images = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios)
+        if (request.key().equals(CursorRequest.START_KEY)) {
+            portfolios = portfolioJPARepository.findAllByOrderByIdDesc(pageable);
+        }
+        else if (request.hasKey()) {
+            portfolios = portfolioJPARepository.findAllByIdLessThanOrderByIdDesc(request.key(), pageable);
+        }
+        else {
+            return new PageCursor<>(null, request.next(CursorRequest.NONE_KEY).key());
+        }
+
+        List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
+        List<String> images = portfolios
                 .stream()
-                .map(ImageEncoder::encode)
+                .map(item -> imageItems
+                        .stream()
+                        .filter(imageItem -> imageItem.getPortfolio().getId().equals(item.getId()))
+                        .findFirst()
+                        .map(ImageEncoder::encode)
+                        .orElseGet(String::new))
                 .toList();
 
-        return PortfolioDTOConverter.FindAllDTOConvertor(portfolios, images);
+        Long nextKey = portfolios
+                .stream()
+                .mapToLong(Portfolio::getId)
+                .min()
+                .orElse(CursorRequest.NONE_KEY);
+
+        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, images);
+        return new PageCursor<>(data, request.next(nextKey).key());
     }
 
     public PortfolioResponse.FindByIdDTO getPortfolioById(Long id) {
