@@ -7,7 +7,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 
-// 인증 안됨
+// 인증 안됨 401
 @Getter
 public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException(String message) {

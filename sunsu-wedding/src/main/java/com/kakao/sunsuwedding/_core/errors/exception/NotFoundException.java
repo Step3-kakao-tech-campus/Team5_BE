@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 
-// 데이터를 찾을 수 없음
+// 데이터를 찾을 수 없음 404
 @Getter
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

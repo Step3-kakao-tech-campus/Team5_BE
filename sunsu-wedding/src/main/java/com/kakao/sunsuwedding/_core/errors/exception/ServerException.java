@@ -5,7 +5,7 @@ import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-// 서버 에러
+// 서버 에러 500
 @Getter
 public class ServerException extends RuntimeException {
     public ServerException(String message) {

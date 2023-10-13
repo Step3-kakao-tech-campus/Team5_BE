@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 
-// 권한 없음
+// 권한 없음 403
 @Getter
 public class ForbiddenException extends RuntimeException {
     public ForbiddenException(String message) {

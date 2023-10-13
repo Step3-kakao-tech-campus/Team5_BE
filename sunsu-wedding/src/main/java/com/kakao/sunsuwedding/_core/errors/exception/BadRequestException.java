@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 
-// 유효성 검사 실패, 잘못된 파라메터 요청
+// 유효성 검사 실패, 잘못된 파라메터 요청 400
 @Getter
 public class BadRequestException extends RuntimeException {
 
