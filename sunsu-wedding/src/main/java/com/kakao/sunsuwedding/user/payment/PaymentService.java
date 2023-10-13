@@ -36,13 +36,13 @@ public class PaymentService {
 
     // 유저 등급을 NORMAL -> PREMIUM으로 업그레이드 시켜줌
     @Transactional
-    public String upgrade(Long userId, PaymentRequest.UpgradeDTO requestDTO) {
+    public void upgrade(Long userId, PaymentRequest.UpgradeDTO requestDTO) {
         User user = findUserById(userId);
         boolean isOK = isCorrectData(user, requestDTO.getOrderId(), requestDTO.getAmount())
                 && requestDTO.getStatus().equals("DONE");
 
         if (isOK) user.upgrade();
-        return isOK ? "success" : "fail";
+        else throw new Exception400(BaseException.PAYMENT_WRONG_INFORMATION.getMessage());
     }
 
     // 받아온 payment와 관련된 데이터(orderId, amount)가 정확한지 확인)
