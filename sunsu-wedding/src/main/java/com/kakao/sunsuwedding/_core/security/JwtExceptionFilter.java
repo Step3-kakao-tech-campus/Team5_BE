@@ -3,6 +3,7 @@ package com.kakao.sunsuwedding._core.security;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,7 +30,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             chain.doFilter(request, response);
         } catch (JWTCreationException | JWTVerificationException e) {
-            setResponse(response, new UnauthorizedException("잘못된 토큰입니다."));
+            setResponse(response, new UnauthorizedException(BaseException.USER_TOKEN_WRONG));
         }
     }
 
