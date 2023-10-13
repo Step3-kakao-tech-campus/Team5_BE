@@ -12,6 +12,6 @@ public interface MatchJPARepository extends JpaRepository<Match, Long> {
     List<Match> findAllByPlanner(Planner planner);
     List<Match> findAllByCouple(Couple couple);
 
-    @Query("select m from Match m where m.planner = :planner and m.confirmed_at != null order by m.confirmed_at desc limit 10")
+    @Query("select m from Match m where m.planner = :planner and m.confirmedAt != null order by m.confirmedAt desc limit 10")
     List<Match> findLatestTenByPlanner(@Param("planner") Planner planner);
 }

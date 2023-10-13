@@ -44,10 +44,10 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
-                    .order_id("")
-                    .payed_amount(0L)
-                    .is_active(true)
-                    .created_at(LocalDateTime.now())
+                    .orderId("")
+                    .payedAmount(0L)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
                     .build();
         }
         public Planner toPlannerEntity() {
@@ -56,10 +56,10 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
-                    .order_id("")
-                    .payed_amount(0L)
-                    .is_active(true)
-                    .created_at(LocalDateTime.now())
+                    .orderId("")
+                    .payedAmount(0L)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
                     .build();
         }
     }

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Couple extends User {
 
     @Builder
-    public Couple(Long id, String email, String password, String username, Grade grade, boolean is_active, LocalDateTime created_at, String order_id, Long payed_amount, LocalDateTime payed_at) {
-        super(id, email, password, username, grade, is_active, created_at, order_id, payed_amount, payed_at);
+    public Couple(Long id, String email, String password, String username, Grade grade, boolean isActive, LocalDateTime createdAt, String orderId, Long payedAmount, LocalDateTime payedAt) {
+        super(id, email, password, username, grade, isActive, createdAt, orderId, payedAmount, payedAt);
     }
 }

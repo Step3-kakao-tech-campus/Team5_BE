@@ -16,8 +16,8 @@ public class DummyEntity {
                 .email(username+"@nate.com")
                 .password("couple1234!")
                 .username("couple")
-                .created_at(LocalDateTime.now())
-                .is_active(true)
+                .createdAt(LocalDateTime.now())
+                .isActive(true)
                 .grade(Grade.NORMAL)
                 .build();
     }
@@ -26,8 +26,8 @@ public class DummyEntity {
                 .email(username+"@nate.com")
                 .password("planner1234!")
                 .username("planner")
-                .created_at(LocalDateTime.now())
-                .is_active(true)
+                .createdAt(LocalDateTime.now())
+                .isActive(true)
                 .grade(Grade.NORMAL)
                 .build();
     }

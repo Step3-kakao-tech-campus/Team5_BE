@@ -47,8 +47,8 @@ public class PaymentService {
 
     // 받아온 payment와 관련된 데이터(orderId, amount)가 정확한지 확인)
     private boolean isCorrectData(User user, String orderId, Long amount){
-        return user.getOrder_id().equals(orderId)
-                && Objects.equals(user.getPayed_amount(), amount);
+        return user.getOrderId().equals(orderId)
+                && Objects.equals(user.getPayedAmount(), amount);
     }
 
     private User findUserById(Long userId){
