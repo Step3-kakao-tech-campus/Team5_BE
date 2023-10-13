@@ -90,6 +90,27 @@ public class PortfolioService {
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request) {
         Pageable pageable = PageRequest.ofSize(request.size());
+        List<Portfolio> portfolios = getPortfoliosByCursor(request, pageable);
+
+        if (portfolios.isEmpty()) return new PageCursor<>(null, CursorRequest.NONE_KEY);
+
+        Long nextKey = getNextKey(portfolios);
+        List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
+        List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
+
+        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages);
+        return new PageCursor<>(data, request.next(nextKey).key());
+    }
+
+    private static Long getNextKey(List<Portfolio> portfolios) {
+        return portfolios
+                .stream()
+                .mapToLong(Portfolio::getId)
+                .min()
+                .orElse(CursorRequest.NONE_KEY);
+    }
+
+    private List<Portfolio> getPortfoliosByCursor(CursorRequest request, Pageable pageable) {
         List<Portfolio> portfolios = new ArrayList<>();
 
         if (request.key().equals(CursorRequest.START_KEY)) {
@@ -98,29 +119,8 @@ public class PortfolioService {
         else if (request.hasKey()) {
             portfolios = portfolioJPARepository.findAllByIdLessThanOrderByIdDesc(request.key(), pageable);
         }
-        else {
-            return new PageCursor<>(null, request.next(CursorRequest.NONE_KEY).key());
-        }
 
-        List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
-        List<String> images = portfolios
-                .stream()
-                .map(item -> imageItems
-                        .stream()
-                        .filter(imageItem -> imageItem.getPortfolio().getId().equals(item.getId()))
-                        .findFirst()
-                        .map(ImageEncoder::encode)
-                        .orElseGet(String::new))
-                .toList();
-
-        Long nextKey = portfolios
-                .stream()
-                .mapToLong(Portfolio::getId)
-                .min()
-                .orElse(CursorRequest.NONE_KEY);
-
-        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, images);
-        return new PageCursor<>(data, request.next(nextKey).key());
+        return portfolios;
     }
 
     public PortfolioResponse.FindByIdDTO getPortfolioById(Long id) {
