@@ -1,13 +1,12 @@
 package com.kakao.sunsuwedding.user;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception400;
-import com.kakao.sunsuwedding._core.errors.exception.Exception404;
-import com.kakao.sunsuwedding._core.errors.exception.Exception500;
+import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
-import com.kakao.sunsuwedding.user.constant.Grade;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
@@ -45,17 +44,17 @@ public class UserService {
                 plannerJPARepository.save(requestDTO.toPlannerEntity());
             }
         } catch (Exception e) {
-            throw new Exception500(BaseException.USER_UNEXPECTED_ERROR.getMessage() + e.getMessage());
+            throw new ServerException(BaseException.USER_UNEXPECTED_ERROR);
         }
     }
 
     public String login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
-                () -> new Exception400(BaseException.USER_EMAIL_NOT_FOUND.getMessage() + requestDTO.getEmail())
+                () -> new BadRequestException(BaseException.USER_EMAIL_NOT_FOUND + requestDTO.getEmail())
         );
         log.debug("디버그: 로그인 토큰 {}", user.getId());
         if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
-            throw new Exception400(BaseException.USER_PASSWORD_WRONG.getMessage());
+            throw new BadRequestException(BaseException.USER_PASSWORD_WRONG);
         }
         return jwtProvider.create(user);
     }
@@ -74,20 +73,20 @@ public class UserService {
     private void sameCheckPassword(String password, String password2) {
         boolean isEqual = Objects.equals(password, password2);
         if (!isEqual){
-            throw new Exception400(BaseException.USER_PASSWORD_NOT_SAME.getMessage());
+            throw new BadRequestException(BaseException.USER_PASSWORD_NOT_SAME);
         }
     }
 
     private void sameCheckEmail(String email) {
         Optional<User> userOptional = userJPARepository.findByEmailNative(email);
         if (userOptional.isPresent()){
-            throw new Exception400(BaseException.USER_EMAIL_EXIST.getMessage());
+            throw new BadRequestException(BaseException.USER_EMAIL_EXIST);
         }
     }
 
     private User findUserById(Long userId){
         return userJPARepository.findById(userId).orElseThrow(
-                () -> new Exception404(BaseException.USER_NOT_FOUND.getMessage())
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND)
         );
     }
 }

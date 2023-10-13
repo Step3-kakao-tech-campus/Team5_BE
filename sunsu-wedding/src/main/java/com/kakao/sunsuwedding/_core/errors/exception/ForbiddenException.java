@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding._core.errors.exception;
 
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -7,11 +8,15 @@ import org.springframework.http.HttpStatus;
 
 // 권한 없음
 @Getter
-public class Exception403 extends RuntimeException {
-    public Exception403(String message) {
+public class ForbiddenException extends RuntimeException {
+    public ForbiddenException(String message) {
         super(message);
     }
 
+    public ForbiddenException(BaseException exception){
+        super(exception.getMessage());
+    }
+    
     public Object body(){
         return ApiUtils.error(getMessage(), HttpStatus.FORBIDDEN);
     }

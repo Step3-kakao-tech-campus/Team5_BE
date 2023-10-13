@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding._core.security;
 
-import com.kakao.sunsuwedding._core.errors.exception.Exception401;
-import com.kakao.sunsuwedding._core.errors.exception.Exception403;
+import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
+import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -67,14 +67,14 @@ public class SecurityConfig {
         // 8. 인증 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.authenticationEntryPoint((request, response, authException) -> {
-                    filterResponseUtils.unAuthorized(response, new Exception401("인증되지 않았습니다"));
+                    filterResponseUtils.unAuthorized(response, new UnauthorizedException("인증되지 않았습니다"));
                 })
         );
 
         // 9. 권한 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    filterResponseUtils.forbidden(response, new Exception403("권한이 없습니다"));
+                    filterResponseUtils.forbidden(response, new ForbiddenException("권한이 없습니다"));
                 })
         );
 

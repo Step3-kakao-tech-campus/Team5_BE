@@ -1,8 +1,8 @@
 package com.kakao.sunsuwedding.match.Quotation;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception403;
-import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
@@ -26,7 +26,7 @@ public class QuotationService {
         Match match = getMatchByIdAndPlannerId(info, matchId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
-            throw new Exception403(BaseException.MATCHING_ALREADY_CONFIRMED.getMessage());
+            throw new ForbiddenException(BaseException.MATCHING_ALREADY_CONFIRMED);
         }
 
         // 기존 매칭 가격에서 해당 견적서 가격 업데이터
@@ -47,7 +47,7 @@ public class QuotationService {
 
     public QuotationResponse.findAllByMatchId findQuotationsByMatchId(Long matchId) {
         Match match = matchJPARepository.findById(matchId)
-                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         MatchStatus status = match.getStatus();
@@ -101,11 +101,11 @@ public class QuotationService {
         // 해당 매칭 내역에 접근할 수 없다면 403 에러를 내보내야 하기 때문에
         // 매칭 ID 로만 조회 후 권한 체크
         Match match = matchJPARepository.findById(matchId)
-                .orElseThrow(() -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         Long plannerId = info.getSecond();
         if (!match.getPlanner().getId().equals(plannerId)) {
-            throw new Exception403(BaseException.QUOTATION_ACCESS_DENIED.getMessage());
+            throw new ForbiddenException(BaseException.QUOTATION_ACCESS_DENIED);
         }
 
         return match;
@@ -116,12 +116,12 @@ public class QuotationService {
                 .stream()
                 .filter(iter -> Objects.equals(iter.getId(), quotationId))
                 .findFirst()
-                .orElseThrow(() -> new Exception404(BaseException.QUOTATION_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BaseException.QUOTATION_NOT_FOUND));
     }
 
     private static void checkQuotationEditable(Quotation quotation) {
         if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
-            throw new Exception403(BaseException.QUOTATION_ALREADY_CONFIRMED.getMessage());
+            throw new ForbiddenException(BaseException.QUOTATION_ALREADY_CONFIRMED);
         }
     }
 }

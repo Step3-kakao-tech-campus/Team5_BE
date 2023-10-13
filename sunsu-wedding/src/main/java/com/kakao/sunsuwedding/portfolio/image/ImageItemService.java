@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding.portfolio.image;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception500;
+import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +41,7 @@ public class ImageItemService {
             boolean created = directory.mkdirs();
             if (!created) {
                 // 디렉토리 생성에 실패한 경우 예외 처리
-                throw new Exception500(BaseException.PORTFOLIO_CREATE_DIRECTORY_ERROR.getMessage());
+                throw new ServerException(BaseException.PORTFOLIO_CREATE_DIRECTORY_ERROR);
             }
         }
         return directory;
@@ -53,7 +52,7 @@ public class ImageItemService {
         try {
             FileUtils.cleanDirectory(directory);
         }
-        catch (Exception e) {throw new Exception500(BaseException.PORTFOLIO_CLEAN_DIRECTORY_ERROR.getMessage());}
+        catch (Exception e) {throw new ServerException(BaseException.PORTFOLIO_CLEAN_DIRECTORY_ERROR);}
 
         // TODO: 삭제할 이미지 데이터가 존재하지 않는 경우 예외처리
         imageItemJPARepository.deleteAllByPortfolioId(portfolioId);
@@ -73,7 +72,7 @@ public class ImageItemService {
         }
         catch (IOException e) {
             logger.error("Failed to process image", e);
-            throw new Exception500(BaseException.PORTFOLIO_IMAGE_CREATE_ERROR.getMessage());
+            throw new ServerException(BaseException.PORTFOLIO_IMAGE_CREATE_ERROR);
         }
     }
 
