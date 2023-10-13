@@ -64,13 +64,13 @@ public class QuotationService {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
 
-        // 확정 가격 업데이트
-        Long previousConfirmedPrice = match.getConfirmedPrice();
-        match.updateConfirmedPrice(previousConfirmedPrice + quotation.getPrice());
-        matchJPARepository.save(match);
-
         quotation.updateStatus(QuotationStatus.CONFIRMED);
         quotationJPARepository.save(quotation);
+
+        // 확정 가격 업데이트
+        Long confirmedPrice = PriceCalculator.calculateConfirmedQuotationPrice(quotations);
+        match.updateConfirmedPrice(confirmedPrice);
+        matchJPARepository.save(match);
     }
 
     @Transactional

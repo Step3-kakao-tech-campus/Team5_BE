@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 public interface ImageItemJPARepository extends JpaRepository<ImageItem, Long> {
-    @EntityGraph("ImageItemWithPortfolio")
     List<ImageItem> findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(boolean thumbnail, List<Portfolio> portfolios);
 
     @EntityGraph("ImageItemWithPortfolioAndPlanner")
