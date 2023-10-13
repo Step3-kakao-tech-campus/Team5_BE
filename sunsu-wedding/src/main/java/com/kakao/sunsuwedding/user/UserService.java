@@ -29,6 +29,7 @@ public class UserService {
     private final UserJPARepository userJPARepository;
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;
+    private final JWTProvider jwtProvider;
 
     @Transactional
     public void signup(UserRequest.SignUpDTO requestDTO) {
@@ -56,7 +57,7 @@ public class UserService {
         if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             throw new Exception400(BaseException.USER_PASSWORD_WRONG.getMessage());
         }
-        return JWTProvider.create(user);
+        return jwtProvider.create(user);
     }
 
     public UserResponse.FindById findById(Long userId) {
