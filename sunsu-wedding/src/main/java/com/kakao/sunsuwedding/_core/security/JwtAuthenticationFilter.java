@@ -25,8 +25,11 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private final JWTProvider jwtProvider;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JWTProvider jwtProvider) {
         super(authenticationManager);
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             return;
         }
         try {
-            DecodedJWT decodedJWT = JWTProvider.verify(jwt);
+            DecodedJWT decodedJWT = jwtProvider.verify(jwt);
             Long userId = decodedJWT.getClaim("id").asLong();
 
             String roleName = decodedJWT.getClaim("role").asString();

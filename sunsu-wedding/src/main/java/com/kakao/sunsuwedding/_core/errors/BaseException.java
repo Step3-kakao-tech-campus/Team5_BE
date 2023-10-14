@@ -13,6 +13,8 @@ public enum BaseException {
     USER_PASSWORD_WRONG("패스워드를 잘못 입력하셨습니다",400),
     USER_PASSWORD_NOT_SAME("패스워드1과 패스워드2는 동일해야 합니다.: ", 400),
     USER_ALREADY_PREMIUM("이미 프리미엄 회원입니다.", 400),
+    USER_TOKEN_WRONG("잘못된 토큰입니다", 401),
+    PAYMENT_WRONG_INFORMATION("잘못된 결제 정보입니다.", 404),
     USER_UNEXPECTED_ERROR("[User] 예상치 못한 문제가 발생했습니다.", 500),
     PORTFOLIO_NOT_FOUND("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다.", 404),
     PORTFOLIO_ALREADY_EXIST("해당 플래너의 포트폴리오가 이미 존재합니다. 포트폴리오는 플래너당 하나만 생성할 수 있습니다.", 400),

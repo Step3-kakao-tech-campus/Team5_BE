@@ -1,14 +1,19 @@
 package com.kakao.sunsuwedding._core.errors.exception;
 
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-// 서버 에러
+// 서버 에러 500
 @Getter
-public class Exception500 extends RuntimeException {
-    public Exception500(String message) {
+public class ServerException extends RuntimeException {
+    public ServerException(String message) {
         super(message);
+    }
+
+    public ServerException(BaseException exception){
+        super(exception.getMessage());
     }
 
     public ApiUtils.ApiResult<?> body(){

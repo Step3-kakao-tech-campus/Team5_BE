@@ -4,6 +4,8 @@ import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.Exception404;
 import com.kakao.sunsuwedding._core.errors.exception.Exception500;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -15,14 +17,14 @@ public class ImageEncoder {
     public static String encode(ImageItem imageItem) {
         Resource resource = new FileSystemResource(imageItem.getFilePath());
         if (!resource.exists()) {
-            throw new Exception404(BaseException.PORTFOLIO_IMAGE_NOT_FOUND.getMessage());
+            throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
         }
 
         try {
             return Base64.getEncoder().encodeToString(resource.getContentAsByteArray());
         }
         catch (IOException exception) {
-            throw new Exception500(BaseException.PORTFOLIO_IMAGE_ENCODING_ERROR.getMessage());
+            throw new ServerException(BaseException.PORTFOLIO_IMAGE_ENCODING_ERROR);
         }
     }
 

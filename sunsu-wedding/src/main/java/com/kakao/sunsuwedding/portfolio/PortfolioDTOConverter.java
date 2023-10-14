@@ -95,7 +95,7 @@ public class PortfolioDTOConverter {
                                     quotation.getMatch().getId().equals(match.getId()))
                             .toList();
                     return new PortfolioResponse.PaymentDTO(match.getConfirmedPrice(),
-                            match.getConfirmed_at().toString().substring(0, 7), // 월까지만 제공
+                            match.getConfirmedAt().toString().substring(0, 7), // 월까지만 제공
                             PaymentItemDTOConvertor(matchingQuotations));
                 })
                 .toList();

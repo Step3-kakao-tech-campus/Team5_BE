@@ -1,9 +1,9 @@
 package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception400;
-import com.kakao.sunsuwedding._core.errors.exception.Exception403;
-import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
+import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
@@ -42,14 +42,14 @@ public class PortfolioService {
     public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new Exception404(BaseException.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
 
         Portfolio existPortfolio = portfolioJPARepository.findByPlannerId(plannerId)
                 .orElse(new Portfolio());
 
         // 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
         if (existPortfolio.getId() != null)
-            throw new Exception400(BaseException.PORTFOLIO_ALREADY_EXIST.getMessage());
+            throw new BadRequestException(BaseException.PORTFOLIO_ALREADY_EXIST);
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
@@ -126,7 +126,7 @@ public class PortfolioService {
     public PortfolioResponse.FindByIdDTO getPortfolioById(Long id) {
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(id);
         if (imageItems.isEmpty()) {
-            throw new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage());
+            throw new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND);
         }
 
         List<String> images = imageItems
@@ -150,11 +150,11 @@ public class PortfolioService {
     public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new Exception404(BaseException.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
 
         // 플래너의 포트폴리오 탐색
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new Exception400(BaseException.PORTFOLIO_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
@@ -203,7 +203,7 @@ public class PortfolioService {
     @Transactional
     public void updateConfirmedPrices(Planner planner, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(planner.getId())
-                .orElseThrow(() -> new Exception404(BaseException.PORTFOLIO_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND));
 
         portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
         portfolioJPARepository.save(portfolio);
@@ -212,7 +212,7 @@ public class PortfolioService {
     @Transactional
     public void deletePortfolio(Pair<String, Long> info) {
         if (!info.getFirst().equals(Role.PLANNER.getRoleName())) {
-            throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
+            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
 
         Planner planner = Planner.builder().id(info.getSecond()).build();
@@ -225,15 +225,15 @@ public class PortfolioService {
     public PortfolioResponse.MyPortfolioDTO myPortfolio(Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new Exception404(BaseException.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
 
         // 플래너의 포트폴리오 탐색
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new Exception400(BaseException.PORTFOLIO_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
 
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolio.getId());
         if (imageItems.isEmpty()) {
-            throw new Exception404(BaseException.PORTFOLIO_IMAGE_NOT_FOUND.getMessage());
+            throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
         }
 
         List<String> encodedImages = imageItems
