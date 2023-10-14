@@ -36,7 +36,7 @@ public class PortfolioRestController {
     }
 
     @GetMapping(value = "/portfolios")
-    public ResponseEntity<?> getPortfolios(@RequestParam @Min(-1) Long cursor) {
+    public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor) {
         CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest);
 
