@@ -91,7 +91,8 @@ public class MatchService {
         }
     }
 
-    public void addChat(Pair<String, Long> user, MatchRequest.AddMatchDTO requestDTO) {
+    public MatchResponse.ChatByIdDTO addChat(Pair<String, Long> user, MatchRequest.AddMatchDTO requestDTO) {
+
         Long coupleId = user.getSecond();
         Long plannerId = requestDTO.getPlannerId();
 
@@ -99,9 +100,17 @@ public class MatchService {
                 () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " couple")
         );
         Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " planner")
+                () -> new NotFoundException(BaseException.PLANNER_NOT_FOUND.getMessage() + " planner")
         );
-        matchJPARepository.save(requestDTO.toMatchEntity(couple, planner));
+        List<Match> matches = matchJPARepository.findByCoupleAndPlanner(couple, planner);
+
+        // 플래너, 유저 매칭은 최대 한 개까지만 생성 가능
+        if (!matches.isEmpty()){
+            throw new BadRequestException(BaseException.MATCHING_ALREADY_EXIST);
+        }
+        Match match = matchJPARepository.save(requestDTO.toMatchEntity(couple, planner));
+
+        return new MatchResponse.ChatByIdDTO(match);
     }
 
     private void permissionCheck(Pair<String, Long> info, Match match) {

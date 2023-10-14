@@ -21,8 +21,8 @@ public class MatchRestController {
     public ResponseEntity<?> addChat(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody MatchRequest.AddMatchDTO request) {
-        matchService.addChat(userDetails.getInfo(), request);
-        return ResponseEntity.ok().body(ApiUtils.success(null));
+        MatchResponse.ChatByIdDTO response = matchService.addChat(userDetails.getInfo(), request);
+        return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     // Match Delete : isActive 필드 false
