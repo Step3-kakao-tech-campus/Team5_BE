@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.user;
+package com.kakao.sunsuwedding.util;
 
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding.user.constant.Role;
