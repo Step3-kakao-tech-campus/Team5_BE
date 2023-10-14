@@ -1,8 +1,6 @@
 package com.kakao.sunsuwedding.portfolio.image;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception404;
-import com.kakao.sunsuwedding._core.errors.exception.Exception500;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.errors.exception.ServerException;

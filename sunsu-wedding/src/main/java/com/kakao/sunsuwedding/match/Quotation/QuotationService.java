@@ -1,8 +1,8 @@
 package com.kakao.sunsuwedding.match.Quotation;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception403;
-import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
