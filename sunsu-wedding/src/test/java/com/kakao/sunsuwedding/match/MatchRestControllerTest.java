@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding.match;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -20,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @Import({
         SecurityConfig.class,
 })
-
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
@@ -30,10 +31,62 @@ public class MatchRestControllerTest {
     private static final Logger logger = LoggerFactory.getLogger(MatchRestControllerTest.class);
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper om;
 
     // ============ 채팅방 생성 테스트 ============
+    @DisplayName("채팅방 생성 성공 테스트")
+    @Test
+    @WithUserDetails("couple3@gmail.com")
+    public void match_create_success_test() throws Exception {
+        //given
+        MatchRequest.AddMatchDTO requestDTO = new MatchRequest.AddMatchDTO();
+        requestDTO.setPlannerId(16L);
+        String requestBody = om.writeValueAsString(requestDTO);
 
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/chat")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(1L));
+    }
+
+    @DisplayName("채팅방 생성 실패 테스트 - 이미 존재하는 매칭내역")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void match_create_fail_test() throws Exception {
+        //given
+        MatchRequest.AddMatchDTO requestDTO = new MatchRequest.AddMatchDTO();
+        requestDTO.setPlannerId(2L);
+        String requestBody = om.writeValueAsString(requestDTO);
+
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/chat")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("이미 존재하는 매칭입니다."));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+    }
 
     // ============ 채팅방 삭제 테스트 ============
     @DisplayName("채팅방 삭제 성공 테스트")
@@ -41,7 +94,7 @@ public class MatchRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     public void match_delete_success_test() throws Exception {
         //given
-        Long matchId = 1L;
+        Long matchId = 6L;
 
         //when
         ResultActions result = mvc.perform(
