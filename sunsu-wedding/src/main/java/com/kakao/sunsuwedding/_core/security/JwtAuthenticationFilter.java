@@ -124,7 +124,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             } catch (TokenExpiredException tee) {
                 log.error("access token 만료됨");
                 // access token 만 만료 시에는 403 에러 전달
-                throw new ForbiddenException(BaseException.ACCESS_TOKEN_EXPIRED.getMessage());
+                //throw new ForbiddenException(BaseException.ACCESS_TOKEN_EXPIRED.getMessage());
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 access token");
             } catch (Exception e){

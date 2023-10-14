@@ -46,7 +46,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             filterResponseUtils.notFound(response, notFoundException);
         }
         catch (JWTCreationException | JWTVerificationException e) {
-            filterResponseUtils.unAuthorized(response, new UnauthorizedException(BaseException.USER_TOKEN_WRONG));
+            filterResponseUtils.unAuthorized(response, new UnauthorizedException(BaseException.TOKEN_NOT_FOUND));
         }
     }
 }

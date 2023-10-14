@@ -68,7 +68,7 @@ public class MatchService {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         // 견적서 존재하는데 전체 확정이 되지 않은 경우, 채팅방 삭제 불가
         if ((!quotations.isEmpty()) && (match.getStatus().equals(MatchStatus.UNCONFIRMED))) {
-            throw new BadRequestException(BaseException.NOT_CONFIRMED_ALL_QUOTATIONS);
+            throw new BadRequestException(BaseException.QUOTATION_NOT_CONFIRMED_ALL);
         }
         // 전체확정 됐거나, 견적서가 없는 경우 채팅방 삭제
         matchJPARepository.delete(match);
@@ -77,7 +77,7 @@ public class MatchService {
     private Pair<Boolean, Long> isAllConfirmed(Match match) {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         if (quotations.isEmpty()) {
-            throw new BadRequestException(BaseException.NO_QUOTATION_TO_CONFIRM);
+            throw new BadRequestException(BaseException.QUOTATION_NOTHING_TO_CONFIRM);
         }
         else {
             // 모든 견적서 확정 됐는지 여부 구하기
