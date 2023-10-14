@@ -61,7 +61,7 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotations_success() throws Exception {
         // given
-        Long matchId = 1L;
+        Long matchId = 6L;
         QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 1500000L,
@@ -224,7 +224,7 @@ public class QuotationRestControllerTest {
     @Test
     void get_quotations_success() throws Exception {
         // given
-        Long matchId = 1L;
+        Long matchId = 6L;
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -371,7 +371,7 @@ public class QuotationRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     public void match_confirm_all_success_test() throws Exception {
         //given
-        Long matchId = 1L;
+        Long matchId = 6L;
 
         //when
         ResultActions result = mvc.perform(
