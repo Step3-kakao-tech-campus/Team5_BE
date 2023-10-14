@@ -1,9 +1,9 @@
 package com.kakao.sunsuwedding.match;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.Exception400;
-import com.kakao.sunsuwedding._core.errors.exception.Exception403;
-import com.kakao.sunsuwedding._core.errors.exception.Exception404;
+import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
+import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Quotation.Quotation;
 import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
@@ -35,7 +35,7 @@ public class MatchService {
     @Transactional
     public void confirmAll(Pair<String, Long> info, Long matchId) {
         Match match = matchJPARepository.findById(matchId).orElseThrow(
-                () -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         // 유저 본인의 채팅방이 맞는지 확인
         permissionCheck(info, match);
@@ -51,7 +51,7 @@ public class MatchService {
         }
         // 확정되지 않은 견적서가 있을 때
         else {
-            throw new Exception400(BaseException.QUOTATIONS_NOT_ALL_CONFIRMED.getMessage());
+            throw new BadRequestException(BaseException.QUOTATIONS_NOT_ALL_CONFIRMED);
         }
     }
 
@@ -60,7 +60,7 @@ public class MatchService {
     @Transactional
     public void deleteChat(Pair<String, Long> info, Long matchId) {
         Match match = matchJPARepository.findById(matchId).orElseThrow(
-                () -> new Exception404(BaseException.MATCHING_NOT_FOUND.getMessage()));
+                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         // 유저 본인의 채팅방이 맞는지 확인
         permissionCheck(info, match);
@@ -68,7 +68,7 @@ public class MatchService {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         // 견적서 존재하는데 전체 확정이 되지 않은 경우, 채팅방 삭제 불가
         if ((!quotations.isEmpty()) && (match.getStatus().equals(MatchStatus.UNCONFIRMED))) {
-            throw new Exception400(BaseException.NOT_CONFIRMED_ALL_QUOTATIONS.getMessage());
+            throw new BadRequestException(BaseException.NOT_CONFIRMED_ALL_QUOTATIONS);
         }
         // 전체확정 됐거나, 견적서가 없는 경우 채팅방 삭제
         matchJPARepository.delete(match);
@@ -77,7 +77,7 @@ public class MatchService {
     private Pair<Boolean, Long> isAllConfirmed(Match match) {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         if (quotations.isEmpty()) {
-            throw new Exception400(BaseException.NO_QUOTATION_TO_CONFIRM.getMessage());
+            throw new BadRequestException(BaseException.NO_QUOTATION_TO_CONFIRM);
         }
         else {
             // 모든 견적서 확정 됐는지 여부 구하기
@@ -96,10 +96,10 @@ public class MatchService {
         Long plannerId = requestDTO.getPlannerId();
 
         Couple couple = coupleJPARepository.findById(coupleId).orElseThrow(
-                () -> new Exception404(BaseException.USER_NOT_FOUND.getMessage() + " couple")
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " couple")
         );
         Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
-                () -> new Exception404(BaseException.USER_NOT_FOUND.getMessage() + " planner")
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " planner")
         );
         matchJPARepository.save(requestDTO.toMatchEntity(couple, planner));
     }
@@ -109,11 +109,11 @@ public class MatchService {
         Long id = info.getSecond();
         if (role.equals(Role.PLANNER.getRoleName())) {
             if (!match.getPlanner().getId().equals(id))
-                throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
+                throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
         else {
             if (!match.getCouple().getId().equals(id))
-                throw new Exception403(BaseException.PERMISSION_DENIED_METHOD_ACCESS.getMessage());
+                throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
     }
 
