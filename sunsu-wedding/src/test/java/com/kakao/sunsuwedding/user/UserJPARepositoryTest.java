@@ -26,32 +26,94 @@ public class UserJPARepositoryTest extends DummyEntity {
     @Autowired
     private EntityManager em;
 
+    private Long id1;
+    private Long id2;
+    private Long id3;
+
     @BeforeEach
     public void setUp(){
-        userJPARepository.save(newCouple("zxcv"));
+        id1 = userJPARepository.save(newCouple("asdf")).getId();
+        id2 = userJPARepository.save(newPlanner("qwer")).getId();
+        id3 = userJPARepository.save(unActivePlanner("zxcv")).getId();
         em.clear();
     }
-    @AfterEach
-    void afterEach() {
-        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1")
-                .executeUpdate();
-    }
-    @DisplayName("사용자 id로 찾기 - 성공")
+
+    @DisplayName("커플 id로 찾기 - 성공")
     @Test
-    public void findById_success_test() {
-        // given
-        Long userId = 1L;
+    public void findCoupleById_success_test() {
+
         // when
-        User user = userJPARepository.findById(userId).orElseThrow(
+        User user = userJPARepository.findById(id1).orElseThrow(
                 () -> new RuntimeException("해당 유저를 찾을 수 없습니다.")
         );
 
         // then (상태 검사)
-        assertThat(user.getId()).isEqualTo(1);
-        assertThat(user.getEmail()).isEqualTo("zxcv@nate.com");
+        assertThat(user.getEmail()).isEqualTo("asdf@nate.com");
         assertThat(user.getPassword()).isEqualTo("couple1234!");
-        assertThat(user.getUsername()).isEqualTo("couple");
+        assertThat(user.getUsername()).isEqualTo("asdf");
+        assertThat(user.getDtype()).isEqualTo("couple");
+        assertThat(user.isActive()).isEqualTo(true);
+        assertThat(user.getGrade().getGradeName()).isEqualTo("normal");
+    }
+    @DisplayName("플래너 id로 찾기 - 성공")
+    @Test
+    public void findPlannerById_success_test() {
+
+        // when
+        User user = userJPARepository.findById(id2).orElseThrow(
+                () -> new RuntimeException("해당 유저를 찾을 수 없습니다.")
+        );
+
+        // then (상태 검사)
+        assertThat(user.getEmail()).isEqualTo("qwer@nate.com");
+        assertThat(user.getPassword()).isEqualTo("planner1234!");
+        assertThat(user.getUsername()).isEqualTo("qwer");
+        assertThat(user.getDtype()).isEqualTo("planner");
+        assertThat(user.isActive()).isEqualTo(true);
+        assertThat(user.getGrade().getGradeName()).isEqualTo("normal");
+    }
+    @DisplayName("삭제된 유저 id로 찾기 - 성공")
+    @Test
+    public void findUnactiveUserById_success_test() {
+
+        // when
+        User user = userJPARepository.findByEmailNative("zxcv@nate.com").orElseThrow(
+                () -> new RuntimeException("해당 유저를 찾을 수 없습니다.")
+        );
+
+        // then (상태 검사)
+        assertThat(user.getEmail()).isEqualTo("zxcv@nate.com");
+        assertThat(user.getPassword()).isEqualTo("planner1234!");
+        assertThat(user.getUsername()).isEqualTo("zxcv");
+        assertThat(user.getDtype()).isEqualTo("planner");
+        assertThat(user.isActive()).isEqualTo(false);
         assertThat(user.getGrade().getGradeName()).isEqualTo("normal");
     }
 
+    @DisplayName("사용자 저장 - 성공")
+    @Test
+    public void saveUser_success_test() {
+
+        // when
+        Couple c1 = newCouple("newCouple");
+        User user = userJPARepository.save(c1);
+
+        // then (상태 검사)
+        assertThat(user.getEmail()).isEqualTo("newCouple@nate.com");
+        assertThat(user.getPassword()).isEqualTo("couple1234!");
+        assertThat(user.getUsername()).isEqualTo("newCouple");
+        assertThat(user.getGrade().getGradeName()).isEqualTo("normal");
+    }
+    @DisplayName("사용자 삭제 - 성공")
+    @Test
+    public void deleteUser_success_test() {
+
+        long previous_counts = userJPARepository.count();
+
+        // when
+        userJPARepository.deleteById(id1);
+
+        // then (상태 검사)
+        assertThat(userJPARepository.count()).isEqualTo(previous_counts - 1);
+    }
 }

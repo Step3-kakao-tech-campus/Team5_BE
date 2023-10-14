@@ -68,7 +68,7 @@ public class MatchService {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         // 견적서 존재하는데 전체 확정이 되지 않은 경우, 채팅방 삭제 불가
         if ((!quotations.isEmpty()) && (match.getStatus().equals(MatchStatus.UNCONFIRMED))) {
-            throw new BadRequestException(BaseException.NOT_CONFIRMED_ALL_QUOTATIONS);
+            throw new BadRequestException(BaseException.QUOTATION_NOT_CONFIRMED_ALL);
         }
         // 전체확정 됐거나, 견적서가 없는 경우 채팅방 삭제
         matchJPARepository.delete(match);
@@ -77,7 +77,7 @@ public class MatchService {
     private Pair<Boolean, Long> isAllConfirmed(Match match) {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         if (quotations.isEmpty()) {
-            throw new BadRequestException(BaseException.NO_QUOTATION_TO_CONFIRM);
+            throw new BadRequestException(BaseException.QUOTATION_NOTHING_TO_CONFIRM);
         }
         else {
             // 모든 견적서 확정 됐는지 여부 구하기
@@ -91,7 +91,9 @@ public class MatchService {
         }
     }
 
-    public void addChat(Pair<String, Long> user, MatchRequest.AddMatchDTO requestDTO) {
+    @Transactional
+    public MatchResponse.ChatByIdDTO addChat(Pair<String, Long> user, MatchRequest.AddMatchDTO requestDTO) {
+
         Long coupleId = user.getSecond();
         Long plannerId = requestDTO.getPlannerId();
 
@@ -99,9 +101,17 @@ public class MatchService {
                 () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " couple")
         );
         Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND.getMessage() + " planner")
+                () -> new NotFoundException(BaseException.PLANNER_NOT_FOUND.getMessage() + " planner")
         );
-        matchJPARepository.save(requestDTO.toMatchEntity(couple, planner));
+        List<Match> matches = matchJPARepository.findByCoupleAndPlanner(couple, planner);
+
+        // 플래너, 유저 매칭은 최대 한 개까지만 생성 가능
+        if (!matches.isEmpty()){
+            throw new BadRequestException(BaseException.MATCHING_ALREADY_EXIST);
+        }
+        Match match = matchJPARepository.save(requestDTO.toMatchEntity(couple, planner));
+
+        return new MatchResponse.ChatByIdDTO(match);
     }
 
     private void permissionCheck(Pair<String, Long> info, Match match) {
