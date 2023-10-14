@@ -61,9 +61,9 @@ public class JWTProvider {
                 .verify(token);
     }
 
-    public boolean isValidToken(String token, String secret) {
+    public boolean isValidAccessToken(String token) {
         try {
-            verify(token, secret);
+            verify(token, ACCESS_TOKEN_SECRET);
             return true;
         }
         catch (JWTVerificationException exception) {

@@ -6,6 +6,7 @@ import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import com.kakao.sunsuwedding.match.Quotation.QuotationRequest;
 import com.kakao.sunsuwedding.user.UserRequest;
 import com.kakao.sunsuwedding.user.UserService;
+import com.kakao.sunsuwedding.user.token.TokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,8 @@ public class QuotationRestControllerTest {
         UserRequest.LoginDTO request = new UserRequest.LoginDTO();
         request.setEmail("planner@gmail.com");
         request.setPassword("planner1234!");
-        plannerToken = userService.login(request).accessToken();
+        TokenDTO tokenDTO = userService.login(request);
+        plannerToken = tokenDTO.accessToken();
     }
     // ============ 견적서 등록 테스트 ============
     @DisplayName("POST /quotations : success")
