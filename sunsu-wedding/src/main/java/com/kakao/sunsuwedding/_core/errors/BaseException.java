@@ -7,6 +7,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BaseException {
     USER_NOT_FOUND("서비스를 탈퇴했거나 가입하지 않은 유저의 요청입니다.", 404),
+    ACCESS_TOKEN_EXPIRED("access-token이 만료되었습니다. refresh-token 으로 다시 요청해주세요.", 403),
+    ALL_TOKEN_EXPIRED("모든 토큰이 만료되었습니다. 다시 로그인 해야합니다.", 401),
+    TOKEN_NOT_FOUND("토큰을 찾을 수 없습니다.", 404),
+    TOKEN_NOT_VALID("로그인 토큰이 유효하지 않습니다. 다시 로그인 해주세요", 403),
+    INVALID_TOKEN_ACCESS_DETECTED("올바르지 않은 접근입니다. 다시 로그인 해주세요.", 403),
+    TOKEN_REFRESH_FORBIDDEN("토큰을 갱신할 수 없습니다.", 403),
     USER_EMAIL_EXIST("동일한 이메일이 존재합니다.", 400),
     USER_EMAIL_NOT_FOUND("이메일을 찾을 수 없습니다 : ", 400),
     USER_ROLE_WRONG("role은 플래너, 또는 예비 부부만 가능합니다.", 400),

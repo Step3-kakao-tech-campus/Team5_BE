@@ -1,10 +1,12 @@
 package com.kakao.sunsuwedding.quotation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import com.kakao.sunsuwedding.match.Quotation.QuotationRequest;
 import com.kakao.sunsuwedding.user.UserRequest;
 import com.kakao.sunsuwedding.user.UserService;
+import com.kakao.sunsuwedding.user.token.TokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +53,8 @@ public class QuotationRestControllerTest {
         UserRequest.LoginDTO request = new UserRequest.LoginDTO();
         request.setEmail("planner@gmail.com");
         request.setPassword("planner1234!");
-        plannerToken = userService.login(request);
+        TokenDTO tokenDTO = userService.login(request);
+        plannerToken = tokenDTO.accessToken();
     }
     // ============ 견적서 등록 테스트 ============
     @DisplayName("POST /quotations : success")
@@ -59,7 +62,7 @@ public class QuotationRestControllerTest {
     void post_quotations_success() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 1500000L,
                 "abc studio",
@@ -86,7 +89,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_titleTextSize() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb",
                 1500000L,
                 "abc studio",
@@ -113,7 +116,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_emptyTitle() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 null,
                 1500000L,
                 "abc studio",
@@ -140,7 +143,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_titleSizeZero() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "",
                 1500000L,
                 "abc studio",
@@ -167,7 +170,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_negativePrice() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 -1500000L,
                 "abc studio",
@@ -194,7 +197,7 @@ public class QuotationRestControllerTest {
     void post_quotations_fail_emptyPrice() throws Exception {
         // given
         Long matchId = 1L;
-        QuotationRequest.add request = new QuotationRequest.add(
+        QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 null,
                 "abc studio",
@@ -227,7 +230,7 @@ public class QuotationRestControllerTest {
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/quotations")
-                        .header("Authorization", plannerToken)
+                        .header(JWTProvider.AUTHORIZATION_HEADER, plannerToken)
                         .param("matchId", String.valueOf(matchId))
         );
 
@@ -478,7 +481,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 500000L,
                 "updated company",
@@ -506,7 +509,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "",
                 500000L,
                 "updated company",
@@ -534,7 +537,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 null,
                 "updated company",
@@ -562,7 +565,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 3L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 -1000000L,
                 "updated company",
@@ -590,7 +593,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 2L;
         Long quotationId = 100L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 1000000L,
                 "updated company",
@@ -618,7 +621,7 @@ public class QuotationRestControllerTest {
         // given
         Long matchId = 5L;
         Long quotationId = 6L;
-        QuotationRequest.update request = new QuotationRequest.update(
+        QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
                 1000000L,
                 "updated company",

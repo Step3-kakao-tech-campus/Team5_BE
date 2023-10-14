@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class QuotationResponse {
-    public record findAllByMatchId(
+    public record FindAllByMatchId(
             String status,
             Long totalPrice,
             Long confirmedPrice,

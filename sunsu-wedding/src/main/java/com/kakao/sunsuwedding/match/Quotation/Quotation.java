@@ -13,12 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="quotation_tb")
+@NamedEntityGraph(name = "QuotationWithMatch",
+                  attributeNodes = @NamedAttributeNode("match"))
 public class Quotation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Match match;
 
     @Column(nullable = false)
@@ -89,7 +91,7 @@ public class Quotation {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public void update(QuotationRequest.update request) {
+    public void update(QuotationRequest.Update request) {
         this.title = request.title();
         this.price = request.price();
         this.company = request.company();

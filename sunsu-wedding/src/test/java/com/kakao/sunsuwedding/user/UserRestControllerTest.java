@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({
         SecurityConfig.class,
 })
-
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
@@ -146,9 +145,11 @@ public class UserRestControllerTest {
         );
 
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        String responseHeader = result.andReturn().getResponse().getHeader(JWTProvider.HEADER);
+        String accessTokenHeader = result.andReturn().getResponse().getHeader(JWTProvider.AUTHORIZATION_HEADER);
+        String refreshTokenHeader = result.andReturn().getResponse().getHeader(JWTProvider.REFRESH_HEADER);
         logger.debug("테스트 : " + responseBody);
-        logger.debug("테스트 : " + responseHeader);
+        logger.debug("테스트 access token  : " + accessTokenHeader);
+        logger.debug("테스트 refresh token : " + refreshTokenHeader);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));

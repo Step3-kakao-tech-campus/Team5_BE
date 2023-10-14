@@ -10,6 +10,9 @@ import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
+import com.kakao.sunsuwedding.user.token.Token;
+import com.kakao.sunsuwedding.user.token.TokenDTO;
+import com.kakao.sunsuwedding.user.token.TokenJPARepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +31,7 @@ public class UserService {
     private final UserJPARepository userJPARepository;
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;
+    private final TokenJPARepository tokenJPARepository;
     private final JWTProvider jwtProvider;
 
     @Transactional
@@ -48,7 +52,7 @@ public class UserService {
         }
     }
 
-    public String login(UserRequest.LoginDTO requestDTO) {
+    public TokenDTO login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
                 () -> new BadRequestException(BaseException.USER_EMAIL_NOT_FOUND.getMessage() + requestDTO.getEmail())
         );
@@ -56,7 +60,17 @@ public class UserService {
         if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             throw new BadRequestException(BaseException.USER_PASSWORD_WRONG);
         }
-        return jwtProvider.create(user);
+
+        Token token = tokenJPARepository.findByUserId(user.getId())
+                .orElseGet(() -> Token.builder()
+                        .user(user)
+                        .accessToken(jwtProvider.createAccessToken(user))
+                        .refreshToken(jwtProvider.createRefreshToken(user))
+                        .build());
+
+        tokenJPARepository.save(token);
+
+        return new TokenDTO(token.getAccessToken(), token.getRefreshToken());
     }
 
     public UserResponse.FindById findById(Long userId) {

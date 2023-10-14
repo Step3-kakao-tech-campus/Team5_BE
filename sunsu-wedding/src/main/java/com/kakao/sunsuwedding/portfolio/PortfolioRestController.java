@@ -2,11 +2,12 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
+import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
+import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,11 @@ public class PortfolioRestController {
     }
 
     @GetMapping(value = "/portfolios")
-    public ResponseEntity<?> getPortfolios(@RequestParam @Min(0) int page) {
-        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
-        List<PortfolioResponse.FindAllDTO> items = portfolioService.getPortfolios(pageRequest);
-        return ResponseEntity.ok().body(ApiUtils.success(items));
+    public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor) {
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE);
+        PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest);
+
+        return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/portfolios/{id}")
