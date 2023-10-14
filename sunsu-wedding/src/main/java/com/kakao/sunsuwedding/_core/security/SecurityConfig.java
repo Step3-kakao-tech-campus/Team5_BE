@@ -96,6 +96,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/user/**"),
                                 new AntPathRequestMatcher("/portfolios/**"),
+                                new AntPathRequestMatcher("/myportfolio"),
                                 new AntPathRequestMatcher("/chat/**"),
                                 new AntPathRequestMatcher("/quotations/**"),
                                 new AntPathRequestMatcher("/payments/**")
