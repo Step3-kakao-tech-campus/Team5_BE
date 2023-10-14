@@ -4,7 +4,6 @@ import com.kakao.sunsuwedding._core.DummyEntity;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,25 +23,19 @@ public class PlannerJPARepositoryTest extends DummyEntity {
     @Autowired
     private EntityManager em;
 
+    private Long id;
+
     @BeforeEach
     public void setUp(){
-        plannerJPARepository.save(newPlanner("ssar"));
+        id = plannerJPARepository.save(newPlanner("ssar")).getId();
         em.clear();
-    }
-    @AfterEach
-    void afterEach() {
-        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1")
-            .executeUpdate();
     }
 
     @DisplayName("사용자 id로 찾기 - 성공")
     @Test
     public void findById_success_test() {
-        // given
-        Long userId = 1L;
-
         // when
-        Planner planner = plannerJPARepository.findById(userId).orElseThrow(
+        Planner planner = plannerJPARepository.findById(id).orElseThrow(
                 () -> new RuntimeException("해당 플래너를 찾을 수 없습니다.")
         );
 
@@ -50,7 +43,21 @@ public class PlannerJPARepositoryTest extends DummyEntity {
         assertThat(planner.getId()).isEqualTo(1);
         assertThat(planner.getEmail()).isEqualTo("ssar@nate.com");
         assertThat(planner.getPassword()).isEqualTo("planner1234!");
-        assertThat(planner.getUsername()).isEqualTo("planner");
+        assertThat(planner.getUsername()).isEqualTo("ssar");
+        assertThat(planner.getGrade().getGradeName()).isEqualTo("normal");
+    }
+
+    @DisplayName("사용자 저장하기")
+    @Test
+    public void savePlanner_success_test() {
+        // when
+        Planner p1 = newPlanner("newPlanner");
+        Planner planner = plannerJPARepository.save(p1);
+
+        // then (상태 검사)
+        assertThat(planner.getEmail()).isEqualTo("newPlanner@nate.com");
+        assertThat(planner.getPassword()).isEqualTo("planner1234!");
+        assertThat(planner.getUsername()).isEqualTo("newPlanner");
         assertThat(planner.getGrade().getGradeName()).isEqualTo("normal");
     }
 
