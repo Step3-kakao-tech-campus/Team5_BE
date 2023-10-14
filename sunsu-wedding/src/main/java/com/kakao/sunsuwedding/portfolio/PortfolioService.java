@@ -129,14 +129,19 @@ public class PortfolioService {
             throw new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND);
         }
 
+        Portfolio portfolio = imageItems.get(0).getPortfolio();
+        Planner planner = imageItems.get(0).getPortfolio().getPlanner();
+        // 플래너 탈퇴 시 조회 X
+        if (planner == null) {
+            throw new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND);
+        }
+
         List<String> images = imageItems
                 .stream()
                 .map(ImageEncoder::encode)
                 .toList();
 
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(id);
-        Portfolio portfolio = imageItems.get(0).getPortfolio();
-        Planner planner = portfolio.getPlanner();
 
         // 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
         List<Match> matches = matchJPARepository.findLatestTenByPlanner(planner);
