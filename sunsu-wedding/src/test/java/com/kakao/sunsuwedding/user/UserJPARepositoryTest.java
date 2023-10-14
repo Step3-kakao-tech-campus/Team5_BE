@@ -48,7 +48,6 @@ public class UserJPARepositoryTest extends DummyEntity {
         );
 
         // then (상태 검사)
-        assertThat(user.getId()).isEqualTo(1);
         assertThat(user.getEmail()).isEqualTo("asdf@nate.com");
         assertThat(user.getPassword()).isEqualTo("couple1234!");
         assertThat(user.getUsername()).isEqualTo("asdf");

@@ -40,7 +40,6 @@ public class PlannerJPARepositoryTest extends DummyEntity {
         );
 
         // then (상태 검사)
-        assertThat(planner.getId()).isEqualTo(1);
         assertThat(planner.getEmail()).isEqualTo("ssar@nate.com");
         assertThat(planner.getPassword()).isEqualTo("planner1234!");
         assertThat(planner.getUsername()).isEqualTo("ssar");

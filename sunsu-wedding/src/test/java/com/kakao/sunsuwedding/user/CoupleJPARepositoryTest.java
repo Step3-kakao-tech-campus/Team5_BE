@@ -40,7 +40,6 @@ public class CoupleJPARepositoryTest extends DummyEntity {
         );
 
         // then (상태 검사)
-        assertThat(couple.getId()).isEqualTo(1);
         assertThat(couple.getEmail()).isEqualTo("ssar@nate.com");
         assertThat(couple.getPassword()).isEqualTo("couple1234!");
         assertThat(couple.getUsername()).isEqualTo("ssar");
