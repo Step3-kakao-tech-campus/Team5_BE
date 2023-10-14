@@ -7,7 +7,7 @@ public class QuotationDTOConverter {
         return quotations
                 .stream()
                 .map(quotation -> new QuotationResponse.QuotationDTO(
-                        quotation.getId(), quotation.getTitle(), quotation.getPrice(), quotation.getCompany(), quotation.getDescription(), quotation.getStatus().toString(), quotation.getModified_at()
+                        quotation.getId(), quotation.getTitle(), quotation.getPrice(), quotation.getCompany(), quotation.getDescription(), quotation.getStatus().toString(), quotation.getModifiedAt()
                 ))
                 .toList();
     }

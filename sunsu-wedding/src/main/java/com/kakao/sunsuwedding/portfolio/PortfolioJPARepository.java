@@ -13,12 +13,13 @@ import java.util.Optional;
 
 @Repository
 public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long> {
-    Page<Portfolio> findAll(Pageable pageable);
-
-    Optional<Portfolio> findByPlanner(Planner planner);
+    @EntityGraph("PortfolioWithPlanner")
+    Page<Portfolio> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     void deleteByPlanner(Planner planner);
 
     @Query("select p from Portfolio p where p.planner.id = :plannerId")
     Optional<Portfolio> findByPlannerId(@Param("plannerId") Long plannerId);
+
+    Optional<Portfolio> findByPlanner(Planner planner);
 }

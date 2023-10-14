@@ -1,6 +1,6 @@
 package com.kakao.sunsuwedding.user;
 
-import com.kakao.sunsuwedding._core.errors.exception.Exception400;
+import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding.user.constant.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class RoleTest {
     public void null_role_test() {
         String roleName = "asdf";
 
-        assertThrows(Exception400.class, () -> {
+        assertThrows(BadRequestException.class, () -> {
             Role.valueOfRole(roleName);
         });
     }

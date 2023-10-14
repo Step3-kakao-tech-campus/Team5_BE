@@ -37,13 +37,13 @@ public class PortfolioRestController {
     @GetMapping(value = "/portfolios")
     public ResponseEntity<?> getPortfolios(@RequestParam @Min(0) int page) {
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
-        List<PortfolioResponse.findAllBy> items = portfolioService.getPortfolios(pageRequest);
+        List<PortfolioResponse.FindAllDTO> items = portfolioService.getPortfolios(pageRequest);
         return ResponseEntity.ok().body(ApiUtils.success(items));
     }
 
     @GetMapping("/portfolios/{id}")
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
-        PortfolioResponse.findById portfolio = portfolioService.getPortfolioById(id);
+        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
@@ -54,7 +54,6 @@ public class PortfolioRestController {
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         Pair<Portfolio, Planner> info = portfolioService.updatePortfolio(request, userDetails.getUser().getId());
 
-        // TODO: 이미지 업데이트 처리
         imageItemService.updateImage(images, info.getFirst(), info.getSecond());
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
@@ -64,5 +63,11 @@ public class PortfolioRestController {
     public ResponseEntity<?> deletePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
         portfolioService.deletePortfolio(userDetails.getInfo());
         return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @GetMapping("/myportfolio")
+    public ResponseEntity<?> myPortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        PortfolioResponse.MyPortfolioDTO myPortfolio = portfolioService.myPortfolio(userDetails.getUser().getId());
+        return ResponseEntity.ok().body(ApiUtils.success(myPortfolio));
     }
 }

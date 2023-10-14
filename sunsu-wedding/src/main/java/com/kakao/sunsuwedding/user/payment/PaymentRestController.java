@@ -44,7 +44,7 @@ public class PaymentRestController {
             @RequestBody @Valid PaymentRequest.UpgradeDTO requestDTO,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        String response = paymentService.upgrade(userDetails.getUser().getId(), requestDTO);
-        return ResponseEntity.ok().body(ApiUtils.success(response));
+        paymentService.upgrade(userDetails.getUser().getId(), requestDTO);
+        return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

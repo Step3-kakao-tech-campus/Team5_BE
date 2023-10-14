@@ -19,7 +19,7 @@ public class JWTProvider {
     public static final String HEADER = "Authorization";
     public static final String SECRET = "MySecretKey";
 
-    public static String create(User user) {
+    public String create(User user) {
         String jwt = JWT.create()
                 .withSubject(user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
@@ -29,7 +29,7 @@ public class JWTProvider {
         return TOKEN_PREFIX + jwt;
     }
 
-    public static DecodedJWT verify(String jwt) throws SignatureVerificationException, TokenExpiredException {
+    public DecodedJWT verify(String jwt) throws SignatureVerificationException, TokenExpiredException {
         jwt = jwt.replace(JWTProvider.TOKEN_PREFIX, "");
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(SECRET))
                 .build().verify(jwt);

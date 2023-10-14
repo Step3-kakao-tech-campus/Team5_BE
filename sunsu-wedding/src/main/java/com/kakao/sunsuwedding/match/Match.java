@@ -39,14 +39,14 @@ public class Match {
     @Column(name = "confirmed_price", nullable = false)
     private Long confirmedPrice;
 
-    @Column
-    private LocalDateTime confirmed_at;
+    @Column(name = "confirmed_at")
+    private LocalDateTime confirmedAt;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
+    @Column(nullable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private Boolean is_active;
+    @Column(nullable = false, name = "is_active")
+    private Boolean isActive;
 
     @Builder
     public Match(Long id, Planner planner, Couple couple, Long price, Long confirmedPrice) {
@@ -56,8 +56,8 @@ public class Match {
         this.status = MatchStatus.UNCONFIRMED;
         this.price = price;
         this.confirmedPrice = (confirmedPrice == null? 0 : confirmedPrice);
-        this.created_at = LocalDateTime.now();
-        this.is_active = true;
+        this.createdAt = LocalDateTime.now();
+        this.isActive = true;
     }
 
     public void updatePrice(Long price) {
@@ -66,11 +66,12 @@ public class Match {
 
     public void updateConfirmedPrice(Long price) {
         this.confirmedPrice = price;
+        this.confirmedAt = LocalDateTime.now();
     }
 
     public void updateStatusConfirmed(Long price) {
         this.status = MatchStatus.CONFIRMED;
         this.confirmedPrice = price;
-        this.confirmed_at = LocalDateTime.now();
+        this.confirmedAt = LocalDateTime.now();
     }
 }
