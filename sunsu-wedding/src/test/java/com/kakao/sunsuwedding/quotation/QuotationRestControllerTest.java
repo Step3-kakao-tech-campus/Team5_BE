@@ -1,6 +1,7 @@
 package com.kakao.sunsuwedding.quotation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import com.kakao.sunsuwedding.match.Quotation.QuotationRequest;
 import com.kakao.sunsuwedding.user.UserRequest;
@@ -51,7 +52,7 @@ public class QuotationRestControllerTest {
         UserRequest.LoginDTO request = new UserRequest.LoginDTO();
         request.setEmail("planner@gmail.com");
         request.setPassword("planner1234!");
-        plannerToken = userService.login(request);
+        plannerToken = userService.login(request).accessToken();
     }
     // ============ 견적서 등록 테스트 ============
     @DisplayName("POST /quotations : success")
@@ -227,7 +228,7 @@ public class QuotationRestControllerTest {
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/quotations")
-                        .header("Authorization", plannerToken)
+                        .header(JWTProvider.AUTHORIZATION_HEADER, plannerToken)
                         .param("matchId", String.valueOf(matchId))
         );
 
