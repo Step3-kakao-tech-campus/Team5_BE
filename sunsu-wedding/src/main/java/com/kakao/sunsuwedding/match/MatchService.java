@@ -91,6 +91,7 @@ public class MatchService {
         }
     }
 
+    @Transactional
     public MatchResponse.ChatByIdDTO addChat(Pair<String, Long> user, MatchRequest.AddMatchDTO requestDTO) {
 
         Long coupleId = user.getSecond();

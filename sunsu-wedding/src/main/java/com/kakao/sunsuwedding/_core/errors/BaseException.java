@@ -49,7 +49,7 @@ public enum BaseException {
     // 매칭 관련
     MATCHING_ALREADY_CONFIRMED("전체 확정되어 견적서를 추가할 수 없습니다.", 403),
     MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 404),
-    MATCHING_ALREADY_EXIST("이미 존재하는 매칭입니다.", 404),
+    MATCHING_ALREADY_EXIST("이미 존재하는 매칭입니다.", 400),
 
     // 공통
     PERMISSION_DENIED_METHOD_ACCESS("사용할 수 없는 기능입니다.", 403),
