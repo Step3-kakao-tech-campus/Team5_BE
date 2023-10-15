@@ -59,7 +59,7 @@ public class MatchRestControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(1L));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(7L));
     }
 
     @DisplayName("채팅방 생성 실패 테스트 - 이미 존재하는 매칭내역")
