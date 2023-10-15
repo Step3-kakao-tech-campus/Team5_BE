@@ -19,12 +19,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/portfolios")
 public class PortfolioRestController {
     private final PortfolioService portfolioService;
     private final ImageItemService imageItemService;
     private static final int PAGE_SIZE = 10;
 
-    @PostMapping(value = "/portfolios", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
+    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
     public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.addDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
@@ -35,7 +36,7 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @GetMapping(value = "/portfolios")
+    @GetMapping(value = "")
     public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor) {
         CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest);
@@ -43,13 +44,13 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
-    @GetMapping("/portfolios/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
         PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PutMapping(value = "/portfolios", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
+    @PutMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
     public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.updateDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
@@ -61,13 +62,13 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @DeleteMapping("/portfolios")
+    @DeleteMapping("")
     public ResponseEntity<?> deletePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
         portfolioService.deletePortfolio(userDetails.getInfo());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @GetMapping("/myportfolio")
+    @GetMapping("/self")
     public ResponseEntity<?> myPortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
         PortfolioResponse.MyPortfolioDTO myPortfolio = portfolioService.myPortfolio(userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(myPortfolio));
