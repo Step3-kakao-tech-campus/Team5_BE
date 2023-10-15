@@ -6,6 +6,7 @@ import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
 import com.kakao.sunsuwedding.user.planner.Planner;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
@@ -19,7 +20,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/portfolios")
 public class PortfolioRestController {
     private final PortfolioService portfolioService;
     private final ImageItemService imageItemService;
@@ -37,8 +37,10 @@ public class PortfolioRestController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor) {
-        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE);
+    public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor,
+                                           @RequestParam @Nullable String name,
+                                           @RequestParam @Nullable String location) {
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));

@@ -1,6 +1,11 @@
 package com.kakao.sunsuwedding.portfolio.cursor;
 
-public record CursorRequest(Long key, int size) {
+public record CursorRequest(
+        Long key,
+        int size,
+        String name,
+        String location
+) {
     public static final Long NONE_KEY = -2L;
     public static final Long START_KEY = -1L;
 
@@ -9,6 +14,6 @@ public record CursorRequest(Long key, int size) {
     }
 
     public CursorRequest next(Long nextKey) {
-        return new CursorRequest(nextKey, size);
+        return new CursorRequest(nextKey, size, name, location);
     }
 }
