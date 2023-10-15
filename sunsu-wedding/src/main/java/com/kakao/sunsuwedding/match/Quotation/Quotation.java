@@ -13,12 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="quotation_tb")
+@NamedEntityGraph(name = "QuotationWithMatch",
+                  attributeNodes = @NamedAttributeNode("match"))
 public class Quotation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Match match;
 
     @Column(nullable = false)
@@ -37,13 +39,13 @@ public class Quotation {
     @Enumerated(EnumType.STRING)
     private QuotationStatus status;
 
-    @Column
-    private LocalDateTime modified_at;
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
+    @Column(nullable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "is_active")
     private Boolean is_active;
 
     @Builder
@@ -55,37 +57,45 @@ public class Quotation {
         this.company = company;
         this.description = description;
         this.status = (status == null? QuotationStatus.UNCONFIRMED : status);
-        this.created_at = (createdAt == null? LocalDateTime.now() : createdAt);
+        this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
         this.is_active = true;
     }
 
     public void updateTitle(String title) {
         this.title = title;
-        this.modified_at = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public void updatePrice(long price) {
         this.price = price;
-        this.modified_at = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public void updateCompany(String company) {
         this.company = company;
-        this.modified_at = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public void updateDescription(String description) {
         this.description = description;
-        this.modified_at = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public void updateStatus(QuotationStatus status) {
         this.status = status;
-        this.modified_at = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public void updateIsActive(Boolean is_active) {
         this.is_active = is_active;
-        this.modified_at = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
+    }
+
+    public void update(QuotationRequest.Update request) {
+        this.title = request.title();
+        this.price = request.price();
+        this.company = request.company();
+        this.description = request.description();
+        this.modifiedAt = LocalDateTime.now();
     }
 }

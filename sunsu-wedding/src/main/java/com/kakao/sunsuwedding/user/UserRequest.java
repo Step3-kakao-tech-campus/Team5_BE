@@ -1,6 +1,5 @@
 package com.kakao.sunsuwedding.user;
 
-import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Grade;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -44,8 +43,10 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
-                    .is_active(true)
-                    .created_at(LocalDateTime.now())
+                    .orderId("")
+                    .payedAmount(0L)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
                     .build();
         }
         public Planner toPlannerEntity() {
@@ -54,8 +55,10 @@ public class UserRequest {
                     .password(password)
                     .username(username)
                     .grade(Grade.NORMAL)
-                    .is_active(true)
-                    .created_at(LocalDateTime.now())
+                    .orderId("")
+                    .payedAmount(0L)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
                     .build();
         }
     }

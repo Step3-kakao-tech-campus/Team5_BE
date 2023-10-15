@@ -3,14 +3,12 @@ package com.kakao.sunsuwedding.user;
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
-import com.kakao.sunsuwedding.user.base_user.User;
-import com.kakao.sunsuwedding.user.constant.Role;
+import com.kakao.sunsuwedding.user.token.TokenDTO;
+import com.kakao.sunsuwedding.user.token.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserRestController {
     private final UserService userService;
+    private final TokenService tokenService;
 
     // 회원가입
     @PostMapping("/signup")
@@ -28,9 +27,23 @@ public class UserRestController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO requestDTO, Errors errors) {
-        String jwt = userService.login(requestDTO);
-        return ResponseEntity.ok().header(JWTProvider.HEADER, jwt).body(ApiUtils.success(null));
+    public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginDTO requestDTO) {
+        TokenDTO tokens = userService.login(requestDTO);
+        return ResponseEntity
+                .ok()
+                .header(JWTProvider.AUTHORIZATION_HEADER, tokens.accessToken())
+                .header(JWTProvider.REFRESH_HEADER, tokens.refreshToken())
+                .body(ApiUtils.success(null));
+    }
+
+    @PutMapping("/token")
+    public ResponseEntity<?> refresh(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        TokenDTO tokens = tokenService.refreshAllTokens(userDetails.getUser());
+        return ResponseEntity
+                .ok()
+                .header(JWTProvider.AUTHORIZATION_HEADER, tokens.accessToken())
+                .header(JWTProvider.REFRESH_HEADER, tokens.refreshToken())
+                .body(ApiUtils.success(null));
     }
 
     // 유저 정보 조회
