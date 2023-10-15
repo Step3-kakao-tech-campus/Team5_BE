@@ -21,12 +21,16 @@ import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -89,12 +93,17 @@ public class PortfolioService {
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request) {
-        Pageable pageable = PageRequest.ofSize(request.size());
-        List<Portfolio> portfolios = getPortfoliosByCursor(request, pageable);
+        Pageable pageable = PageRequest
+                .ofSize(request.size())
+                .withSort(Sort.by("id").descending());
+        List<Portfolio> portfolios = search(request, pageable);
 
         if (portfolios.isEmpty()) return new PageCursor<>(null, CursorRequest.NONE_KEY);
 
+        // 커서가 1이거나 NONE_KEY 일 경우 null 로 대체)
         Long nextKey = getNextKey(portfolios);
+        if (nextKey.equals(1L) || nextKey.equals(CursorRequest.NONE_KEY)) nextKey = null;
+
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
         List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
 
@@ -110,6 +119,16 @@ public class PortfolioService {
                 .orElse(CursorRequest.NONE_KEY);
     }
 
+    private List<Portfolio> search(CursorRequest request, Pageable pageable) {
+        // 필터링 조건이 존재하면 필터링 조회 메서드 호출
+        if (request.name() != null || request.location() != null) {
+            return getFilteredPortfoliosByCursor(request, pageable);
+        }
+
+        // 필터링 조건이 없다면 커서만 가지고 조회
+        return getPortfoliosByCursor(request, pageable);
+    }
+
     private List<Portfolio> getPortfoliosByCursor(CursorRequest request, Pageable pageable) {
         List<Portfolio> portfolios = new ArrayList<>();
 
@@ -121,6 +140,20 @@ public class PortfolioService {
         }
 
         return portfolios;
+    }
+
+    private List<Portfolio> getFilteredPortfoliosByCursor(CursorRequest request, Pageable pageable) {
+        Map<String, String> keys = new HashMap<>();
+
+        if (request.name() != null && !request.name().equals("null")) {
+            keys.put("name", request.name());
+        }
+        if (request.location() != null && !request.location().equals("null")) {
+            keys.put("location", request.location());
+        }
+
+        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request.key(), keys);
+        return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
     public PortfolioResponse.FindByIdDTO getPortfolioById(Long id) {

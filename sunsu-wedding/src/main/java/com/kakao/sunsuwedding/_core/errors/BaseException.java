@@ -18,9 +18,11 @@ public enum BaseException {
     USER_UNEXPECTED_ERROR("[User] 예상치 못한 문제가 발생했습니다.", 500),
 
     // token 관련
-    ACCESS_TOKEN_EXPIRED("access-token이 만료되었습니다. refresh-token 으로 다시 요청해주세요.", 403),
+    LOGIN_FAIL("로그인 실패. 올바른 정보를 입력해주세요.", 401),
+    ACCESS_TOKEN_EXPIRED("액세스 토큰이 만료되었습니다. 리프레시 토큰으로 다시 요청해주세요.", 403),
+    ACCESS_TOKEN_STILL_ALIVE("액세스 토큰이 아직 유효합니다. 액세스 토큰만 가지고 접근해주세요.", 403),
     ALL_TOKEN_EXPIRED("모든 토큰이 만료되었습니다. 다시 로그인 해야합니다.", 401),
-    TOKEN_NOT_FOUND("토큰을 찾을 수 없습니다.", 404),
+    TOKEN_NOT_FOUND("토큰을 찾을 수 없습니다. 다시 로그인해주세요.", 404),
     TOKEN_NOT_VALID("로그인 토큰이 유효하지 않습니다. 다시 로그인 해주세요", 403),
     TOKEN_REFRESH_FORBIDDEN("토큰을 갱신할 수 없습니다.", 403),
     INVALID_TOKEN_ACCESS_DETECTED("올바르지 않은 접근입니다. 다시 로그인 해주세요.", 403),
