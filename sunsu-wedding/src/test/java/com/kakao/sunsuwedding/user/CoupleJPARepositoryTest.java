@@ -4,7 +4,6 @@ import com.kakao.sunsuwedding._core.DummyEntity;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,35 +23,40 @@ public class CoupleJPARepositoryTest extends DummyEntity {
     @Autowired
     private EntityManager em;
 
+    private Long id;
+
     @BeforeEach
     public void setUp(){
-        coupleJPARepository.save(newCouple("ssar"));
+        id = coupleJPARepository.save(newCouple("ssar")).getId();
         em.clear();
-    }
-
-    @AfterEach
-    void afterEach() {
-        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1")
-                .executeUpdate();
     }
 
     @DisplayName("사용자 id로 찾기 - 성공")
     @Test
     public void findById_success_test() {
-        // given
-        Long userId = 1L;
-
         // when
-        Couple couple = coupleJPARepository.findById(userId).orElseThrow(
+        Couple couple = coupleJPARepository.findById(id).orElseThrow(
                 () -> new RuntimeException("해당 사용자를 찾을 수 없습니다.")
         );
 
         // then (상태 검사)
-        assertThat(couple.getId()).isEqualTo(1);
         assertThat(couple.getEmail()).isEqualTo("ssar@nate.com");
         assertThat(couple.getPassword()).isEqualTo("couple1234!");
-        assertThat(couple.getUsername()).isEqualTo("couple");
+        assertThat(couple.getUsername()).isEqualTo("ssar");
         assertThat(couple.getGrade().getGradeName()).isEqualTo("normal");
     }
 
+    @DisplayName("사용자 저장하기")
+    @Test
+    public void saveCouple_success_test() {
+        // when
+        Couple c1 = newCouple("newCouple");
+        Couple couple = coupleJPARepository.save(c1);
+
+        // then (상태 검사)
+        assertThat(couple.getEmail()).isEqualTo("newCouple@nate.com");
+        assertThat(couple.getPassword()).isEqualTo("couple1234!");
+        assertThat(couple.getUsername()).isEqualTo("newCouple");
+        assertThat(couple.getGrade().getGradeName()).isEqualTo("normal");
+    }
 }

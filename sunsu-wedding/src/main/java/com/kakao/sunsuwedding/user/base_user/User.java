@@ -37,32 +37,32 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
-    @Column
-    private boolean is_active;
+    @Column(name = "is_active")
+    private boolean isActive;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
+    @Column(nullable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     // 결제와 관련된 필드
-    @Column(length = 256)
-    private String order_id;
+    @Column(length = 256, name = "order_id")
+    private String orderId;
 
-    @Column
-    private Long payed_amount;
+    @Column(name = "payed_amount")
+    private Long payedAmount;
 
-    @Column
-    private LocalDateTime payed_at;
+    @Column(name = "payed_at")
+    private LocalDateTime payedAt;
 
     // 유저 등급 업그레이드
     public void upgrade() {
         this.grade = Grade.PREMIUM;
-        this.payed_at = LocalDateTime.now();
+        this.payedAt = LocalDateTime.now();
     }
 
     // 결제 정보 저장 (주문 번호, 금액)
     public void savePaymentInfo(String order_id, Long payed_amount){
-        this.order_id = order_id;
-        this.payed_amount = payed_amount;
+        this.orderId = order_id;
+        this.payedAmount = payed_amount;
     }
 
     // planner인지 couple인지 @DiscriminatorColumn의 내용을 보고 알려줌
