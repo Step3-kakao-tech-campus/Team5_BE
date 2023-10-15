@@ -145,8 +145,12 @@ public class PortfolioService {
     private List<Portfolio> getFilteredPortfoliosByCursor(CursorRequest request, Pageable pageable) {
         Map<String, String> keys = new HashMap<>();
 
-        if (request.name() != null) keys.put("name", request.name());
-        if (request.location() != null) keys.put("location", request.location());
+        if (request.name() != null && !request.name().equals("null")) {
+            keys.put("name", request.name());
+        }
+        if (request.location() != null && !request.location().equals("null")) {
+            keys.put("location", request.location());
+        }
 
         Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request.key(), keys);
         return portfolioJPARepository.findAll(specification, pageable).getContent();
