@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.match.Quotation;
+package com.kakao.sunsuwedding.Quotation;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;

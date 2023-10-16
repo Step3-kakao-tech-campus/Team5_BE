@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.user.payment;
+package com.kakao.sunsuwedding.payment;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;

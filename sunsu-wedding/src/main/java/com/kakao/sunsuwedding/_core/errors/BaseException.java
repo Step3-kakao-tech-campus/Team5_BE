@@ -29,6 +29,7 @@ public enum BaseException {
 
     // 결제 관련
     PAYMENT_WRONG_INFORMATION("잘못된 결제 정보입니다.", 404),
+    PAYMENT_NOT_FOUND("결제 내용이 존재하지 않습니다.", 404),
 
     //포트폴리오 관련
     PORTFOLIO_NOT_FOUND("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다.", 404),
