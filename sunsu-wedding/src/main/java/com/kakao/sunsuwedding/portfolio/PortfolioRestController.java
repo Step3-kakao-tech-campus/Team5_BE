@@ -20,6 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/portfolios")
 public class PortfolioRestController {
     private final PortfolioService portfolioService;
     private final ImageItemService imageItemService;
@@ -39,8 +40,10 @@ public class PortfolioRestController {
     @GetMapping(value = "")
     public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor,
                                            @RequestParam @Nullable String name,
-                                           @RequestParam @Nullable String location) {
-        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location);
+                                           @RequestParam @Nullable String location,
+                                           @RequestParam @Nullable Long minPrice,
+                                           @RequestParam @Nullable Long maxPrice) {
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));

@@ -4,7 +4,9 @@ public record CursorRequest(
         Long key,
         int size,
         String name,
-        String location
+        String location,
+        Long minPrice,
+        Long maxPrice
 ) {
     public static final Long NONE_KEY = -2L;
     public static final Long START_KEY = -1L;
@@ -14,6 +16,6 @@ public record CursorRequest(
     }
 
     public CursorRequest next(Long nextKey) {
-        return new CursorRequest(nextKey, size, name, location);
+        return new CursorRequest(nextKey, size, name, location, minPrice, maxPrice);
     }
 }

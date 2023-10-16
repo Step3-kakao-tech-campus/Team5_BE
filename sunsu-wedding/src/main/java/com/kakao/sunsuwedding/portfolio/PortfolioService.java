@@ -98,11 +98,11 @@ public class PortfolioService {
                 .withSort(Sort.by("id").descending());
         List<Portfolio> portfolios = search(request, pageable);
 
-        if (portfolios.isEmpty()) return new PageCursor<>(null, CursorRequest.NONE_KEY);
+        // 더이상 보여줄 포트폴리오가 없다면 커서 null 반환
+        if (portfolios.isEmpty()) return new PageCursor<>(null, null);
 
         // 커서가 1이거나 NONE_KEY 일 경우 null 로 대체)
         Long nextKey = getNextKey(portfolios);
-        if (nextKey.equals(1L) || nextKey.equals(CursorRequest.NONE_KEY)) nextKey = null;
 
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
         List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
@@ -112,11 +112,14 @@ public class PortfolioService {
     }
 
     private static Long getNextKey(List<Portfolio> portfolios) {
-        return portfolios
+        Long key = portfolios
                 .stream()
                 .mapToLong(Portfolio::getId)
                 .min()
                 .orElse(CursorRequest.NONE_KEY);
+
+        if (key.equals(1L) || key.equals(CursorRequest.NONE_KEY)) key = null;
+        return key;
     }
 
     private List<Portfolio> search(CursorRequest request, Pageable pageable) {
@@ -152,7 +155,7 @@ public class PortfolioService {
             keys.put("location", request.location());
         }
 
-        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request.key(), keys);
+        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request.key(), keys, request.minPrice(), request.maxPrice());
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
