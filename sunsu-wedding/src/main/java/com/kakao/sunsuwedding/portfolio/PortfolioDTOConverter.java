@@ -2,7 +2,7 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
-import com.kakao.sunsuwedding.match.Quotation.Quotation;
+import com.kakao.sunsuwedding.Quotation.Quotation;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.user.planner.Planner;
 
