@@ -43,6 +43,7 @@ public class FilterResponseUtils {
     }
 
     public void tokenError(HttpServletResponse response, TokenException tokenException) throws IOException {
+        response.resetBuffer();
         responseSetting(response, HttpStatus.UNAUTHORIZED, tokenException.body());
     }
 }
