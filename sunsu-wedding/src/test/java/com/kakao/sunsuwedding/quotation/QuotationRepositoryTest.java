@@ -1,8 +1,8 @@
 package com.kakao.sunsuwedding.quotation;
 
-import com.kakao.sunsuwedding.match.Quotation.Quotation;
-import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
-import com.kakao.sunsuwedding.match.Quotation.QuotationStatus;
+import com.kakao.sunsuwedding.Quotation.Quotation;
+import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.Quotation.QuotationStatus;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
