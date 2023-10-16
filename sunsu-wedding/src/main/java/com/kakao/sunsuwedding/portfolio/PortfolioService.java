@@ -28,9 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -146,16 +144,7 @@ public class PortfolioService {
     }
 
     private List<Portfolio> getFilteredPortfoliosByCursor(CursorRequest request, Pageable pageable) {
-        Map<String, String> keys = new HashMap<>();
-
-        if (request.name() != null && !request.name().equals("null")) {
-            keys.put("name", request.name());
-        }
-        if (request.location() != null && !request.location().equals("null")) {
-            keys.put("location", request.location());
-        }
-
-        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request.key(), keys, request.minPrice(), request.maxPrice());
+        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request);
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
