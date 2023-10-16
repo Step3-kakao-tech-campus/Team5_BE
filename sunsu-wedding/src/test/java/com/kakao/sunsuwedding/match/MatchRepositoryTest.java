@@ -5,17 +5,17 @@ import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
-import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoConfigureDataJpa
 @DataJpaTest
 public class MatchRepositoryTest extends DummyEntity {
 
@@ -33,10 +33,6 @@ public class MatchRepositoryTest extends DummyEntity {
     Couple couple;
     Planner planner, planner2;
 
-    @Autowired
-    private EntityManager em;
-
-
     @BeforeEach
     void setUp() {
         couple = coupleJPARepository.save(newCouple("newcouple"));
@@ -48,13 +44,13 @@ public class MatchRepositoryTest extends DummyEntity {
 
         id1 = matchJPARepository.save(m1).getId();
         id2 = matchJPARepository.save(m2).getId();
-
-        em.clear();
     }
 
     @AfterEach
     void tearDown() {
         matchJPARepository.deleteAll();
+        coupleJPARepository.deleteAll();
+        plannerJPARepository.deleteAll();
     }
 
     @Test

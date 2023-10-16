@@ -43,7 +43,7 @@ public class MatchRestControllerTest {
     public void match_create_success_test() throws Exception {
         //given
         MatchRequest.AddMatchDTO requestDTO = new MatchRequest.AddMatchDTO();
-        requestDTO.setPlannerId(16L);
+        requestDTO.setPlannerId(1L);
         String requestBody = om.writeValueAsString(requestDTO);
 
         //when
@@ -59,7 +59,7 @@ public class MatchRestControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(1L));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(7L));
     }
 
     @DisplayName("채팅방 생성 실패 테스트 - 이미 존재하는 매칭내역")
@@ -94,7 +94,7 @@ public class MatchRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     public void match_delete_success_test() throws Exception {
         //given
-        Long matchId = 6L;
+        Long matchId = 1L;
 
         //when
         ResultActions result = mvc.perform(

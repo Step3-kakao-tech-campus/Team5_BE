@@ -3,32 +3,32 @@ package com.kakao.sunsuwedding.user;
 import com.kakao.sunsuwedding._core.DummyEntity;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
-import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoConfigureDataJpa
+
 @DataJpaTest
 public class PlannerJPARepositoryTest extends DummyEntity {
 
     @Autowired
     private PlannerJPARepository plannerJPARepository;
 
-    @Autowired
-    private EntityManager em;
-
     private Long id;
 
     @BeforeEach
     public void setUp(){
         id = plannerJPARepository.save(newPlanner("ssar")).getId();
-        em.clear();
+    }
+
+    @AfterEach
+    public void teardown(){
+        plannerJPARepository.deleteAll();
     }
 
     @DisplayName("사용자 id로 찾기 - 성공")
