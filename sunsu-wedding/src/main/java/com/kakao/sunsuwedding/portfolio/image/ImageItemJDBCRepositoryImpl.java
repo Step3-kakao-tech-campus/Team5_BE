@@ -20,12 +20,12 @@ public class ImageItemJDBCRepositoryImpl implements ImageItemJDBCRepository {
         String sql = "INSERT INTO imageitem_tb (portfolio_id, origin_file_name, file_path, file_size, thumbnail) VALUES (?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql, imageItems, imageItems.size(),
-                (ps, priceItem) -> {
-                    ps.setLong(1, priceItem.getPortfolio().getId());
-                    ps.setString(2, priceItem.getOriginFileName());
-                    ps.setString(3, priceItem.getFilePath());
-                    ps.setLong(4, priceItem.getFileSize());
-                    ps.setBoolean(5, priceItem.isThumbnail());
+                (ps, imageItem) -> {
+                    ps.setLong(1, imageItem.getPortfolio().getId());
+                    ps.setString(2, imageItem.getOriginFileName());
+                    ps.setString(3, imageItem.getFilePath());
+                    ps.setLong(4, imageItem.getFileSize());
+                    ps.setBoolean(5, imageItem.isThumbnail());
                 });
 
     }
