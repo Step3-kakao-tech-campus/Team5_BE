@@ -1,13 +1,15 @@
 package com.kakao.sunsuwedding.portfolio;
 
+import com.kakao.sunsuwedding.Quotation.Quotation;
+import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
-import com.kakao.sunsuwedding.Quotation.Quotation;
-import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
@@ -28,10 +30,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -89,6 +88,9 @@ public class PortfolioService {
             priceItems.add(priceItem);
         }
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
+
+        // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
+        updateConfirmedPrices(planner);
 
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(portfolio, planner);
@@ -241,12 +243,24 @@ public class PortfolioService {
     }
 
     @Transactional
-    public void updateConfirmedPrices(Planner planner, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {
-        Portfolio portfolio = portfolioJPARepository.findByPlannerId(planner.getId())
-                .orElseThrow(() -> new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND));
+    public void updateConfirmedPrices(Planner planner) {
+        List<Match> matches = matchJPARepository.findAllByPlanner(planner);
+        Optional<Portfolio> portfolioPS = portfolioJPARepository.findByPlanner(planner);
+        // 포트폴리오, 매칭내역이 존재할 때만 가격 update
+        if (portfolioPS.isPresent() && !matches.isEmpty()) {
+            Portfolio portfolio = portfolioPS.get();
+            // 건수, 평균, 최소, 최대 가격 구하기
+            Long contractCount = matches.stream()
+                    .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
+                    .count();
+            Long avgPrice = PriceCalculator.calculateAvgPrice(matches, contractCount);
+            Long minPrice = PriceCalculator.calculateMinPrice(matches);
+            Long maxPrice = PriceCalculator.calculateMaxPrice(matches);
 
-        portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
-        portfolioJPARepository.save(portfolio);
+            // portfolio avg,min,max 값 업데이트
+            portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
+            portfolioJPARepository.save(portfolio);
+        }
     }
 
     @Transactional
