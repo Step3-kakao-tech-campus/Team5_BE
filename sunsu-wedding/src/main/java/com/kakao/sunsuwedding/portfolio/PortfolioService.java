@@ -233,7 +233,7 @@ public class PortfolioService {
                     .build();
             updatedPriceItems.add(updatedPriceItem);
         }
-        priceItemJPARepository.saveAll(updatedPriceItems);
+        priceItemJDBCRepository.batchUpdatePriceItems(updatedPriceItems);
 
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(updatedPortfolio, planner);
