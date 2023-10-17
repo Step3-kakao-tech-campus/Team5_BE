@@ -27,6 +27,3 @@ logging:
   level:
     '[com.kakao.sunsuwedding]': DEBUG
     '[org.hibernate.type]': TRACE
-
-file:
-  path: ./images/
