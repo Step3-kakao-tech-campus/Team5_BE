@@ -14,6 +14,7 @@ import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.ImageItem;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
+import com.kakao.sunsuwedding.portfolio.price.PriceItemJDBCRepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -39,6 +40,7 @@ public class PortfolioService {
     private final PortfolioJPARepository portfolioJPARepository;
     private final ImageItemJPARepository imageItemJPARepository;
     private final PriceItemJPARepository priceItemJPARepository;
+    private final PriceItemJDBCRepository priceItemJDBCRepository;
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
     private final PlannerJPARepository plannerJPARepository;
@@ -86,7 +88,7 @@ public class PortfolioService {
                     .build();
             priceItems.add(priceItem);
         }
-        priceItemJPARepository.saveAll(priceItems);
+        priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(portfolio, planner);
@@ -231,7 +233,7 @@ public class PortfolioService {
                     .build();
             updatedPriceItems.add(updatedPriceItem);
         }
-        priceItemJPARepository.saveAll(updatedPriceItems);
+        priceItemJDBCRepository.batchUpdatePriceItems(updatedPriceItems);
 
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(updatedPortfolio, planner);
