@@ -24,6 +24,7 @@ public class FilterResponseUtils {
     }
 
     private void responseSetting(HttpServletResponse resp, HttpStatusCode status, Object body) throws IOException {
+        resp.resetBuffer();
         resp.setStatus(status.value());
         resp.setContentType("application/json; charset=utf-8");
         String responseBody = om.writeValueAsString(body);
@@ -43,7 +44,6 @@ public class FilterResponseUtils {
     }
 
     public void tokenError(HttpServletResponse response, TokenException tokenException) throws IOException {
-        response.resetBuffer();
         responseSetting(response, HttpStatus.UNAUTHORIZED, tokenException.body());
     }
 }
