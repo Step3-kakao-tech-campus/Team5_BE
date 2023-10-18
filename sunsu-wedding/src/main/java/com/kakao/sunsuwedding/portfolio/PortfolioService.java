@@ -44,7 +44,7 @@ public class PortfolioService {
     private final QuotationJPARepository quotationJPARepository;
     private final PlannerJPARepository plannerJPARepository;
 
-    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.addDTO request, Long plannerId) {
+    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
@@ -58,7 +58,7 @@ public class PortfolioService {
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
-                .mapToLong(PortfolioRequest.addDTO.ItemDTO::getItemPrice)
+                .mapToLong(PortfolioRequest.AddDTO.ItemDTO::getItemPrice)
                 .sum();
 
         // 포트폴리오 엔티티에 저장
@@ -79,7 +79,7 @@ public class PortfolioService {
 
         // 가격 항목 엔티티에 저장
         List<PriceItem> priceItems = new ArrayList<>();
-        for (PortfolioRequest.addDTO.ItemDTO item : request.getItems()) {
+        for (PortfolioRequest.AddDTO.ItemDTO item : request.getItems()) {
             PriceItem priceItem = PriceItem.builder()
                     .portfolio(portfolio)
                     .itemTitle(item.getItemTitle())
@@ -170,7 +170,7 @@ public class PortfolioService {
         Planner planner = imageItems.get(0).getPortfolio().getPlanner();
         // 플래너 탈퇴 시 조회 X
         if (planner == null) {
-            throw new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND);
+            throw new NotFoundException(BaseException.PLANNER_NOT_FOUND);
         }
 
         List<String> images = imageItems
@@ -189,7 +189,7 @@ public class PortfolioService {
     }
 
     @Transactional
-    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.updateDTO request, Long plannerId) {
+    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.UpdateDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
@@ -200,7 +200,7 @@ public class PortfolioService {
 
         // 필요한 계산값 연산
         Long totalPrice =  request.getItems().stream()
-                .mapToLong(PortfolioRequest.updateDTO.ItemDTO::getItemPrice)
+                .mapToLong(PortfolioRequest.UpdateDTO.ItemDTO::getItemPrice)
                 .sum();
 
         // 불변 객체 패턴을 고려한 포트폴리오 변경사항 업데이트
@@ -225,7 +225,7 @@ public class PortfolioService {
         List<PriceItem> updatedPriceItems = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             PriceItem priceItem = existPriceItems.get(i);
-            PortfolioRequest.updateDTO.ItemDTO item = request.getItems().get(i);
+            PortfolioRequest.UpdateDTO.ItemDTO item = request.getItems().get(i);
 
             PriceItem updatedPriceItem = PriceItem.builder()
                     .id(priceItem.getId())
