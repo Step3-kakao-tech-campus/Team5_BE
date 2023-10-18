@@ -12,7 +12,7 @@ public record CursorRequest(
     public static final Long START_KEY = -1L;
 
     public Boolean hasKey() {
-        return key != null && !key.equals(NONE_KEY);
+        return key != null && !key.equals(NONE_KEY) && key > NONE_KEY;
     }
 
     public CursorRequest next(Long nextKey) {

@@ -93,6 +93,10 @@ public class PortfolioService {
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request) {
+        if (!request.hasKey()) {
+            return new PageCursor<>(null, null);
+        }
+
         Pageable pageable = PageRequest
                 .ofSize(request.size())
                 .withSort(Sort.by("id").descending());

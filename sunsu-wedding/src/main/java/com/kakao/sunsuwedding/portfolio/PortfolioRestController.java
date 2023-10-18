@@ -38,7 +38,7 @@ public class PortfolioRestController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor,
+    public ResponseEntity<?> getPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
                                            @RequestParam @Nullable String name,
                                            @RequestParam @Nullable String location,
                                            @RequestParam @Nullable Long minPrice,
