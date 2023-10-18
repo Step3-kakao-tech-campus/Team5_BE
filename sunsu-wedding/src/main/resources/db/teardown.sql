@@ -25,6 +25,9 @@ INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('15','planner14@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner14','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('16','planner15@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner15','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('17','planner16@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner16','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('19','planner17@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner17','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'false', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('20','planner18@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner18','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('21','planner19@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner19','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
 
 -- couple 비밀번호 : couple1234!
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('4','couple@gmail.com','{bcrypt}$2a$10$bKgX34po45/xYw1Dd8C81OYW4dkkVQV5lHd7a.06m1gBX689XERA.','couple','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'couple');
@@ -54,6 +57,8 @@ INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('12', '15', 'test12', 'test12', '부산', 'none', 'none', '2000000', '120', '2000000', '2000000', '2000000', '2023-10-02 15:26:55.00');
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('13', '16', 'test13', 'test13', '부산', 'none', 'none', '2000000', '130', '2000000', '2000000', '2000000', '2023-10-03 15:26:55.00');
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('14', '17', 'test14', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('15', '19', '탈퇴한 플래너의 포트폴리오', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('16', '20', '포트폴리오 삭제 테스트 데이터', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00');
 
 
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('1', '1', '스튜디오1', '500000');
@@ -63,16 +68,17 @@ INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALU
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('5', '2', '드레스2', '300000');
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('6', '2', '메이크업2', '200000');
 
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '2', '2-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '2', '2-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '2', '2-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '2', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '2', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', './images/image1.jpg', '522499', 'true');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', './images/image2.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', './images/image3.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', './images/image4.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', './images/image5.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '2', '2-1.jpg', './images/image1.jpg', '522499', 'true');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '2', '2-2.jpg', './images/image2.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '2', '2-3.jpg', './images/image3.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '2', '2-4.jpg', './images/image4.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '2', '2-5.jpg', './images/image5.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('11', '15', '2-5.jpg', './images/image5.jpg', '522499', 'true');
 
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', 'CONFIRMED', '1000000', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '2', '4', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
