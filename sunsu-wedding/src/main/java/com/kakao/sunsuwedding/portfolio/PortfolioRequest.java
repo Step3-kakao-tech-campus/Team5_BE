@@ -1,7 +1,6 @@
 package com.kakao.sunsuwedding.portfolio;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 public class PortfolioRequest {
     @Getter @Setter @ToString
-    public static class addDTO {
+    public static class AddDTO {
         private String plannerName;
         private String title;
         private String description;
@@ -28,7 +27,7 @@ public class PortfolioRequest {
     }
 
     @Getter @Setter @ToString
-    public static class updateDTO {
+    public static class UpdateDTO {
         private String plannerName;
         private String title;
         private String description;
