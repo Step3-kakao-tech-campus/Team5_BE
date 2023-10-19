@@ -97,21 +97,20 @@ public class PortfolioService {
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request) {
+        if (!request.hasKey()) {
+            return new PageCursor<>(null, null);
+        }
+
         Pageable pageable = PageRequest
                 .ofSize(request.size())
                 .withSort(Sort.by("id").descending());
-        List<Portfolio> portfoliosPS = search(request, pageable);
+        List<Portfolio> portfolios = search(request, pageable);
 
-        // 탈퇴한 플래너의 포트폴리오는 제외
-        List<Portfolio> portfolios = portfoliosPS.stream()
-                .filter(portfolio -> portfolio.getPlanner() != null)
-                .toList();
-
-        if (portfolios.isEmpty()) return new PageCursor<>(null, CursorRequest.NONE_KEY);
+        // 더이상 보여줄 포트폴리오가 없다면 커서 null 반환
+        if (portfolios.isEmpty()) return new PageCursor<>(null, null);
 
         // 커서가 1이거나 NONE_KEY 일 경우 null 로 대체)
         Long nextKey = getNextKey(portfolios);
-        if (nextKey.equals(1L) || nextKey.equals(CursorRequest.NONE_KEY)) nextKey = null;
 
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
         List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
@@ -121,47 +120,18 @@ public class PortfolioService {
     }
 
     private static Long getNextKey(List<Portfolio> portfolios) {
-        return portfolios
+        Long key = portfolios
                 .stream()
                 .mapToLong(Portfolio::getId)
                 .min()
                 .orElse(CursorRequest.NONE_KEY);
+
+        if (key.equals(1L) || key.equals(CursorRequest.NONE_KEY)) key = null;
+        return key;
     }
 
     private List<Portfolio> search(CursorRequest request, Pageable pageable) {
-        // 필터링 조건이 존재하면 필터링 조회 메서드 호출
-        if (request.name() != null || request.location() != null) {
-            return getFilteredPortfoliosByCursor(request, pageable);
-        }
-
-        // 필터링 조건이 없다면 커서만 가지고 조회
-        return getPortfoliosByCursor(request, pageable);
-    }
-
-    private List<Portfolio> getPortfoliosByCursor(CursorRequest request, Pageable pageable) {
-        List<Portfolio> portfolios = new ArrayList<>();
-
-        if (request.key().equals(CursorRequest.START_KEY)) {
-            portfolios = portfolioJPARepository.findAllByOrderByIdDesc(pageable);
-        }
-        else if (request.hasKey()) {
-            portfolios = portfolioJPARepository.findAllByIdLessThanOrderByIdDesc(request.key(), pageable);
-        }
-
-        return portfolios;
-    }
-
-    private List<Portfolio> getFilteredPortfoliosByCursor(CursorRequest request, Pageable pageable) {
-        Map<String, String> keys = new HashMap<>();
-
-        if (request.name() != null && !request.name().equals("null")) {
-            keys.put("name", request.name());
-        }
-        if (request.location() != null && !request.location().equals("null")) {
-            keys.put("location", request.location());
-        }
-
-        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request.key(), keys);
+        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request);
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
