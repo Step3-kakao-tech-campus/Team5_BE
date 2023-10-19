@@ -29,13 +29,13 @@ public class ImageItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Portfolio portfolio;
 
-    @Column(nullable = false)
+    @Column(name = "origin_file_name", nullable = false)
     private String originFileName;
 
-    @Column(nullable = false)
+    @Column(name = "file_path", nullable = false)
     private String filePath;
 
-    @Column(nullable = false)
+    @Column(name = "file_size", nullable = false)
     private Long fileSize;
 
     @Column(nullable = false)

@@ -46,6 +46,9 @@ public class QuotationRestControllerTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JWTProvider jwtProvider;
+
     private String plannerToken;
 
     @BeforeEach
@@ -230,7 +233,7 @@ public class QuotationRestControllerTest {
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/quotations")
-                        .header(JWTProvider.AUTHORIZATION_HEADER, plannerToken)
+                        .header(jwtProvider.AUTHORIZATION_HEADER, plannerToken)
                         .param("matchId", String.valueOf(matchId))
         );
 

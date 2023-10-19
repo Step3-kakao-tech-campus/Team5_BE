@@ -43,8 +43,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     // 바꿔도 괜찮을까요 ..???
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String accessToken = request.getHeader(JWTProvider.AUTHORIZATION_HEADER);
-        String refreshToken = request.getHeader(JWTProvider.REFRESH_HEADER);
+        String accessToken = request.getHeader(jwtProvider.AUTHORIZATION_HEADER);
+        String refreshToken = request.getHeader(jwtProvider.REFRESH_HEADER);
 
         // access token 이 없을 수는 없다.
         // refresh token 만으로는 인증 불가
@@ -106,6 +106,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 throw new TokenException(ErrorStatus.ALL_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 refresh token");
+            } finally {
+                chain.doFilter(request, response);
             }
         }
 
