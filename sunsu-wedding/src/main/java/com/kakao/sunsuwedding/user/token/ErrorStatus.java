@@ -4,8 +4,8 @@ import com.kakao.sunsuwedding._core.errors.BaseException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
+@RequiredArgsConstructor
 public enum ErrorStatus {
     ACCESS_TOKEN_ALIVE("ACCESS_TOKEN_ALIVE", BaseException.ACCESS_TOKEN_STILL_ALIVE.getMessage()),
     LOGIN_FAIL("LOGIN_FAIL", BaseException.LOGIN_FAIL.getMessage()),

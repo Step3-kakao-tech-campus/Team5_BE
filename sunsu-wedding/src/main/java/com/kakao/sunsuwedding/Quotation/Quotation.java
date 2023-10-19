@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 @Entity
 @Table(name="quotation_tb")
 @NamedEntityGraph(name = "QuotationWithMatch",
                   attributeNodes = @NamedAttributeNode("match"))
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Quotation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

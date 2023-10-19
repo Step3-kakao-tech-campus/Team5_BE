@@ -3,6 +3,7 @@ package com.kakao.sunsuwedding.portfolio;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,13 @@ import org.hibernate.annotations.*;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor
-@Getter
+@Table(name = "portfolio_tb")
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
-@Table(name = "portfolio_tb")
 @NamedEntityGraph(name = "PortfolioWithPlanner",
                   attributeNodes = @NamedAttributeNode("planner"))
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

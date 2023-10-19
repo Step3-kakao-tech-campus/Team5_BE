@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long>, JpaSpecificationExecutor<Portfolio> {
     @EntityGraph("PortfolioWithPlanner")
     Page<Portfolio> findAll(@NotNull Specification specification, @Nullable Pageable pageable);

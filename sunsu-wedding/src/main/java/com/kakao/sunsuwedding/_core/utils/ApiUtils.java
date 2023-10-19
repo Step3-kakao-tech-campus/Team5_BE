@@ -14,14 +14,16 @@ public class ApiUtils {
         return new ApiResult<>(false, null, new ApiError(message, status.value()));
     }
 
-    @Getter @AllArgsConstructor
+    @Getter
+    @AllArgsConstructor
     public static class ApiResult<T> {
         private final boolean success;
         private final T response;
         private final ApiError error;
     }
 
-    @Getter @AllArgsConstructor
+    @Getter
+    @AllArgsConstructor
     public static class ApiError {
         private final String message;
         private final int status;

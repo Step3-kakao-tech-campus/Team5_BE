@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/portfolios")
 public class PortfolioRestController {
     private final PortfolioService portfolioService;

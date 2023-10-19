@@ -12,12 +12,13 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 @Entity
+@Table(name="match_tb")
 @SQLDelete(sql = "UPDATE match_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
-@Table(name="match_tb")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

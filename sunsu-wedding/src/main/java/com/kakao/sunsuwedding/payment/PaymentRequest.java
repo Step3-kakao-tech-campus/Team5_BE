@@ -7,7 +7,8 @@ import lombok.Setter;
 
 public class PaymentRequest {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class SaveDTO{
         @NotEmpty(message = "orderId는 비어있으면 안됩니다.")
         private String orderId;

@@ -9,7 +9,8 @@ import lombok.Setter;
 
 public class MatchResponse {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class ChatByIdDTO {
         Long chatId;
 

@@ -32,8 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PortfolioService {
 
     private final PortfolioJPARepository portfolioJPARepository;
@@ -44,6 +45,7 @@ public class PortfolioService {
     private final QuotationJPARepository quotationJPARepository;
     private final PlannerJPARepository plannerJPARepository;
 
+    @Transactional
     public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = plannerJPARepository.findById(plannerId)

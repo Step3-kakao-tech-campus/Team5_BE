@@ -20,9 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
+
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MatchService {
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;
