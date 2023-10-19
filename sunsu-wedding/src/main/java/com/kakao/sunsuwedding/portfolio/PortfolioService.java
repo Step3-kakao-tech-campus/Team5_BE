@@ -104,7 +104,12 @@ public class PortfolioService {
         Pageable pageable = PageRequest
                 .ofSize(request.size())
                 .withSort(Sort.by("id").descending());
-        List<Portfolio> portfolios = search(request, pageable);
+        List<Portfolio> portfoliosPS = search(request, pageable);
+
+        // 탈퇴한 플래너의 포트폴리오는 제외
+        List<Portfolio> portfolios = portfoliosPS.stream()
+                .filter(portfolio -> portfolio.getPlanner() != null)
+                .toList();
 
         // 더이상 보여줄 포트폴리오가 없다면 커서 null 반환
         if (portfolios.isEmpty()) return new PageCursor<>(null, null);
