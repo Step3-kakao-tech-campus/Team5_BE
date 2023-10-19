@@ -223,15 +223,15 @@ public class PortfolioService {
                 .mapToLong(PortfolioRequest.UpdateDTO.ItemDTO::getItemPrice)
                 .sum();
 
-        // 불변 객체 패턴을 고려한 포트폴리오 변경사항 업데이트
+        // 포트폴리오 변경사항 업데이트 객체 생성
         Portfolio updatedPortfolio = Portfolio.builder()
                 .id(portfolio.getId())
                 .planner(planner)
-                .title(request.getTitle() != null ? request.getTitle() : portfolio.getTitle())
-                .description(request.getDescription() != null ? request.getDescription() : portfolio.getDescription())
-                .location(request.getLocation() != null ? request.getLocation() : portfolio.getLocation())
-                .career(request.getCareer() != null ? request.getCareer() : portfolio.getCareer())
-                .partnerCompany(request.getPartnerCompany() != null ? request.getPartnerCompany() : portfolio.getPartnerCompany())
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .location(request.getLocation())
+                .career(request.getCareer())
+                .partnerCompany(request.getPartnerCompany())
                 .totalPrice(totalPrice)
                 .contractCount(portfolio.getContractCount())
                 .avgPrice(portfolio.getAvgPrice())
