@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding.portfolio;
 
-import com.kakao.sunsuwedding.Quotation.Quotation;
-import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.quotation.Quotation;
+import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
