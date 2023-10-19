@@ -104,12 +104,7 @@ public class PortfolioService {
         Pageable pageable = PageRequest
                 .ofSize(request.size())
                 .withSort(Sort.by("id").descending());
-        List<Portfolio> portfoliosPS = search(request, pageable);
-
-        // 탈퇴한 플래너의 포트폴리오는 제외
-        List<Portfolio> portfolios = portfoliosPS.stream()
-                .filter(portfolio -> portfolio.getPlanner() != null)
-                .toList();
+        List<Portfolio> portfolios = search(request, pageable);
 
         // 더이상 보여줄 포트폴리오가 없다면 커서 null 반환
         if (portfolios.isEmpty()) return new PageCursor<>(null, null);
@@ -136,29 +131,6 @@ public class PortfolioService {
     }
 
     private List<Portfolio> search(CursorRequest request, Pageable pageable) {
-        // 필터링 조건이 존재하면 필터링 조회 메서드 호출
-        if (request.name() != null || request.location() != null) {
-            return getFilteredPortfoliosByCursor(request, pageable);
-        }
-
-        // 필터링 조건이 없다면 커서만 가지고 조회
-        return getPortfoliosByCursor(request, pageable);
-    }
-
-    private List<Portfolio> getPortfoliosByCursor(CursorRequest request, Pageable pageable) {
-        List<Portfolio> portfolios = new ArrayList<>();
-
-        if (request.key().equals(CursorRequest.START_KEY)) {
-            portfolios = portfolioJPARepository.findAllByOrderByIdDesc(pageable);
-        }
-        else if (request.hasKey()) {
-            portfolios = portfolioJPARepository.findAllByIdLessThanOrderByIdDesc(request.key(), pageable);
-        }
-
-        return portfolios;
-    }
-
-    private List<Portfolio> getFilteredPortfoliosByCursor(CursorRequest request, Pageable pageable) {
         Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request);
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }

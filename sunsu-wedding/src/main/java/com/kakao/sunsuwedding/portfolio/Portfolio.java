@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Table(name = "portfolio_tb")
-@NamedEntityGraph(name = "PortfolioWithPlanner",
-                  attributeNodes = @NamedAttributeNode("planner"))
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

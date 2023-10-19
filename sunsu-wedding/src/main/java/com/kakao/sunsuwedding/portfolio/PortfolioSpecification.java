@@ -18,6 +18,9 @@ public class PortfolioSpecification {
                 fetch = root.fetch("planner");
             }
 
+            // 무조건 planner를 join 해서 is_active 여부 확인
+            Join<Portfolio, Planner> join = (Join<Portfolio, Planner>) fetch;
+
             // 조건절을 담을 배열
             List<Predicate> predicates = new ArrayList<>();
 
@@ -27,7 +30,6 @@ public class PortfolioSpecification {
             }
 
             if (valid(request.name())) {
-                Join<Portfolio, Planner> join = (Join<Portfolio, Planner>) fetch;
                 predicates.add(
                         criteriaBuilder.equal(join.get("username"), request.name())
                 );
