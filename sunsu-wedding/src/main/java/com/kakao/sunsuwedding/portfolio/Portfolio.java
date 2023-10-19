@@ -38,29 +38,29 @@ public class Portfolio {
     @Column
     private String career;
 
-    @Column
+    @Column(name = "partner_company")
     private String partnerCompany;
 
-    @Column
+    @Column(name = "total_price")
     private Long totalPrice;
 
-    @Column
+    @Column(name = "contract_count")
     private Long contractCount;
 
-    @Column
+    @Column(name = "avg_price")
     private Long avgPrice;
 
-    @Column
+    @Column(name = "min_price")
     private Long minPrice;
 
-    @Column
+    @Column(name = "max_price")
     private Long maxPrice;
 
-    @Column
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "boolean default true")
-    private boolean is_active = true;
+    @Column(name = "is_active", columnDefinition = "boolean default true")
+    private boolean isActive = true;
 
     @Builder
     public Portfolio(Long id, Planner planner, String title, String description, String location, String career, String partnerCompany, Long totalPrice, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice, LocalDateTime createdAt) {
