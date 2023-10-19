@@ -18,6 +18,9 @@ import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJDBCRepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
+import com.kakao.sunsuwedding.user.base_user.User;
+import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
+import com.kakao.sunsuwedding.user.constant.Grade;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
@@ -43,6 +46,7 @@ public class PortfolioService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
     private final PlannerJPARepository plannerJPARepository;
+    private final UserJPARepository userJPARepository;
 
     public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
         // 요청한 플래너 탐색
@@ -160,30 +164,40 @@ public class PortfolioService {
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
-    public PortfolioResponse.FindByIdDTO getPortfolioById(Long id) {
-        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(id);
+    public PortfolioResponse.FindByIdDTO getPortfolioById(Long portfolioId, Long userId) {
+        // 요청한 유저의 등급을 확인
+        User user = userJPARepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
+        Grade userGrade = user.getGrade();
+
+        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolioId);
         if (imageItems.isEmpty()) {
             throw new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND);
         }
 
         Portfolio portfolio = imageItems.get(0).getPortfolio();
         Planner planner = imageItems.get(0).getPortfolio().getPlanner();
+
+
         // 플래너 탈퇴 시 조회 X
-        if (planner == null) {
-            throw new NotFoundException(BaseException.PLANNER_NOT_FOUND);
-        }
+        if (planner == null) { throw new NotFoundException(BaseException.PLANNER_NOT_FOUND); }
 
         List<String> images = imageItems
                 .stream()
                 .map(ImageEncoder::encode)
                 .toList();
+        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolioId);
 
-        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(id);
+        // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
+        List<Match> matches = new ArrayList<>();
+        List<Quotation> quotations = new ArrayList<>();
 
-        // 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
-        List<Match> matches = matchJPARepository.findLatestTenByPlanner(planner);
-        List<Long> matchIds = matches.stream().map(Match::getId).toList();
-        List<Quotation> quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+        // 프리미엄 등급 유저일 경우 최근 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
+        if (userGrade == Grade.PREMIUM) {
+            matches = matchJPARepository.findLatestTenByPlanner(planner);
+            List<Long> matchIds = matches.stream().map(Match::getId).toList();
+            quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+        }
 
         return PortfolioDTOConverter.FindByIdDTOConvertor(planner, portfolio, images, priceItems, matches, quotations);
     }

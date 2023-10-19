@@ -48,8 +48,9 @@ public class PortfolioRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
-        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id);
+    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
