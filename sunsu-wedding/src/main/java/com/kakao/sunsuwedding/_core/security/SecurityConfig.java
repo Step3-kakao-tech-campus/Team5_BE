@@ -96,7 +96,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/user/**"),
                                 new AntPathRequestMatcher("/portfolios/**"),
-                                new AntPathRequestMatcher("/myportfolio"),
                                 new AntPathRequestMatcher("/chat/**"),
                                 new AntPathRequestMatcher("/quotations/**"),
                                 new AntPathRequestMatcher("/payments/**")
@@ -111,7 +110,8 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/portfolios", "PUT"),
                                 new AntPathRequestMatcher("/portfolios", "DELETE"),
                                 new AntPathRequestMatcher("/quotations/**", "PUT"),
-                                new AntPathRequestMatcher("/quotations/**", "POST")
+                                new AntPathRequestMatcher("/quotations/**", "POST"),
+                                new AntPathRequestMatcher("/quotations/**", "DELETE")
                         ).hasRole("planner")
                         .anyRequest().permitAll()
         );

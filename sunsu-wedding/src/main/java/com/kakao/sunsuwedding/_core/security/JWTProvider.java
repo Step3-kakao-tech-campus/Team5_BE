@@ -16,15 +16,16 @@ import java.util.Date;
 @Component
 public class JWTProvider {
     // access-token expire time = 30 min
-    public static final Long ACCESS_TOKEN_EXP = 1000L * 60 * 30;
+    public final Long ACCESS_TOKEN_EXP = 1000L * 60 * 30;
     // refresh-token expire time = 2 week
-    public static final Long REFRESH_TOKEN_EXP = 1000L * 60 * 60 * 24 * 14;
-    public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String REFRESH_HEADER = "Refresh";
+    public final Long REFRESH_TOKEN_EXP = 1000L * 60 * 60 * 24 * 14;
+    public final String TOKEN_PREFIX = "Bearer ";
+    public final String AUTHORIZATION_HEADER = "Authorization";
+    public final String REFRESH_HEADER = "Refresh";
+
     // 테스트용 secret. 이후 환경변수 파일 분리시켜야 합니다 !!!
-    public static final String ACCESS_TOKEN_SECRET = "hjxgPJUzzHL7Uy3wWBbFdbTOn1qKZXAlbsl8XqSv3MQw9uV8dy73cp5lkgJZmSay0BnffwjBNRAttLVoy1Fqtg==";
-    public static final String REFRESH_TOKEN_SECRET = "/pNWcqH3BGCSyooP+vjaMPm+gPmsJByaeQ55mOi00ZGGqFWPJ2NUmEkkWHwl1mye988UXF7TgvvHZg+vEwlYwg==";
+    public final String ACCESS_TOKEN_SECRET = "hjxgPJUzzHL7Uy3wWBbFdbTOn1qKZXAlbsl8XqSv3MQw9uV8dy73cp5lkgJZmSay0BnffwjBNRAttLVoy1Fqtg==";
+    public final String REFRESH_TOKEN_SECRET = "/pNWcqH3BGCSyooP+vjaMPm+gPmsJByaeQ55mOi00ZGGqFWPJ2NUmEkkWHwl1mye988UXF7TgvvHZg+vEwlYwg==";
 
     public String createAccessToken(User user) {
         String jwt = create(user, ACCESS_TOKEN_EXP, ACCESS_TOKEN_SECRET);
@@ -54,7 +55,7 @@ public class JWTProvider {
     }
 
     private DecodedJWT verify(String token, String secret) {
-        token = token.replace(JWTProvider.TOKEN_PREFIX, "");
+        token = token.replace(TOKEN_PREFIX, "");
         return JWT
                 .require(Algorithm.HMAC512(secret))
                 .build()
