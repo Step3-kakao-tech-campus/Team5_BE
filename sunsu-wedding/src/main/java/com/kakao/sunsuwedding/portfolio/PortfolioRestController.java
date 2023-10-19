@@ -27,7 +27,7 @@ public class PortfolioRestController {
     private static final int PAGE_SIZE = 10;
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.addDTO request,
+    public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.AddDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -54,7 +54,7 @@ public class PortfolioRestController {
     }
 
     @PutMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.updateDTO request,
+    public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.UpdateDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
