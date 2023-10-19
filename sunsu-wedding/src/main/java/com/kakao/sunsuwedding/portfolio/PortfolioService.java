@@ -79,7 +79,7 @@ public class PortfolioService {
 
         // 가격 항목 엔티티에 저장
         List<PriceItem> priceItems = new ArrayList<>();
-        for (PortfolioRequest.addDTO.ItemDTO item : request.getItems()) {
+        for (PortfolioRequest.AddDTO.ItemDTO item : request.getItems()) {
             PriceItem priceItem = PriceItem.builder()
                     .portfolio(portfolio)
                     .itemTitle(item.getItemTitle())
