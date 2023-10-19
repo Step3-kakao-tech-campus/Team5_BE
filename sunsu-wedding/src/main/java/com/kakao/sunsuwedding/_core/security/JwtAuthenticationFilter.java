@@ -106,6 +106,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 throw new TokenException(ErrorStatus.ALL_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 refresh token");
+            } finally {
+                chain.doFilter(request, response);
             }
         }
 

@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 @Table(name = "portfolio_tb")
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
-@NamedEntityGraph(name = "PortfolioWithPlanner",
-                  attributeNodes = @NamedAttributeNode("planner"))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Portfolio {
