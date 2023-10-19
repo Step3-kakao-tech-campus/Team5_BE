@@ -223,7 +223,7 @@ public class PortfolioService {
                 .mapToLong(PortfolioRequest.UpdateDTO.ItemDTO::getItemPrice)
                 .sum();
 
-        // 포트폴리오 변경사항 업데이트 객체 생성
+        // 포트폴리오 변경사항 업데이트 객체 생성 (업데이트 쿼리가 마지막 함수 종료될 때 날아가긴 함)
         Portfolio updatedPortfolio = Portfolio.builder()
                 .id(portfolio.getId())
                 .planner(planner)
@@ -240,29 +240,30 @@ public class PortfolioService {
                 .build();
         portfolioJPARepository.save(updatedPortfolio);
 
-        // 해당하는 가격 아이템 탐색 & 업데이트
-        List<PriceItem> existPriceItems = priceItemJPARepository.findByPortfolioId(portfolio.getId());
-        List<PriceItem> updatedPriceItems = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            PriceItem priceItem = existPriceItems.get(i);
-            PortfolioRequest.UpdateDTO.ItemDTO item = request.getItems().get(i);
+        // 기존의 포트폴리오 가격 항목 일괄 삭제
+        // 특이사항: JPQL 안 쓰니까 DELETE Query N개씩 날아감
+        priceItemJPARepository.deleteAllByPortfolioId(portfolio.getId());
 
-            PriceItem updatedPriceItem = PriceItem.builder()
-                    .id(priceItem.getId())
+        // 업데이트 가격 항목 새로 저장
+        List<PriceItem> updatedPriceItems = new ArrayList<>();
+        for (PortfolioRequest.UpdateDTO.ItemDTO item : request.getItems()) {
+            PriceItem priceItem = PriceItem.builder()
                     .portfolio(portfolio)
-                    .itemTitle(item.getItemTitle() != null ? item.getItemTitle() : priceItem.getItemTitle())
-                    .itemPrice(item.getItemPrice() != null ? item.getItemPrice() : priceItem.getItemPrice())
+                    .itemTitle(item.getItemTitle())
+                    .itemPrice(item.getItemPrice())
                     .build();
-            updatedPriceItems.add(updatedPriceItem);
+            updatedPriceItems.add(priceItem);
         }
-        priceItemJDBCRepository.batchUpdatePriceItems(updatedPriceItems);
+        priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
+
+        // 삭제 후 삽입 로직으로 변경 ㅠㅠ 열심히 만든건데 못쓰게 되버림 엉엉
+        // priceItemJDBCRepository.batchUpdatePriceItems(updatedPriceItems);
 
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(updatedPortfolio, planner);
 
     }
 
-    @Transactional
     public void updateConfirmedPrices(Planner planner) {
         List<Match> matches = matchJPARepository.findAllByPlanner(planner);
         Optional<Portfolio> portfolioPS = portfolioJPARepository.findByPlanner(planner);
