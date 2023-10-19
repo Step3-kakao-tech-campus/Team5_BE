@@ -29,10 +29,10 @@ public class PriceItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Portfolio portfolio;
 
-    @Column(nullable = false)
+    @Column(name = "item_title", nullable = false)
     private String itemTitle;
 
-    @Column(nullable = false)
+    @Column(name = "item_price", nullable = false)
     private Long itemPrice;
 
     @Builder
