@@ -228,9 +228,10 @@ public class PortfolioControllerTest {
 
 
     // ============ 포트폴리오 상세 조회 테스트 ============
-    @DisplayName("포트폴리오 상세 조회 성공 테스트")
+    @DisplayName("포트폴리오 상세 조회 성공 테스트 - 예비부부 (PREMIUM 등급)")
     @Test
-    public void get_portfolio_by_id_success_test() throws Exception {
+    @WithUserDetails("couple2@gmail.com")
+    public void get_portfolio_by_id_premium_success_test() throws Exception {
         //given
         Long id = 1L;
         // when
@@ -252,8 +253,33 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory.payments[0].confirmedAt").value("2023-10"));
     }
 
+    @DisplayName("포트폴리오 상세 조회 성공 테스트 - 플래너 (NORMAL 등급)")
+    @Test
+    @WithUserDetails("planner0@gmail.com")
+    public void get_portfolio_by_id_normal_success_test() throws Exception {
+        //given
+        Long id = 1L;
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/portfolios/{id}", id)
+        );
+
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(1));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.userId").value(2));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.priceInfo.items[0].itemTitle").value("스튜디오1"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.priceInfo.items[0].itemPrice").value(500000));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory").isEmpty());
+    }
+
     @DisplayName("포트폴리오 상세 조회 실패 테스트 1 - 존재하지 않는 포트폴리오")
     @Test
+    @WithUserDetails("couple2@gmail.com")
     public void get_portfolio_by_id_fail_test_portfolio_not_found() throws Exception {
         //given
         Long id = 30L;
@@ -274,6 +300,7 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 상세 조회 실패 테스트 2 - 탈퇴한 플래너")
     @Test
+    @WithUserDetails("couple2@gmail.com")
     public void get_portfolio_by_id_fail_test_planner_not_found() throws Exception {
         //given
         Long id = 15L; // 탈퇴한 플래너의 포트폴리오 id
