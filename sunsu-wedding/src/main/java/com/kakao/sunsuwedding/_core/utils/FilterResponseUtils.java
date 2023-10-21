@@ -1,10 +1,12 @@
 package com.kakao.sunsuwedding._core.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.errors.exception.Exception401;
-import com.kakao.sunsuwedding._core.errors.exception.Exception403;
+import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,17 +21,22 @@ public class FilterResponseUtils {
         this.om = om;
     }
 
-    public void unAuthorized(HttpServletResponse resp, Exception401 e) throws IOException {
-        resp.setStatus(e.status().value());
+    private void responseSetting(HttpServletResponse resp, HttpStatusCode status, Object body) throws IOException {
+        resp.setStatus(status.value());
         resp.setContentType("application/json; charset=utf-8");
-        String responseBody = om.writeValueAsString(e.body());
+        String responseBody = om.writeValueAsString(body);
         resp.getWriter().println(responseBody);
     }
 
-    public void forbidden(HttpServletResponse resp, Exception403 e) throws IOException {
-        resp.setStatus(e.status().value());
-        resp.setContentType("application/json; charset=utf-8");
-        String responseBody = om.writeValueAsString(e.body());
-        resp.getWriter().println(responseBody);
+    public void unAuthorized(HttpServletResponse resp, UnauthorizedException e) throws IOException {
+        responseSetting(resp, e.status(), e.body());
+    }
+
+    public void forbidden(HttpServletResponse resp, ForbiddenException e) throws IOException {
+        responseSetting(resp, e.status(), e.body());
+    }
+
+    public void notFound(HttpServletResponse resp, NotFoundException e) throws IOException {
+        responseSetting(resp, e.status(), e.body());
     }
 }

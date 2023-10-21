@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
+@SQLDelete(sql = "UPDATE match_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Table(name="match_tb")
 public class Match {
@@ -36,39 +36,42 @@ public class Match {
     @Column(nullable = false)
     private Long price;
 
-    @Column
-    private LocalDateTime confirmed_at;
+    @Column(name = "confirmed_price", nullable = false)
+    private Long confirmedPrice;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
+    @Column(name = "confirmed_at")
+    private LocalDateTime confirmedAt;
 
-    @Column(nullable = false)
-    private Boolean is_active;
+    @Column(nullable = false, name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false, name = "is_active")
+    private Boolean isActive;
 
     @Builder
-    public Match(Long id, Planner planner, Couple couple, Long price) {
+    public Match(Long id, Planner planner, Couple couple, Long price, Long confirmedPrice) {
         this.id = id;
         this.planner = planner;
         this.couple = couple;
         this.status = MatchStatus.UNCONFIRMED;
         this.price = price;
-        this.created_at = LocalDateTime.now();
-        this.is_active = true;
-    }
-
-    public void updateStatus(MatchStatus status) {
-        this.status = status;
+        this.confirmedPrice = (confirmedPrice == null? 0 : confirmedPrice);
+        this.createdAt = LocalDateTime.now();
+        this.isActive = true;
     }
 
     public void updatePrice(Long price) {
         this.price = price;
     }
 
-    public void updateConfirmedAt(LocalDateTime confirmed_at) {
-        this.confirmed_at = confirmed_at;
+    public void updateConfirmedPrice(Long price) {
+        this.confirmedPrice = price;
+        this.confirmedAt = LocalDateTime.now();
     }
 
-    public void updateIsActive(Boolean is_active) {
-        this.is_active = is_active;
+    public void updateStatusConfirmed(Long price) {
+        this.status = MatchStatus.CONFIRMED;
+        this.confirmedPrice = price;
+        this.confirmedAt = LocalDateTime.now();
     }
 }

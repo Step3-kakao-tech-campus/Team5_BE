@@ -2,26 +2,28 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
+@Where(clause = "is_active = true")
 @Table(name = "portfolio_tb")
-@OnDelete(action= OnDeleteAction.CASCADE)
+@NamedEntityGraph(name = "PortfolioWithPlanner",
+                  attributeNodes = @NamedAttributeNode("planner"))
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "planner_id")
     private Planner planner;
 
     @Column(nullable = false)
@@ -57,6 +59,9 @@ public class Portfolio {
     @Column
     private LocalDateTime createdAt;
 
+    @Column(columnDefinition = "boolean default true")
+    private boolean is_active = true;
+
     @Builder
     public Portfolio(Long id, Planner planner, String title, String description, String location, String career, String partnerCompany, Long totalPrice, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice, LocalDateTime createdAt) {
         this.id = id;
@@ -72,5 +77,12 @@ public class Portfolio {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
+    }
+
+    public void updateConfirmedPrices(Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {
+        this.contractCount = contractCount;
+        this.avgPrice = avgPrice;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
     }
 }

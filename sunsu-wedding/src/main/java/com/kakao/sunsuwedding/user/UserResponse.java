@@ -1,7 +1,6 @@
 package com.kakao.sunsuwedding.user;
 
 import com.kakao.sunsuwedding.user.base_user.User;
-import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +23,7 @@ public class UserResponse {
             this.email = user.getEmail();
             this.role = user.getDtype();
             this.grade = user.getGrade().getGradeName();
-            this.payedAt = (user.getPayed_at() == null) ? null : user.getPayed_at().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
+            this.payedAt = (user.getPayedAt() == null) ? null : user.getPayedAt().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
         }
     }
 }
