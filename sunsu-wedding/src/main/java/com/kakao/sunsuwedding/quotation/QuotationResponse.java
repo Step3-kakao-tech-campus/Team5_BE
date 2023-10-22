@@ -20,4 +20,8 @@ public class QuotationResponse {
             String status,
             LocalDateTime modifiedAt
     ) {}
+
+    public record FindByUserDTO(
+            List<QuotationDTO> quotations
+    ) {}
 }

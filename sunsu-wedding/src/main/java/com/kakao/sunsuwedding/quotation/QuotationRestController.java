@@ -53,4 +53,11 @@ public class QuotationRestController {
         quotationService.update(userDetails.getInfo(), matchId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
+
+    @GetMapping("/collect")
+    public ResponseEntity<?> findByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        QuotationResponse.FindByUserDTO response = quotationService.findQuotationsByUser(userDetails.getInfo());
+
+        return ResponseEntity.ok().body(ApiUtils.success(response));
+    }
 }

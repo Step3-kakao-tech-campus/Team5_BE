@@ -7,11 +7,13 @@ import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
+import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,9 +55,19 @@ public class QuotationService {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         MatchStatus status = match.getStatus();
 
-        List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toFindByMatchIdDTO(quotations);
+        List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toQuotationDTOS(quotations);
 
         return new QuotationResponse.FindAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
+    }
+
+    public QuotationResponse.FindByUserDTO findQuotationsByUser(Pair<String, Long> info) {
+        String role = info.getFirst();
+        Long userId = info.getSecond();
+        List<Quotation> quotations = getQuotationByUser(role, userId);
+
+        List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toQuotationDTOS(quotations);
+
+        return new QuotationResponse.FindByUserDTO(quotationDTOS);
     }
 
     @Transactional
@@ -120,5 +132,18 @@ public class QuotationService {
         }
 
         return quotation;
+    }
+
+    private List<Quotation> getQuotationByUser(String role, Long id) {
+        List<Quotation> quotations = new ArrayList<>();
+
+        if (role.equals(Role.PLANNER.getRoleName())) {
+            quotations = quotationJPARepository.findAllByMatchPlannerId(id);
+        }
+        else {
+            quotations = quotationJPARepository.findAllByMatchCoupleId(id);
+        }
+
+        return quotations;
     }
 }
