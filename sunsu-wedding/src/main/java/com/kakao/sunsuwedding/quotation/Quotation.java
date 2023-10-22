@@ -64,27 +64,27 @@ public class Quotation {
 
     public void updateTitle(String title) {
         this.title = title;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updatePrice(long price) {
         this.price = price;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updateCompany(String company) {
         this.company = company;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updateDescription(String description) {
         this.description = description;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updateStatus(QuotationStatus status) {
         this.status = status;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void update(QuotationRequest.Update request) {
@@ -92,6 +92,10 @@ public class Quotation {
         this.price = request.price();
         this.company = request.company();
         this.description = request.description();
+        updateModifiedAt();
+    }
+
+    private void updateModifiedAt() {
         this.modifiedAt = LocalDateTime.now();
     }
 }
