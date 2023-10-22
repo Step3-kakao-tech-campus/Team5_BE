@@ -381,8 +381,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -401,8 +400,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -423,8 +421,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -445,8 +442,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -467,8 +463,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -646,4 +641,14 @@ public class QuotationRestControllerTest {
     }
 
     // ============ 견적서 삭제 테스트 ============
+
+
+
+
+
+
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+    }
 }
