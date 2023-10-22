@@ -22,6 +22,17 @@ public class QuotationResponse {
     ) {}
 
     public record FindByUserDTO(
-            List<QuotationDTO> quotations
+            List<QuotationWithPartnerDTO> quotations
+    ) {}
+
+    public record QuotationWithPartnerDTO(
+            String partnerName,
+            Long id,
+            String title,
+            Long price,
+            String company,
+            String description,
+            String status,
+            LocalDateTime modifiedAt
     ) {}
 }

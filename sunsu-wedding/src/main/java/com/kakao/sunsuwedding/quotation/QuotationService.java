@@ -55,7 +55,7 @@ public class QuotationService {
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         MatchStatus status = match.getStatus();
 
-        List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toQuotationDTOS(quotations);
+        List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toFindByMatchIdDTO(quotations);
 
         return new QuotationResponse.FindAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
     }
@@ -63,9 +63,9 @@ public class QuotationService {
     public QuotationResponse.FindByUserDTO findQuotationsByUser(Pair<String, Long> info) {
         String role = info.getFirst();
         Long userId = info.getSecond();
-        List<Quotation> quotations = getQuotationByUser(role, userId);
+        List<Quotation> quotations = getQuotationsByUser(role, userId);
 
-        List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toQuotationDTOS(quotations);
+        List<QuotationResponse.QuotationWithPartnerDTO> quotationDTOS = getQuotationDTOSByUser(role, userId, quotations);
 
         return new QuotationResponse.FindByUserDTO(quotationDTOS);
     }
@@ -120,7 +120,7 @@ public class QuotationService {
         return match;
     }
 
-    private static Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
+    private Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
         Quotation quotation = quotations
                 .stream()
                 .filter(iter -> Objects.equals(iter.getId(), quotationId))
@@ -134,16 +134,13 @@ public class QuotationService {
         return quotation;
     }
 
-    private List<Quotation> getQuotationByUser(String role, Long id) {
-        List<Quotation> quotations = new ArrayList<>();
+    private List<Quotation> getQuotationsByUser(String role, Long id) {
+        return role.equals(Role.PLANNER.getRoleName()) ?
+                quotationJPARepository.findAllByMatchPlannerId(id) : quotationJPARepository.findAllByMatchCoupleId(id);
+    }
 
-        if (role.equals(Role.PLANNER.getRoleName())) {
-            quotations = quotationJPARepository.findAllByMatchPlannerId(id);
-        }
-        else {
-            quotations = quotationJPARepository.findAllByMatchCoupleId(id);
-        }
-
-        return quotations;
+    private List<QuotationResponse.QuotationWithPartnerDTO> getQuotationDTOSByUser(String role, Long id, List<Quotation> quotations) {
+        return role.equals(Role.PLANNER.getRoleName()) ?
+                QuotationDTOConverter.toFindByPlannerDTO(quotations) : QuotationDTOConverter.toFindByCoupleDTO(quotations);
     }
 }
