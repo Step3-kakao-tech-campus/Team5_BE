@@ -3,7 +3,7 @@ package com.kakao.sunsuwedding.quotation;
 import java.util.List;
 
 public class QuotationDTOConverter {
-    public static List<QuotationResponse.QuotationDTO> toFindByMatchIdDTO(List<Quotation> quotations) {
+    public static List<QuotationResponse.QuotationDTO> toQuotationDTOS(List<Quotation> quotations) {
         return quotations
                 .stream()
                 .map(quotation -> new QuotationResponse.QuotationDTO(
