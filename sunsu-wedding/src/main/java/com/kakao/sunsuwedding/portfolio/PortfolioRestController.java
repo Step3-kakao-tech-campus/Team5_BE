@@ -56,7 +56,7 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PutMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
+    @PostMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
     public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.UpdateDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
