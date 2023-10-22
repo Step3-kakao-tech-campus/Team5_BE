@@ -47,7 +47,7 @@ public class Quotation {
     private LocalDateTime createdAt;
 
     @Column(nullable = false, name = "is_active")
-    private Boolean is_active;
+    private Boolean isActive;
 
     @Builder
     public Quotation(long id, Match match, String title, long price, String company, String description, QuotationStatus status, LocalDateTime createdAt) {
@@ -59,7 +59,7 @@ public class Quotation {
         this.description = description;
         this.status = (status == null? QuotationStatus.UNCONFIRMED : status);
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
-        this.is_active = true;
+        this.isActive = true;
     }
 
     public void updateTitle(String title) {
@@ -84,11 +84,6 @@ public class Quotation {
 
     public void updateStatus(QuotationStatus status) {
         this.status = status;
-        this.modifiedAt = LocalDateTime.now();
-    }
-
-    public void updateIsActive(Boolean is_active) {
-        this.is_active = is_active;
         this.modifiedAt = LocalDateTime.now();
     }
 
