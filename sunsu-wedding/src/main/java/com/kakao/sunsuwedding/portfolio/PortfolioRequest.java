@@ -32,16 +32,7 @@ public class PortfolioRequest {
 
         private List<ItemDTO> items;
 
-        @Getter
-        @Setter
-        @ToString
-        public static class ItemDTO {
-            @NotNull(message = "itemTitle은 비어있으면 안됩니다.")
-            private String itemTitle;
 
-            @NotNull(message = "itemPrice는 비어있으면 안됩니다.")
-            private Long itemPrice;
-        }
 
     }
 
@@ -68,16 +59,16 @@ public class PortfolioRequest {
         private String partnerCompany;
 
         private List<ItemDTO> items;
+    }
 
-        @Getter
-        @Setter
-        @ToString
-        public static class ItemDTO {
-            @NotNull(message = "itemTitle은 비어있으면 안됩니다.")
-            private String itemTitle;
+    @Getter
+    @Setter
+    @ToString
+    public static class ItemDTO {
+        @NotNull(message = "itemTitle은 비어있으면 안됩니다.")
+        private String itemTitle;
 
-            @NotNull(message = "itemPrice는 비어있으면 안됩니다.")
-            private Long itemPrice;
-        }
+        @NotNull(message = "itemPrice는 비어있으면 안됩니다.")
+        private Long itemPrice;
     }
 }
