@@ -3,7 +3,6 @@ package com.kakao.sunsuwedding.payment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import com.kakao.sunsuwedding.user.UserRestControllerTest;
-import com.kakao.sunsuwedding.user.payment.PaymentRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -41,11 +40,12 @@ public class PaymentRestControllerTest {
     // ============ 결제 데이터 저장 테스트 ============
     @DisplayName("결제 데이터 저장 성공 테스트")
     @Test
-    @WithUserDetails("couple@gmail.com")
+    @WithUserDetails("planner@gmail.com")
     void save_payment_success() throws Exception {
         // given
         PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO();
         requestDTO.setAmount(1000L);
+        requestDTO.setPaymentKey("paymentKey");
         requestDTO.setOrderId("orderId1");
         String requestBody = om.writeValueAsString(requestDTO);
 
@@ -71,6 +71,7 @@ public class PaymentRestControllerTest {
         // given
         PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO();
         requestDTO.setAmount(1000L);
+        requestDTO.setPaymentKey("paymentKey");
         requestDTO.setOrderId("");
         String requestBody = om.writeValueAsString(requestDTO);
 
@@ -94,12 +95,13 @@ public class PaymentRestControllerTest {
     // ============ 결제 정보 검증 테스트 ============
     @DisplayName("결제 정보 검증 성공 테스트")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("couple@gmail.com")
     void confirm_payment_success() throws Exception {
         // when
         PaymentRequest.ConfirmDTO requestDTO = new PaymentRequest.ConfirmDTO();
-        requestDTO.setAmount(5000L);
-        requestDTO.setOrderId("orderId");
+        requestDTO.setAmount(1000L);
+        requestDTO.setPaymentKey("payment");
+        requestDTO.setOrderId("order");
         String requestBody = om.writeValueAsString(requestDTO);
 
         //given
@@ -117,12 +119,13 @@ public class PaymentRestControllerTest {
 
     @DisplayName("결제 정보 검증 실패 테스트 - 잘못된 amount")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("couple@gmail.com")
     void confirm_payment_fail() throws Exception {
         // when
         PaymentRequest.ConfirmDTO requestDTO = new PaymentRequest.ConfirmDTO();
-        requestDTO.setAmount(1000L);
-        requestDTO.setOrderId("orderId");
+        requestDTO.setAmount(10000L);
+        requestDTO.setPaymentKey("payment");
+        requestDTO.setOrderId("order");
         String requestBody = om.writeValueAsString(requestDTO);
 
         //given
@@ -142,12 +145,13 @@ public class PaymentRestControllerTest {
     // ============ 유저 등급 업그레이드 테스트 ============
     @DisplayName("유저 등급 업그레이드 성공 테스트")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("couple@gmail.com")
     void user_upgrade_success() throws Exception {
         // given
         PaymentRequest.UpgradeDTO requestDTO = new PaymentRequest.UpgradeDTO();
-        requestDTO.setAmount(5000L);
-        requestDTO.setOrderId("orderId");
+        requestDTO.setAmount(1000L);
+        requestDTO.setOrderId("order");
+        requestDTO.setPaymentKey("payment");
         requestDTO.setStatus("DONE");
         String requestBody = om.writeValueAsString(requestDTO);
 
@@ -168,12 +172,13 @@ public class PaymentRestControllerTest {
     }
     @DisplayName("유저 등급 업그레이드 실패 테스트")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("couple@gmail.com")
     void user_upgrade_fail() throws Exception {
         // given
         PaymentRequest.UpgradeDTO requestDTO = new PaymentRequest.UpgradeDTO();
-        requestDTO.setAmount(5000L);
-        requestDTO.setOrderId("orderId");
+        requestDTO.setAmount(1000L);
+        requestDTO.setOrderId("order");
+        requestDTO.setPaymentKey("payment");
         requestDTO.setStatus("EXPIRED");
         String requestBody = om.writeValueAsString(requestDTO);
 

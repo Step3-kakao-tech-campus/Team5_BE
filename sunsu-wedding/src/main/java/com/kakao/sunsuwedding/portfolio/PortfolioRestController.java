@@ -6,6 +6,7 @@ import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
 import com.kakao.sunsuwedding.user.planner.Planner;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
@@ -26,7 +27,7 @@ public class PortfolioRestController {
     private static final int PAGE_SIZE = 10;
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.addDTO request,
+    public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.AddDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -37,21 +38,26 @@ public class PortfolioRestController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getPortfolios(@RequestParam @Min(-2) Long cursor) {
-        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE);
+    public ResponseEntity<?> getPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
+                                           @RequestParam @Nullable String name,
+                                           @RequestParam @Nullable String location,
+                                           @RequestParam @Nullable Long minPrice,
+                                           @RequestParam @Nullable Long maxPrice) {
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
-        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id);
+    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
     @PutMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.updateDTO request,
+    public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.UpdateDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {

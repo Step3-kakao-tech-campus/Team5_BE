@@ -4,38 +4,33 @@ import com.kakao.sunsuwedding._core.DummyEntity;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.couple.Couple;
-import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoConfigureDataJpa
 @DataJpaTest
 public class UserJPARepositoryTest extends DummyEntity {
 
     @Autowired
     private UserJPARepository userJPARepository;
 
-    @Autowired
-    private EntityManager em;
-
-    private Long id1;
-    private Long id2;
-    private Long id3;
+    private Long id1, id2, id3;
 
     @BeforeEach
     public void setUp(){
         id1 = userJPARepository.save(newCouple("asdf")).getId();
         id2 = userJPARepository.save(newPlanner("qwer")).getId();
         id3 = userJPARepository.save(unActivePlanner("zxcv")).getId();
-        em.clear();
+    }
+
+    @AfterEach
+    public void teardown(){
+        userJPARepository.deleteAll();
     }
 
     @DisplayName("커플 id로 찾기 - 성공")
@@ -52,7 +47,7 @@ public class UserJPARepositoryTest extends DummyEntity {
         assertThat(user.getPassword()).isEqualTo("couple1234!");
         assertThat(user.getUsername()).isEqualTo("asdf");
         assertThat(user.getDtype()).isEqualTo("couple");
-        assertThat(user.isActive()).isEqualTo(true);
+        assertThat(user.getIsActive()).isEqualTo(true);
         assertThat(user.getGrade().getGradeName()).isEqualTo("normal");
     }
     @DisplayName("플래너 id로 찾기 - 성공")
@@ -69,7 +64,7 @@ public class UserJPARepositoryTest extends DummyEntity {
         assertThat(user.getPassword()).isEqualTo("planner1234!");
         assertThat(user.getUsername()).isEqualTo("qwer");
         assertThat(user.getDtype()).isEqualTo("planner");
-        assertThat(user.isActive()).isEqualTo(true);
+        assertThat(user.getIsActive()).isEqualTo(true);
         assertThat(user.getGrade().getGradeName()).isEqualTo("normal");
     }
     @DisplayName("삭제된 유저 id로 찾기 - 성공")
@@ -86,7 +81,7 @@ public class UserJPARepositoryTest extends DummyEntity {
         assertThat(user.getPassword()).isEqualTo("planner1234!");
         assertThat(user.getUsername()).isEqualTo("zxcv");
         assertThat(user.getDtype()).isEqualTo("planner");
-        assertThat(user.isActive()).isEqualTo(false);
+        assertThat(user.getIsActive()).isEqualTo(false);
         assertThat(user.getGrade().getGradeName()).isEqualTo("normal");
     }
 

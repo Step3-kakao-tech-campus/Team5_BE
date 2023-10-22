@@ -1,13 +1,12 @@
 package com.kakao.sunsuwedding.match;
 
+import com.kakao.sunsuwedding.Quotation.Quotation;
+import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.Quotation.QuotationStatus;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
-import com.kakao.sunsuwedding._core.utils.PriceCalculator;
-import com.kakao.sunsuwedding.match.Quotation.Quotation;
-import com.kakao.sunsuwedding.match.Quotation.QuotationJPARepository;
-import com.kakao.sunsuwedding.match.Quotation.QuotationStatus;
 import com.kakao.sunsuwedding.portfolio.PortfolioService;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
@@ -40,14 +39,16 @@ public class MatchService {
         // 유저 본인의 채팅방이 맞는지 확인
         permissionCheck(info, match);
         // 플래너가 1개씩 전부 확정한 후에 예비 부부가 전체 확정 가능
-        Pair<Boolean, Long> result = isAllConfirmed(match);
+        List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
+        Boolean isAllConfirmed = isAllConfirmed(match, quotations);
 
         // 모든 견적서 확정 완료 시
-        if (result.getFirst()) {
-            match.updateStatusConfirmed(result.getSecond());
+        if (isAllConfirmed) {
+            match.updateStatusConfirmed();
+            match.updateConfirmedPrice(match.getPrice());
             matchJPARepository.save(match);
             // 견적서 전체 확정 후 플래너 포트폴리오의 avg, min, max price 업데이트 하기
-            updateConfirmedPrices(match.getPlanner());
+            portfolioService.updateConfirmedPrices(match.getPlanner());
         }
         // 확정되지 않은 견적서가 있을 때
         else {
@@ -74,20 +75,13 @@ public class MatchService {
         matchJPARepository.delete(match);
     }
 
-    private Pair<Boolean, Long> isAllConfirmed(Match match) {
-        List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
+    private Boolean isAllConfirmed(Match match, List<Quotation> quotations) {
         if (quotations.isEmpty()) {
             throw new BadRequestException(BaseException.QUOTATION_NOTHING_TO_CONFIRM);
         }
         else {
             // 모든 견적서 확정 됐는지 여부 구하기
-            Boolean allConfirmed = quotations.stream().allMatch(quotation -> quotation.getStatus().equals(QuotationStatus.CONFIRMED));
-            quotations.stream().forEach(quotation -> System.out.println(quotation.getStatus()));
-
-            // Total Price 구하기
-            Long totalPrice = quotations.stream().mapToLong(Quotation::getPrice).sum();
-
-            return Pair.of(allConfirmed, totalPrice);
+            return quotations.stream().allMatch(quotation -> quotation.getStatus().equals(QuotationStatus.CONFIRMED));
         }
     }
 
@@ -125,20 +119,5 @@ public class MatchService {
             if (!match.getCouple().getId().equals(id))
                 throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
-    }
-
-    private void updateConfirmedPrices(Planner planner) {
-        List<Match> matches = matchJPARepository.findAllByPlanner(planner);
-
-        // 건수, 평균, 최소, 최대 가격 구하기
-        Long contractCount = matches.stream()
-                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .count();
-        Long avgPrice = PriceCalculator.calculateAvgPrice(matches, contractCount);
-        Long minPrice = PriceCalculator.calculateMinPrice(matches);
-        Long maxPrice = PriceCalculator.calculateMaxPrice(matches);
-
-        // portfolio 단에서 값 업데이트
-        portfolioService.updateConfirmedPrices(planner, contractCount, avgPrice, minPrice, maxPrice);
     }
 }

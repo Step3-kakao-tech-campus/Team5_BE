@@ -30,10 +30,14 @@
 <br>
 
 ## 🔗 링크 모음
-- [순수웨딩 노션](https://www.notion.so/f11783c42731479ca1f6c9a97a738324)
-- [ERD](https://www.erdcloud.com/d/ANQiRdphNrhxhme59)
-- [API 문서](https://www.notion.so/API-1f290dbfaf54438293b5b1d7da4c6645)
-- [디자인-피그마](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/PURE-WEDDING?type=design&node-id=0-1&mode=design&t=TWVZiGtJa7WIFgfW-0)
+||
+|----|
+[순수웨딩 - GitHub (FE)](https://github.com/Step3-kakao-tech-campus/Team5_FE)
+[순수웨딩 - Notion 협업 문서](https://www.notion.so/f11783c42731479ca1f6c9a97a738324)
+[순수웨딩 - 기획안](https://www.figma.com/file/A81sCNiwoLUfSe5aqXEHXr/%EC%B9%B4%ED%85%8C%EC%BA%A0-5%EC%A1%B0---%EA%B8%B0%ED%9A%8D%EC%95%88?type=design&node-id=972-145&mode=design&t=QdcoBgtPZi631myk-0)
+[순수웨딩 - ERD](https://www.erdcloud.com/d/ANQiRdphNrhxhme59)  
+[순수웨딩 - API 문서](https://www.notion.so/API-1f290dbfaf54438293b5b1d7da4c6645)  
+[순수웨딩 - 와이어프레임 디자인](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/SUNSU-WEDDING?type=design&node-id=0-1&mode=design&t=uNARBufsvVjsAFYP-0)
 
 <br>
 

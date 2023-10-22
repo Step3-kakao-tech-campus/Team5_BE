@@ -1,6 +1,7 @@
 SET REFERENTIAL_INTEGRITY FALSE;
 truncate table user_tb;
 truncate table token_tb;
+truncate table payment_tb;
 truncate table portfolio_tb;
 truncate table imageitem_tb;
 truncate table priceitem_tb;
@@ -9,29 +10,38 @@ truncate table quotation_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 -- planner 비밀번호 : planner1234!
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`, `order_id`, `payed_amount`) VALUES ('2','planner@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'planner', 'orderId', '5000');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('3','planner2@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner2','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('6','planner5@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner5','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('7','planner6@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner6','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('8','planner7@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner7','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('9','planner8@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner8','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('10','planner9@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner9','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('11','planner10@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner10','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('12','planner11@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner11','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('13','planner12@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner12','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('14','planner13@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner13','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('15','planner14@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner14','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('16','planner15@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner15','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('17','planner16@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner16','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
--- JPA 테스트 할 때 DummyEntity가 생겨서 전체 테스트 시 PRIMARY_KEY_VIOLATION 에러나서 일단 id 2,3으로 해뒀습니다!
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('1','planner0@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner0','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('2','planner@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('3','planner2@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner2','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('6','planner5@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner5','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('7','planner6@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner6','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('8','planner7@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner7','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('9','planner8@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner8','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('10','planner9@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner9','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('11','planner10@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner10','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('12','planner11@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner11','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('13','planner12@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner12','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('14','planner13@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner13','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('15','planner14@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner14','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('16','planner15@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner15','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('17','planner16@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner16','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('19','planner17@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner17','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'false', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('20','planner18@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner18','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('21','planner19@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner19','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
+
 -- couple 비밀번호 : couple1234!
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('4','couple@gmail.com','{bcrypt}$2a$10$bKgX34po45/xYw1Dd8C81OYW4dkkVQV5lHd7a.06m1gBX689XERA.','couple','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'couple');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('5','couple2@gmail.com','{bcrypt}$2a$10$bKgX34po45/xYw1Dd8C81OYW4dkkVQV5lHd7a.06m1gBX689XERA.','couple2','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'couple');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`payed_at`,`grade`, `is_active`, `dtype`) VALUES ('18','couple3@gmail.com','{bcrypt}$2a$10$bKgX34po45/xYw1Dd8C81OYW4dkkVQV5lHd7a.06m1gBX689XERA.','couple3','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'couple');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('4','couple@gmail.com','{bcrypt}$2a$10$bKgX34po45/xYw1Dd8C81OYW4dkkVQV5lHd7a.06m1gBX689XERA.','couple','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'couple');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('5','couple2@gmail.com','{bcrypt}$2a$10$bKgX34po45/xYw1Dd8C81OYW4dkkVQV5lHd7a.06m1gBX689XERA.','couple2','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'couple');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('18','couple3@gmail.com','{bcrypt}$2a$10$bKgX34po45/xYw1Dd8C81OYW4dkkVQV5lHd7a.06m1gBX689XERA.','couple3','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'couple');
 
 -- token
---INSERT INTO token_tb (`id`,`user_id`,`access_token`,`refresh_token`) VALUES ('2', '3','accesToken1', 'refreshToken1');
---INSERT INTO token_tb (`id`,`user_id`,`access_token`,`refresh_token`) VALUES ('3', '4','accesToken2', 'refreshToken2');
+INSERT INTO token_tb (`id`,`user_id`,`access_token`,`refresh_token`) VALUES ('1', '3','accesToken1', 'refreshToken1');
+INSERT INTO token_tb (`id`,`user_id`,`access_token`,`refresh_token`) VALUES ('2', '4','accesToken2', 'refreshToken2');
+
+-- payment
+INSERT INTO payment_tb (`id`,`user_id`,`order_id`,`payment_key`, `payed_amount`, `created_at`, `payed_at`, `is_active`) VALUES ('1', '4','order', 'payment', '1000', '2023-10-16 01:06:55.00', '2023-10-16 01:06:55.10', 'true');
+INSERT INTO payment_tb (`id`,`user_id`,`order_id`,`payment_key`, `payed_amount`, `created_at`, `payed_at`, `is_active`) VALUES ('2', '10','order2', 'payment2', '1000', '2023-10-16 01:06:55.00', '2023-10-16 01:06:55.10', 'true');
+
 
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('1', '2', 'test1', 'test1', '부산', 'none', 'none', '1000000', '10', '1000000', '1000000', '1000000', '2023-09-15 15:26:55.00');
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('2', '3', 'test2', 'test2', '부산', 'none', 'none', '2000000', '20', '2000000', '2000000', '2000000', '2023-09-22 15:26:55.00');
@@ -47,6 +57,8 @@ INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('12', '15', 'test12', 'test12', '부산', 'none', 'none', '2000000', '120', '2000000', '2000000', '2000000', '2023-10-02 15:26:55.00');
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('13', '16', 'test13', 'test13', '부산', 'none', 'none', '2000000', '130', '2000000', '2000000', '2000000', '2023-10-03 15:26:55.00');
 INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('14', '17', 'test14', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('15', '19', '탈퇴한 플래너의 포트폴리오', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`) VALUES ('16', '20', '포트폴리오 삭제 테스트 데이터', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00');
 
 
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('1', '1', '스튜디오1', '500000');
@@ -56,18 +68,19 @@ INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALU
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('5', '2', '드레스2', '300000');
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('6', '2', '메이크업2', '200000');
 
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '2', '2-1.jpg', '/Users/seokjun/Downloads/images/', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '2', '2-2.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '2', '2-3.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '2', '2-4.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '2', '2-5.jpg', '/Users/seokjun/Downloads/images/', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', './images/image1.jpg', '522499', 'true');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', './images/image2.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', './images/image3.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', './images/image4.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', './images/image5.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '2', '2-1.jpg', './images/image1.jpg', '522499', 'true');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '2', '2-2.jpg', './images/image2.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '2', '2-3.jpg', './images/image3.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '2', '2-4.jpg', './images/image4.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '2', '2-5.jpg', './images/image5.jpg', '522499', 'false');
+INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('11', '15', '2-5.jpg', './images/image5.jpg', '522499', 'true');
 
---INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', 'CONFIRMED', '1000000', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', 'CONFIRMED', '1000000', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '2', '4', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('3', '2', '5', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('4', '2', '4', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');

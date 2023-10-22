@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Planner extends User {
 
     @Builder
-    public Planner(Long id, String email, String password, String username, Grade grade, boolean isActive, LocalDateTime createdAt, String orderId, Long payedAmount, LocalDateTime payedAt) {
-        super(id, email, password, username, grade, isActive, createdAt, orderId, payedAmount, payedAt);
+    public Planner(Long id, String email, String password, String username, LocalDateTime upgradeAt, Boolean isActive) {
+        super(id, email, password, username, Grade.NORMAL, upgradeAt, isActive, LocalDateTime.now());
     }
 }

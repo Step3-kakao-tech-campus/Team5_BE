@@ -32,7 +32,7 @@ public class PortfolioResponse {
 
     public record PriceDTO(
             Long totalPrice,
-            List<PriceItemDTO> itemPrices
+            List<PriceItemDTO> items
     ) {
     }
 
