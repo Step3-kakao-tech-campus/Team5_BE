@@ -38,6 +38,9 @@ public class Review {
     @Column(name = "modified_at")
     LocalDateTime modifiedAt;
 
+    @Column(name = "is_active", nullable = false)
+    Boolean isActive;
+
     @Builder
     public Review (Long id, Planner planner, Couple couple, String content, LocalDateTime createdAt) {
         this.id = id;
@@ -45,6 +48,7 @@ public class Review {
         this.couple = couple;
         this.content = content;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
+        this.isActive = true;
     }
 
     public void updateContent(String content) {
