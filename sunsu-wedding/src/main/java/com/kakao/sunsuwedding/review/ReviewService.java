@@ -1,6 +1,7 @@
 package com.kakao.sunsuwedding.review;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
+import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewJPARepository reviewJPARepository;
     private final PlannerJPARepository plannerJPARepository;
@@ -52,7 +54,7 @@ public class ReviewService {
         Long userId = info.getSecond();
 
         List<Review> reviews;
-        if (role.equals(Role.PLANNER)) {
+        if (role.equals(Role.PLANNER.getRoleName())) {
             reviews = reviewJPARepository.findAllByPlannerId(userId);
         }
         else {
@@ -62,5 +64,37 @@ public class ReviewService {
         List<ReviewResponse.ReviewDTO> reviewDTOS = ReviewDTOConverter.toFindAllByUserDTO(reviews);
 
         return new ReviewResponse.FindAllByUserDTO(reviewDTOS);
+    }
+
+    @Transactional
+    public void updateReview(Pair<String, Long> info, Long reviewId, ReviewRequest.UpdateDTO request) {
+        Review review = reviewJPARepository.findById(reviewId).orElseThrow(
+                () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
+        );
+
+        permissionCheck(info, review);
+
+        review.updateContent(request.content());
+        reviewJPARepository.save(review);
+    }
+
+    @Transactional
+    public void deleteReview(Pair<String, Long> info, Long reviewId) {
+        Review review = reviewJPARepository.findById(reviewId).orElseThrow(
+                () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
+        );
+
+        permissionCheck(info, review);
+
+        reviewJPARepository.delete(review);
+    }
+
+    private void permissionCheck(Pair<String, Long> info, Review review) {
+        String role = info.getFirst();
+        Long userId = info.getSecond();
+
+        if (role.equals(Role.PLANNER) || !review.getCouple().getId().equals(userId)) {
+            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
+        }
     }
 }

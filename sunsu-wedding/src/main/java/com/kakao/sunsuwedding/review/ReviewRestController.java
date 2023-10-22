@@ -13,12 +13,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/review")
+@RequestMapping("/reviews")
 public class ReviewRestController {
     private final ReviewService reviewService;
     @PostMapping("")
     public ResponseEntity<?> addReview(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                       @Valid ReviewRequest.AddDTO request) {
+                                       @Valid @RequestBody ReviewRequest.AddDTO request) {
         reviewService.addReview(userDetails.getInfo(), request);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
@@ -37,5 +37,22 @@ public class ReviewRestController {
         ReviewResponse.ReviewDTO response = reviewService.findByReviewId(reviewId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
+    }
+
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<?> updateReview(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                          @PathVariable @Min(1) Long reviewId,
+                                          @Valid @RequestBody ReviewRequest.UpdateDTO request) {
+        reviewService.updateReview(userDetails.getInfo(), reviewId, request);
+
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                          @PathVariable @Min(1) Long reviewId) {
+        reviewService.deleteReview(userDetails.getInfo(), reviewId);
+
+        return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }
