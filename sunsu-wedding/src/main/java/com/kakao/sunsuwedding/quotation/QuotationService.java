@@ -13,7 +13,6 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,6 +62,7 @@ public class QuotationService {
     public QuotationResponse.FindByUserDTO findQuotationsByUser(Pair<String, Long> info) {
         String role = info.getFirst();
         Long userId = info.getSecond();
+
         List<Quotation> quotations = getQuotationsByUser(role, userId);
 
         List<QuotationResponse.QuotationWithPartnerDTO> quotationDTOS = getQuotationDTOSByUser(role, userId, quotations);
