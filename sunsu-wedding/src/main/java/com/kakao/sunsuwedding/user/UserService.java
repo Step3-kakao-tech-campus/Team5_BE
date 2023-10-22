@@ -74,7 +74,8 @@ public class UserService {
     }
 
     public UserResponse.FindById findById(Long userId) {
-        return new UserResponse.FindById(findUserById(userId));
+        User user = findUserById(userId);
+        return new UserResponse.FindById(user);
     }
 
     // 회원 탈퇴
