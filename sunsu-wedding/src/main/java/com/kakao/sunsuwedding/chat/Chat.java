@@ -1,6 +1,5 @@
 package com.kakao.sunsuwedding.chat;
 
-import com.kakao.sunsuwedding.match.Match;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
