@@ -58,7 +58,7 @@ public class ChatControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(7L));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(8L));
     }
 
     @DisplayName("채팅방 생성 실패 테스트 1 - 이미 매칭내역(채팅방) 존재")
