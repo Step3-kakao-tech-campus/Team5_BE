@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface PriceItemJPARepository extends JpaRepository<PriceItem, Long> {
     @Query("select p from PriceItem p where p.portfolio.id = :portfolioId")
     List<PriceItem> findByPortfolioId(@Param("portfolioId") Long portfolioId);

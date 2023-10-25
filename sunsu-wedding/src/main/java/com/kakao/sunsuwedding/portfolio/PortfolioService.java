@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding.portfolio;
 
-import com.kakao.sunsuwedding.Quotation.Quotation;
-import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.quotation.Quotation;
+import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
@@ -35,8 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PortfolioService {
 
     private final PortfolioJPARepository portfolioJPARepository;
@@ -62,9 +63,7 @@ public class PortfolioService {
             throw new BadRequestException(BaseException.PORTFOLIO_ALREADY_EXIST);
 
         // 필요한 계산값 연산
-        Long totalPrice =  request.getItems().stream()
-                .mapToLong(PortfolioRequest.AddDTO.ItemDTO::getItemPrice)
-                .sum();
+        Long totalPrice = getTotalPrice(request.getItems());
 
         // 포트폴리오 엔티티에 저장
         Portfolio portfolio = Portfolio.builder()
@@ -83,15 +82,7 @@ public class PortfolioService {
         portfolioJPARepository.save(portfolio);
 
         // 가격 항목 엔티티에 저장
-        List<PriceItem> priceItems = new ArrayList<>();
-        for (PortfolioRequest.AddDTO.ItemDTO item : request.getItems()) {
-            PriceItem priceItem = PriceItem.builder()
-                    .portfolio(portfolio)
-                    .itemTitle(item.getItemTitle())
-                    .itemPrice(item.getItemPrice())
-                    .build();
-            priceItems.add(priceItem);
-        }
+        List<PriceItem> priceItems = getPriceItems(request.getItems(), portfolio);
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
@@ -158,10 +149,8 @@ public class PortfolioService {
         // 플래너 탈퇴 시 조회 X
         if (planner == null) { throw new NotFoundException(BaseException.PLANNER_NOT_FOUND); }
 
-        List<String> images = imageItems
-                .stream()
-                .map(ImageEncoder::encode)
-                .toList();
+        List<String> images  = encodeImages(imageItems);
+
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolioId);
 
         // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
@@ -189,9 +178,7 @@ public class PortfolioService {
                 .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
 
         // 필요한 계산값 연산
-        Long totalPrice =  request.getItems().stream()
-                .mapToLong(PortfolioRequest.UpdateDTO.ItemDTO::getItemPrice)
-                .sum();
+        Long totalPrice =  getTotalPrice(request.getItems());
 
         // 포트폴리오 변경사항 업데이트 객체 생성 (업데이트 쿼리가 마지막 함수 종료될 때 날아가긴 함)
         Portfolio updatedPortfolio = Portfolio.builder()
@@ -215,15 +202,8 @@ public class PortfolioService {
         priceItemJPARepository.deleteAllByPortfolioId(portfolio.getId());
 
         // 업데이트 가격 항목 새로 저장
-        List<PriceItem> updatedPriceItems = new ArrayList<>();
-        for (PortfolioRequest.UpdateDTO.ItemDTO item : request.getItems()) {
-            PriceItem priceItem = PriceItem.builder()
-                    .portfolio(portfolio)
-                    .itemTitle(item.getItemTitle())
-                    .itemPrice(item.getItemPrice())
-                    .build();
-            updatedPriceItems.add(priceItem);
-        }
+        List<PriceItem> updatedPriceItems = getPriceItems(request.getItems(), portfolio);
+
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 삭제 후 삽입 로직으로 변경 ㅠㅠ 열심히 만든건데 못쓰게 되버림 엉엉
@@ -231,7 +211,6 @@ public class PortfolioService {
 
         // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
         return Pair.of(updatedPortfolio, planner);
-
     }
 
     public void updateConfirmedPrices(Planner planner) {
@@ -281,15 +260,36 @@ public class PortfolioService {
             throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
         }
 
-        List<String> encodedImages = imageItems
-                .stream()
-                .map(ImageEncoder::encode)
-                .toList();
+        List<String> encodedImages = encodeImages(imageItems);
 
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
-
 
         return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
     }
 
+    private List<String> encodeImages(List<ImageItem> imageItems) {
+        return imageItems
+                .stream()
+                .map(ImageEncoder::encode)
+                .toList();
+    }
+
+    private Long getTotalPrice(List<PortfolioRequest.ItemDTO> items) {
+        return items.stream()
+                .mapToLong(PortfolioRequest.ItemDTO::getItemPrice)
+                .sum();
+    }
+
+    private List<PriceItem> getPriceItems(List<PortfolioRequest.ItemDTO> items, Portfolio portfolio) {
+        List<PriceItem> priceItems = new ArrayList<>();
+        for (PortfolioRequest.ItemDTO item : items) {
+            PriceItem priceItem = PriceItem.builder()
+                    .portfolio(portfolio)
+                    .itemTitle(item.getItemTitle())
+                    .itemPrice(item.getItemPrice())
+                    .build();
+            priceItems.add(priceItem);
+        }
+        return priceItems;
+    }
 }

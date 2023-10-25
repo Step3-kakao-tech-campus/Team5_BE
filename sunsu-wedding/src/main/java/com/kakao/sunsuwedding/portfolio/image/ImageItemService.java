@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ImageItemService {
     private static final Logger logger = LoggerFactory.getLogger(ImageItemService.class);
 

@@ -64,8 +64,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -92,8 +91,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -120,8 +118,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -174,8 +171,8 @@ public class UserRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -199,8 +196,8 @@ public class UserRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+
+        logResult(result);
 
         // then
         result.andExpect(jsonPath("$.success").value("false"));
@@ -220,8 +217,8 @@ public class UserRestControllerTest {
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders.delete("/user")
         );
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -256,5 +253,10 @@ public class UserRestControllerTest {
         );
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
+    }
+
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
     }
 }

@@ -12,11 +12,11 @@ import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DiscriminatorValue(value = "planner")
 @SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Planner extends User {
 
     @Builder

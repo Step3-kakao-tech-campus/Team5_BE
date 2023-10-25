@@ -8,7 +8,9 @@ import lombok.ToString;
 import java.util.List;
 
 public class PortfolioRequest {
-    @Getter @Setter @ToString
+    @Getter
+    @Setter
+    @ToString
     public static class AddDTO {
         @NotNull(message = "plannerName은 비어있으면 안됩니다.")
         private String plannerName;
@@ -30,18 +32,13 @@ public class PortfolioRequest {
 
         private List<ItemDTO> items;
 
-        @Getter @Setter @ToString
-        public static class ItemDTO {
-            @NotNull(message = "itemTitle은 비어있으면 안됩니다.")
-            private String itemTitle;
 
-            @NotNull(message = "itemPrice는 비어있으면 안됩니다.")
-            private Long itemPrice;
-        }
 
     }
 
-    @Getter @Setter @ToString
+    @Getter
+    @Setter
+    @ToString
     public static class UpdateDTO {
         @NotNull(message = "plannerName은 비어있으면 안됩니다.")
         private String plannerName;
@@ -62,15 +59,16 @@ public class PortfolioRequest {
         private String partnerCompany;
 
         private List<ItemDTO> items;
+    }
 
-        @Getter @Setter @ToString
-        public static class ItemDTO {
-            @NotNull(message = "itemTitle은 비어있으면 안됩니다.")
-            private String itemTitle;
+    @Getter
+    @Setter
+    @ToString
+    public static class ItemDTO {
+        @NotNull(message = "itemTitle은 비어있으면 안됩니다.")
+        private String itemTitle;
 
-            @NotNull(message = "itemPrice는 비어있으면 안됩니다.")
-            private Long itemPrice;
-        }
-
+        @NotNull(message = "itemPrice는 비어있으면 안됩니다.")
+        private Long itemPrice;
     }
 }

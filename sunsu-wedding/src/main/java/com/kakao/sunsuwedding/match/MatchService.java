@@ -1,8 +1,8 @@
 package com.kakao.sunsuwedding.match;
 
-import com.kakao.sunsuwedding.Quotation.Quotation;
-import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
-import com.kakao.sunsuwedding.Quotation.QuotationStatus;
+import com.kakao.sunsuwedding.quotation.Quotation;
+import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.quotation.QuotationStatus;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
@@ -20,9 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
+
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MatchService {
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;

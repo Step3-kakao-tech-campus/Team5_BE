@@ -3,7 +3,6 @@ package com.kakao.sunsuwedding.quotation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
-import com.kakao.sunsuwedding.Quotation.QuotationRequest;
 import com.kakao.sunsuwedding.user.UserRequest;
 import com.kakao.sunsuwedding.user.UserService;
 import com.kakao.sunsuwedding.user.token.TokenDTO;
@@ -382,8 +381,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -402,8 +400,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -424,8 +421,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -446,8 +442,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -468,8 +463,7 @@ public class QuotationRestControllerTest {
                         .post("/quotations/confirmAll?matchId=" + matchId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -647,4 +641,14 @@ public class QuotationRestControllerTest {
     }
 
     // ============ 견적서 삭제 테스트 ============
+
+
+
+
+
+
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+    }
 }

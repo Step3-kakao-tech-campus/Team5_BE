@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PaymentService {
 
     private final PaymentJPARepository paymentJPARepository;

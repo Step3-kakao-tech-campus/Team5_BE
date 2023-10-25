@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.Quotation;
+package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding.match.Match;
 import org.springframework.data.jpa.repository.EntityGraph;

@@ -9,7 +9,8 @@ import lombok.Setter;
 
 public class MatchRequest {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class AddMatchDTO {
         @NotNull(message = "plannerId는 비어있으면 안됩니다.")
         @Min(0)
