@@ -49,15 +49,15 @@ public class MatchService {
 
     // Match Update : 확정 상태, 가격, 확정 날짜
     @Transactional
-    public void confirmAll(Pair<String, Long> info, Long matchId) {
-        Match match = matchJPARepository.findById(matchId).orElseThrow(
+    public void confirmAll(Pair<String, Long> info, Long chatId) {
+        Match match = matchJPARepository.findByChatId(chatId).orElseThrow(
                 () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         // 유저 본인의 채팅방이 맞는지 확인
         permissionCheck(info, match);
         // 플래너가 1개씩 전부 확정한 후에 예비 부부가 전체 확정 가능
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
-        Boolean isAllConfirmed = isAllConfirmed(match, quotations);
+        Boolean isAllConfirmed = isAllConfirmed(quotations);
 
         // 모든 견적서 확정 완료 시
         if (isAllConfirmed) {
@@ -73,7 +73,7 @@ public class MatchService {
         }
     }
 
-    private Boolean isAllConfirmed(Match match, List<Quotation> quotations) {
+    private Boolean isAllConfirmed(List<Quotation> quotations) {
         if (quotations.isEmpty()) {
             throw new BadRequestException(BaseException.QUOTATION_NOTHING_TO_CONFIRM);
         }
