@@ -66,7 +66,7 @@ public class QuotationService {
 
         List<Quotation> quotations = getQuotationsByUser(role, userId);
 
-        List<QuotationResponse.QuotationWithPartnerDTO> quotationDTOS = getQuotationDTOSByUser(role, userId, quotations);
+        List<QuotationResponse.QuotationsCollectDTO> quotationDTOS = getQuotationDTOSByUser(role, userId, quotations);
 
         return new QuotationResponse.FindByUserDTO(quotationDTOS);
     }
@@ -140,7 +140,7 @@ public class QuotationService {
                 quotationJPARepository.findAllByMatchPlannerId(id) : quotationJPARepository.findAllByMatchCoupleId(id);
     }
 
-    private List<QuotationResponse.QuotationWithPartnerDTO> getQuotationDTOSByUser(String role, Long id, List<Quotation> quotations) {
+    private List<QuotationResponse.QuotationsCollectDTO> getQuotationDTOSByUser(String role, Long id, List<Quotation> quotations) {
         return role.equals(Role.PLANNER.getRoleName()) ?
                 QuotationDTOConverter.toFindByPlannerDTO(quotations) : QuotationDTOConverter.toFindByCoupleDTO(quotations);
     }

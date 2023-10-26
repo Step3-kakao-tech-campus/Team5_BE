@@ -22,10 +22,10 @@ public class QuotationResponse {
     ) {}
 
     public record FindByUserDTO(
-            List<QuotationWithPartnerDTO> quotations
+            List<QuotationsCollectDTO> quotations
     ) {}
 
-    public record QuotationWithPartnerDTO(
+    public record QuotationsCollectDTO(
             String partnerName,
             Long id,
             String title,
