@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding.match;
 
+import com.kakao.sunsuwedding.chat.Chat;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.persistence.*;
@@ -34,6 +35,9 @@ public class Match {
     @NotFound(action = NotFoundAction.IGNORE)
     private Couple couple;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Chat chat;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
@@ -54,10 +58,11 @@ public class Match {
     private Boolean isActive;
 
     @Builder
-    public Match(Long id, Planner planner, Couple couple, Long price, Long confirmedPrice) {
+    public Match(Long id, Planner planner, Couple couple, Chat chat, Long price, Long confirmedPrice) {
         this.id = id;
         this.planner = planner;
         this.couple = couple;
+        this.chat = chat;
         this.status = MatchStatus.UNCONFIRMED;
         this.price = price;
         this.confirmedPrice = (confirmedPrice == null? 0 : confirmedPrice);

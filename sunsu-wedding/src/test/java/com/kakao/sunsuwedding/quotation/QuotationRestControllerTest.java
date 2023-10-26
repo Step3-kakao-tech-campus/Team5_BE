@@ -16,13 +16,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -63,7 +61,7 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotations_success() throws Exception {
         // given
-        Long matchId = 6L;
+        Long chatId = 6L;
         QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 1500000L,
@@ -77,7 +75,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations")
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -90,7 +88,7 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotations_fail_titleTextSize() throws Exception {
         // given
-        Long matchId = 1L;
+        Long chatId = 1L;
         QuotationRequest.Add request = new QuotationRequest.Add(
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb",
                 1500000L,
@@ -104,7 +102,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations")
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -117,7 +115,7 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotations_fail_emptyTitle() throws Exception {
         // given
-        Long matchId = 1L;
+        Long chatId = 1L;
         QuotationRequest.Add request = new QuotationRequest.Add(
                 null,
                 1500000L,
@@ -131,7 +129,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations")
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -144,7 +142,7 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotations_fail_titleSizeZero() throws Exception {
         // given
-        Long matchId = 1L;
+        Long chatId = 1L;
         QuotationRequest.Add request = new QuotationRequest.Add(
                 "",
                 1500000L,
@@ -158,7 +156,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations")
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -171,7 +169,7 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotations_fail_negativePrice() throws Exception {
         // given
-        Long matchId = 1L;
+        Long chatId = 1L;
         QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 -1500000L,
@@ -185,7 +183,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations")
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -198,7 +196,7 @@ public class QuotationRestControllerTest {
     @Test
     void post_quotations_fail_emptyPrice() throws Exception {
         // given
-        Long matchId = 1L;
+        Long chatId = 1L;
         QuotationRequest.Add request = new QuotationRequest.Add(
                 "my wedding",
                 null,
@@ -212,7 +210,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations")
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -226,14 +224,14 @@ public class QuotationRestControllerTest {
     @Test
     void get_quotations_success() throws Exception {
         // given
-        Long matchId = 6L;
+        Long chatId = 6L;
 
         // when
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/quotations")
                         .header(jwtProvider.AUTHORIZATION_HEADER, plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
         );
 
         // then
@@ -253,18 +251,18 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.response.quotations[1].status").value("완료"));
     }
 
-    @DisplayName("GET /quotations : fail, 음수 matchId")
+    @DisplayName("GET /quotations : fail, 음수 chatId")
     @Test
-    void get_quotations_fail_negativeMatchId() throws Exception {
+    void get_quotations_fail_negativechatId() throws Exception {
         // given
-        Long matchId = -1L;
+        Long chatId = -1L;
 
         // when
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/quotations")
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
         );
 
         // then
@@ -272,11 +270,11 @@ public class QuotationRestControllerTest {
     }
 
     // ============ 견적서 1개 확정 테스트 ============
-    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : success")
+    @DisplayName("POST /quotations/confirm/{quotationId}?chatId={chatId} : success")
     @Test
     void post_quotationsConfirm_success() throws Exception {
         // given
-        Long matchId = 2L;
+        Long chatId = 2L;
         Long quotationId = 3L;
 
         // when
@@ -284,18 +282,18 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations/confirm/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
         );
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
     }
 
-    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 음수 id 요청")
+    @DisplayName("POST /quotations/confirm/{quotationId}?chatId={chatId} : fail, 음수 id 요청")
     @Test
     void post_quotationsConfirm_fail_negativeId() throws Exception {
         // given
-        Long matchId = -2L;
+        Long chatId = -2L;
         Long quotationId = -3L;
 
         // when
@@ -303,18 +301,18 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations/confirm/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
         );
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 이미 확정된 견적서를 다시 확정 요청")
+    @DisplayName("POST /quotations/confirm/{quotationId}?chatId={chatId} : fail, 이미 확정된 견적서를 다시 확정 요청")
     @Test
     void post_quotationsConfirm_fail_alreadyConfirmed() throws Exception {
         // given
-        Long matchId = 5L;
+        Long chatId = 5L;
         Long quotationId = 6L;
 
         // when
@@ -322,18 +320,18 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations/confirm/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
         );
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 존재하지 않는 견적서 확정 요청")
+    @DisplayName("POST /quotations/confirm/{quotationId}?chatId={chatId} : fail, 존재하지 않는 견적서 확정 요청")
     @Test
     void post_quotationsConfirm_fail_quotationNotExist() throws Exception {
         // given
-        Long matchId = 1L;
+        Long chatId = 1L;
         Long quotationId = 100L;
 
         // when
@@ -341,18 +339,18 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations/confirm/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
         );
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    @DisplayName("POST /quotations/confirm/{quotationId}?matchId={matchId} : fail, 다른 플래너의 견적서 확정 요청")
+    @DisplayName("POST /quotations/confirm/{quotationId}?chatId={chatId} : fail, 다른 플래너의 견적서 확정 요청")
     @Test
     void post_quotationsConfirm_fail_permissionDenied() throws Exception {
         // given
-        Long matchId = 1L;
+        Long chatId = 1L;
         Long quotationId = 100L;
 
         // when
@@ -360,123 +358,21 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .post("/quotations/confirm/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
         );
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    // ============ 견적서 전체 확정 테스트 ============
-    @DisplayName("견적서 전체 확정 성공 테스트")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_success_test() throws Exception {
-        //given
-        Long matchId = 6L;
 
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        logResult(result);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 1 - 일부 견적서 미확정 시")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test1() throws Exception {
-        //given
-        Long matchId = 2L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        logResult(result);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정되지 않은 견적서가 있습니다."));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 2 - 견적서 없을 시")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test2() throws Exception {
-        //given
-        Long matchId = 4L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        logResult(result);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정할 견적서가 없습니다"));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 3 - 존재하지 않는 매칭 내역")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test3() throws Exception {
-        //given
-        Long matchId = 8L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        logResult(result);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("매칭 내역을 찾을 수 없습니다."));
-    }
-
-    @DisplayName("견적서 전체 확정 실패 테스트 - 본인의 매칭 내역이 아님")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_confirm_all_fail_test4() throws Exception {
-        //given
-        Long matchId = 3L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/quotations/confirmAll?matchId=" + matchId)
-        );
-
-        logResult(result);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
-    }
 
     // ============ 견적서 수정 테스트 ============
-    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : success")
+    @DisplayName("PUT /quotations/{quotationId}?chatId={chatId} : success")
     @Test
     void put_quotationUpdate_success() throws Exception {
         // given
-        Long matchId = 2L;
+        Long chatId = 2L;
         Long quotationId = 3L;
         QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
@@ -491,7 +387,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .put("/quotations/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -500,11 +396,11 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("true"));
     }
 
-    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 타이틀 누락")
+    @DisplayName("PUT /quotations/{quotationId}?chatId={chatId} : fail, 타이틀 누락")
     @Test
     void put_quotationUpdate_fail_emptyTitle() throws Exception {
         // given
-        Long matchId = 2L;
+        Long chatId = 2L;
         Long quotationId = 3L;
         QuotationRequest.Update request = new QuotationRequest.Update(
                 "",
@@ -519,7 +415,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .put("/quotations/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -528,11 +424,11 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 가격 누락")
+    @DisplayName("PUT /quotations/{quotationId}?chatId={chatId} : fail, 가격 누락")
     @Test
     void put_quotationUpdate_fail_emptyPrice() throws Exception {
         // given
-        Long matchId = 2L;
+        Long chatId = 2L;
         Long quotationId = 3L;
         QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
@@ -547,7 +443,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .put("/quotations/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -556,11 +452,11 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 음수 가격으로 변경 요청")
+    @DisplayName("PUT /quotations/{quotationId}?chatId={chatId} : fail, 음수 가격으로 변경 요청")
     @Test
     void put_quotationUpdate_fail_negativePrice() throws Exception {
         // given
-        Long matchId = 2L;
+        Long chatId = 2L;
         Long quotationId = 3L;
         QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
@@ -575,7 +471,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .put("/quotations/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -584,11 +480,11 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 존재하지 않는 견적서 수정 요청")
+    @DisplayName("PUT /quotations/{quotationId}?chatId={chatId} : fail, 존재하지 않는 견적서 수정 요청")
     @Test
     void put_quotationUpdate_fail_quotationNotExist() throws Exception {
         // given
-        Long matchId = 2L;
+        Long chatId = 2L;
         Long quotationId = 100L;
         QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
@@ -603,7 +499,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .put("/quotations/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -612,11 +508,11 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
-    @DisplayName("PUT /quotations/{quotationId}?matchId={matchId} : fail, 다른 플래너의 견적서 수정 요청")
+    @DisplayName("PUT /quotations/{quotationId}?chatId={chatId} : fail, 다른 플래너의 견적서 수정 요청")
     @Test
     void put_quotationUpdate_fail_permissionDenied() throws Exception {
         // given
-        Long matchId = 5L;
+        Long chatId = 5L;
         Long quotationId = 6L;
         QuotationRequest.Update request = new QuotationRequest.Update(
                 "updated title",
@@ -631,7 +527,7 @@ public class QuotationRestControllerTest {
                 MockMvcRequestBuilders
                         .put("/quotations/" + quotationId)
                         .header("Authorization", plannerToken)
-                        .param("matchId", String.valueOf(matchId))
+                        .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
