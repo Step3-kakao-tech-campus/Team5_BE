@@ -59,6 +59,7 @@ public class QuotationService {
         return new QuotationResponse.FindAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
     }
 
+    // 견적서 모아보기
     public QuotationResponse.FindByUserDTO findQuotationsByUser(Pair<String, Long> info) {
         String role = info.getFirst();
         Long userId = info.getSecond();
