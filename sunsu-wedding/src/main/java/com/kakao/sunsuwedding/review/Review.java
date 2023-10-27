@@ -1,7 +1,6 @@
 package com.kakao.sunsuwedding.review;
 
-import com.kakao.sunsuwedding.user.couple.Couple;
-import com.kakao.sunsuwedding.user.planner.Planner;
+import com.kakao.sunsuwedding.match.Match;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,11 +22,8 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    Planner planner;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    Couple couple;
+    @OneToOne(fetch = FetchType.LAZY)
+    Match match;
 
     @Column(nullable = false)
     String content;
@@ -42,10 +38,9 @@ public class Review {
     Boolean isActive;
 
     @Builder
-    public Review (Long id, Planner planner, Couple couple, String content, LocalDateTime createdAt) {
+    public Review (Long id, Match match, String content, LocalDateTime createdAt) {
         this.id = id;
-        this.planner = planner;
-        this.couple = couple;
+        this.match = match;
         this.content = content;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
         this.isActive = true;

@@ -1,13 +1,13 @@
 package com.kakao.sunsuwedding.review;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
+import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding.match.Match;
+import com.kakao.sunsuwedding.match.MatchJPARepository;
+import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.user.constant.Role;
-import com.kakao.sunsuwedding.user.couple.Couple;
-import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
-import com.kakao.sunsuwedding.user.planner.Planner;
-import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -20,22 +20,20 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewJPARepository reviewJPARepository;
-    private final PlannerJPARepository plannerJPARepository;
-    private final CoupleJPARepository coupleJPARepository;
+    private final MatchJPARepository matchJPARepository;
 
     @Transactional
     public void addReview(Pair<String, Long> info, ReviewRequest.AddDTO request) {
-        Planner planner = plannerJPARepository.findById(request.plannerId()).orElseThrow(
-                () -> new NotFoundException(BaseException.PLANNER_NOT_FOUND));
-
-        Couple couple = coupleJPARepository.findById(info.getSecond()).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND)
+        Match match = matchJPARepository.findByChatId(request.chatId()).orElseThrow(
+                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND)
         );
+
+        matchConfirmedCheck(match);
+        permissionCheck(info, match);
 
         reviewJPARepository.save(
                 Review.builder()
-                    .planner(planner)
-                    .couple(couple)
+                    .match(match)
                     .content(request.content())
                     .build()
         );
@@ -55,10 +53,10 @@ public class ReviewService {
 
         List<Review> reviews;
         if (role.equals(Role.PLANNER.getRoleName())) {
-            reviews = reviewJPARepository.findAllByPlannerId(userId);
+            reviews = reviewJPARepository.findAllByMatchPlannerId(userId);
         }
         else {
-            reviews = reviewJPARepository.findAllByCoupleId(userId);
+            reviews = reviewJPARepository.findAllByMatchCoupleId(userId);
         }
 
         List<ReviewResponse.ReviewDTO> reviewDTOS = ReviewDTOConverter.toFindAllByUserDTO(reviews);
@@ -72,7 +70,7 @@ public class ReviewService {
                 () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
         );
 
-        permissionCheck(info, review);
+        permissionCheck(info, review.getMatch());
 
         review.updateContent(request.content());
         reviewJPARepository.save(review);
@@ -84,17 +82,23 @@ public class ReviewService {
                 () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
         );
 
-        permissionCheck(info, review);
+        permissionCheck(info, review.getMatch());
 
         reviewJPARepository.delete(review);
     }
 
-    private void permissionCheck(Pair<String, Long> info, Review review) {
+    private void permissionCheck(Pair<String, Long> info, Match match) {
         String role = info.getFirst();
         Long userId = info.getSecond();
 
-        if (role.equals(Role.PLANNER) || !review.getCouple().getId().equals(userId)) {
+        if (role.equals(Role.PLANNER) || !match.getCouple().getId().equals(userId)) {
             throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
+        }
+    }
+
+    private void matchConfirmedCheck(Match match) {
+        if (!match.getStatus().equals(MatchStatus.CONFIRMED)) {
+            throw new BadRequestException(BaseException.MATCHING_NOT_CONFIRMED);
         }
     }
 }

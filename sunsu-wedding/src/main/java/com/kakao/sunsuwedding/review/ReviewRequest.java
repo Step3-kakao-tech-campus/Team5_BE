@@ -5,8 +5,8 @@ import org.hibernate.validator.constraints.Length;
 
 public class ReviewRequest {
     public record AddDTO (
-            @NotNull(message = "plannerId는 비어있으면 안됩니다.")
-            Long plannerId,
+            @NotNull(message = "chatId는 비어있으면 안됩니다.")
+            Long chatId,
 
             @NotNull(message = "content는 비어있으면 안됩니다.")
             @Length(max = 500, message = "리뷰는 500자까지만 작성 가능합니다.")
