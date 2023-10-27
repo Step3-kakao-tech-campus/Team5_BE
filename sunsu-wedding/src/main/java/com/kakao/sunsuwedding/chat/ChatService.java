@@ -38,24 +38,4 @@ public class ChatService {
 
         return new ChatResponse.ChatDTO(chat.getId());
     }
-
-    /*
-    @Transactional
-    public void deleteChat(Pair<String, Long> info, Long matchId) {
-        Match match = chatJPARepository.findById(matchId).orElseThrow(
-                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
-
-        // 유저 본인의 채팅방이 맞는지 확인
-        permissionCheck(info, match);
-
-        List<Quotation> quotations = chatJPARepository.findAllByMatch(match);
-        // 견적서 존재하는데 전체 확정이 되지 않은 경우, 채팅방 삭제 불가
-        if ((!quotations.isEmpty()) && (match.getStatus().equals(MatchStatus.UNCONFIRMED))) {
-            throw new BadRequestException(BaseException.QUOTATION_NOT_CONFIRMED_ALL);
-        }
-        // 전체확정 됐거나, 견적서가 없는 경우 채팅방 삭제
-        chatJPARepository.delete(match);
-    }
-     */
-
 }

@@ -20,4 +20,19 @@ public class QuotationResponse {
             String status,
             LocalDateTime modifiedAt
     ) {}
+
+    public record FindByUserDTO(
+            List<QuotationsCollectDTO> quotations
+    ) {}
+
+    public record QuotationsCollectDTO(
+            String partnerName,
+            Long id,
+            String title,
+            Long price,
+            String company,
+            String description,
+            String status,
+            LocalDateTime modifiedAt
+    ) {}
 }

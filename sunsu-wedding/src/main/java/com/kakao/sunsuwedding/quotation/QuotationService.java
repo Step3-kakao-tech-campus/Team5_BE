@@ -7,6 +7,7 @@ import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
+import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,18 @@ public class QuotationService {
         List<QuotationResponse.QuotationDTO> quotationDTOS = QuotationDTOConverter.toFindByMatchIdDTO(quotations);
 
         return new QuotationResponse.FindAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
+    }
+
+    // 견적서 모아보기
+    public QuotationResponse.FindByUserDTO findQuotationsByUser(Pair<String, Long> info) {
+        String role = info.getFirst();
+        Long userId = info.getSecond();
+
+        List<Quotation> quotations = getQuotationsByUser(role, userId);
+
+        List<QuotationResponse.QuotationsCollectDTO> quotationDTOS = getQuotationDTOSByUser(role, userId, quotations);
+
+        return new QuotationResponse.FindByUserDTO(quotationDTOS);
     }
 
     @Transactional
@@ -108,7 +121,7 @@ public class QuotationService {
         return match;
     }
 
-    private static Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
+    private Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
         Quotation quotation = quotations
                 .stream()
                 .filter(iter -> Objects.equals(iter.getId(), quotationId))
@@ -120,5 +133,15 @@ public class QuotationService {
         }
 
         return quotation;
+    }
+
+    private List<Quotation> getQuotationsByUser(String role, Long id) {
+        return role.equals(Role.PLANNER.getRoleName()) ?
+                quotationJPARepository.findAllByMatchPlannerId(id) : quotationJPARepository.findAllByMatchCoupleId(id);
+    }
+
+    private List<QuotationResponse.QuotationsCollectDTO> getQuotationDTOSByUser(String role, Long id, List<Quotation> quotations) {
+        return role.equals(Role.PLANNER.getRoleName()) ?
+                QuotationDTOConverter.toFindByPlannerDTO(quotations) : QuotationDTOConverter.toFindByCoupleDTO(quotations);
     }
 }

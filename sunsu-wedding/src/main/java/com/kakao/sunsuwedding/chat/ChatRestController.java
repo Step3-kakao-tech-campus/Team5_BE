@@ -22,17 +22,4 @@ public class ChatRestController {
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
-
-    // 채팅방 삭제...? X
-    // Match Delete : isActive 필드 false
-    /*
-    @DeleteMapping("")
-    public ResponseEntity<?> deleteChat(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam Long matchId) {
-        chatService.deleteChat(userDetails.getInfo(), matchId);
-        return ResponseEntity.ok().body(ApiUtils.success(null));
-    }
-     */
-
-
-
 }

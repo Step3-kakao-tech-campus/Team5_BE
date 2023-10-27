@@ -14,4 +14,8 @@ public interface QuotationJPARepository extends JpaRepository<Quotation, Long> {
 
     @Query("select q from Quotation q where q.match.id in :matchIds")
     List<Quotation> findAllByMatchIds(@Param("matchIds") List<Long> MatchIds);
+
+    List<Quotation> findAllByMatchCoupleId(Long coupleId);
+
+    List<Quotation> findAllByMatchPlannerId(Long plannerId);
 }

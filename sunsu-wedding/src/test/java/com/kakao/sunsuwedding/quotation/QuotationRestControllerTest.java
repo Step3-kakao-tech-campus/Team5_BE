@@ -269,6 +269,28 @@ public class QuotationRestControllerTest {
         resultActions.andExpect(jsonPath("$.success").value("false"));
     }
 
+
+
+    // ============ 견적서 모아보기 테스트 ============
+    @DisplayName("견적서 모아보기 성공 테스트")
+    @Test
+    void find_by_user_success_test() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/quotations/collect")
+                        .header("Authorization", plannerToken)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("true"));
+        resultActions.andExpect(jsonPath("$.response.quotations[0].partnerName").value("couple"));
+        resultActions.andExpect(jsonPath("$.response.quotations[0].id").value(1));
+        resultActions.andExpect(jsonPath("$.response.quotations[0].price").value(1000000));
+    }
+
+
+
     // ============ 견적서 1개 확정 테스트 ============
     @DisplayName("POST /quotations/confirm/{quotationId}?chatId={chatId} : success")
     @Test
