@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.Quotation;
+package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding.match.Match;
 import jakarta.persistence.*;
@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 @Entity
 @Table(name="quotation_tb")
 @NamedEntityGraph(name = "QuotationWithMatch",
                   attributeNodes = @NamedAttributeNode("match"))
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Quotation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +47,7 @@ public class Quotation {
     private LocalDateTime createdAt;
 
     @Column(nullable = false, name = "is_active")
-    private Boolean is_active;
+    private Boolean isActive;
 
     @Builder
     public Quotation(long id, Match match, String title, long price, String company, String description, QuotationStatus status, LocalDateTime createdAt) {
@@ -58,37 +59,32 @@ public class Quotation {
         this.description = description;
         this.status = (status == null? QuotationStatus.UNCONFIRMED : status);
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
-        this.is_active = true;
+        this.isActive = true;
     }
 
     public void updateTitle(String title) {
         this.title = title;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updatePrice(long price) {
         this.price = price;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updateCompany(String company) {
         this.company = company;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updateDescription(String description) {
         this.description = description;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void updateStatus(QuotationStatus status) {
         this.status = status;
-        this.modifiedAt = LocalDateTime.now();
-    }
-
-    public void updateIsActive(Boolean is_active) {
-        this.is_active = is_active;
-        this.modifiedAt = LocalDateTime.now();
+        updateModifiedAt();
     }
 
     public void update(QuotationRequest.Update request) {
@@ -96,6 +92,10 @@ public class Quotation {
         this.price = request.price();
         this.company = request.company();
         this.description = request.description();
+        updateModifiedAt();
+    }
+
+    private void updateModifiedAt() {
         this.modifiedAt = LocalDateTime.now();
     }
 }

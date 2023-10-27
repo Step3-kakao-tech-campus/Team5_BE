@@ -2,7 +2,7 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
-import com.kakao.sunsuwedding.Quotation.Quotation;
+import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.user.planner.Planner;
 
@@ -14,16 +14,27 @@ public class PortfolioDTOConverter {
                                                             Portfolio portfolio,
                                                             List<String> images, List<PriceItem> priceItems,
                                                             List<Match> matches, List<Quotation> quotations) {
+        // 가격 항목 DTO 변환
         List<PortfolioResponse.PriceItemDTO> priceItemDTOS = PriceItemDTOConvertor(priceItems);
-
         Long totalPrice = PriceCalculator.calculatePortfolioPrice(priceItemDTOS);
         PortfolioResponse.PriceDTO priceDTO = new PortfolioResponse.PriceDTO(totalPrice, priceItemDTOS);
 
         // 거래 내역
-        List<PortfolioResponse.PaymentDTO> paymentDTOS = PaymentDTOConvertor(matches, quotations);
-        PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO =
-                new PortfolioResponse.PaymentHistoryDTO(portfolio.getAvgPrice(), portfolio.getMinPrice(),
-                        portfolio.getMaxPrice(), paymentDTOS);
+        // 일반 회원의 경우 거래내역으로 null 반환
+        PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO = null;
+
+        // 프리미엄 회원일 경우 paymentHistory 반환
+        if (!matches.isEmpty() && !quotations.isEmpty()) {
+            List<PortfolioResponse.PaymentDTO> paymentDTOS = PaymentDTOConvertor(matches, quotations);
+            paymentHistoryDTO =
+                    new PortfolioResponse.PaymentHistoryDTO(
+                    portfolio.getAvgPrice(),
+                    portfolio.getMinPrice(),
+                    portfolio.getMaxPrice(),
+                    paymentDTOS
+            );
+        }
+
 
         return FindByIdDTOConvertor(planner, portfolio, images, priceDTO, paymentHistoryDTO);
     }

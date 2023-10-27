@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.Quotation;
+package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
@@ -7,6 +7,7 @@ import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
+import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,14 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class QuotationService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
 
     @Transactional
-    public void insertQuotation(Pair<String, Long> info, Long matchId, QuotationRequest.Add request) {
-        Match match = getMatchByIdAndPlannerId(info, matchId);
+    public void insertQuotation(Pair<String, Long> info, Long chatId, QuotationRequest.Add request) {
+        Match match = getMatchByChatIdAndPlannerId(info, chatId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new ForbiddenException(BaseException.MATCHING_ALREADY_CONFIRMED);
@@ -45,8 +47,8 @@ public class QuotationService {
         );
     }
 
-    public QuotationResponse.FindAllByMatchId findQuotationsByMatchId(Long matchId) {
-        Match match = matchJPARepository.findById(matchId)
+    public QuotationResponse.FindAllByMatchId findQuotationsByChatId(Long chatId) {
+        Match match = matchJPARepository.findByChatId(chatId)
                 .orElseThrow(() -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
@@ -57,9 +59,21 @@ public class QuotationService {
         return new QuotationResponse.FindAllByMatchId(status.toString(), match.getPrice(), match.getConfirmedPrice(), quotationDTOS);
     }
 
+    // 견적서 모아보기
+    public QuotationResponse.FindByUserDTO findQuotationsByUser(Pair<String, Long> info) {
+        String role = info.getFirst();
+        Long userId = info.getSecond();
+
+        List<Quotation> quotations = getQuotationsByUser(role, userId);
+
+        List<QuotationResponse.QuotationsCollectDTO> quotationDTOS = getQuotationDTOSByUser(role, userId, quotations);
+
+        return new QuotationResponse.FindByUserDTO(quotationDTOS);
+    }
+
     @Transactional
-    public void confirm(Pair<String, Long> info, Long matchId, Long quotationId) {
-        Match match = getMatchByIdAndPlannerId(info, matchId);
+    public void confirm(Pair<String, Long> info, Long chatId, Long quotationId) {
+        Match match = getMatchByChatIdAndPlannerId(info, chatId);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
@@ -74,8 +88,8 @@ public class QuotationService {
     }
 
     @Transactional
-    public void update(Pair<String, Long> info, Long matchId, Long quotationId, QuotationRequest.Update request) {
-        Match match = getMatchByIdAndPlannerId(info, matchId);
+    public void update(Pair<String, Long> info, Long chatId, Long quotationId, QuotationRequest.Update request) {
+        Match match = getMatchByChatIdAndPlannerId(info, chatId);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
@@ -92,11 +106,11 @@ public class QuotationService {
         }
     }
 
-    private Match getMatchByIdAndPlannerId(Pair<String, Long> info, Long matchId) {
+    private Match getMatchByChatIdAndPlannerId(Pair<String, Long> info, Long chatId) {
         // 매칭 내역이 존재하지 않을 때는 404 에러를 내보내야 하고
         // 해당 매칭 내역에 접근할 수 없다면 403 에러를 내보내야 하기 때문에
         // 매칭 ID 로만 조회 후 권한 체크
-        Match match = matchJPARepository.findById(matchId)
+        Match match = matchJPARepository.findByChatId(chatId)
                 .orElseThrow(() -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         Long plannerId = info.getSecond();
@@ -107,7 +121,7 @@ public class QuotationService {
         return match;
     }
 
-    private static Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
+    private Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
         Quotation quotation = quotations
                 .stream()
                 .filter(iter -> Objects.equals(iter.getId(), quotationId))
@@ -119,5 +133,15 @@ public class QuotationService {
         }
 
         return quotation;
+    }
+
+    private List<Quotation> getQuotationsByUser(String role, Long id) {
+        return role.equals(Role.PLANNER.getRoleName()) ?
+                quotationJPARepository.findAllByMatchPlannerId(id) : quotationJPARepository.findAllByMatchCoupleId(id);
+    }
+
+    private List<QuotationResponse.QuotationsCollectDTO> getQuotationDTOSByUser(String role, Long id, List<Quotation> quotations) {
+        return role.equals(Role.PLANNER.getRoleName()) ?
+                QuotationDTOConverter.toFindByPlannerDTO(quotations) : QuotationDTOConverter.toFindByCoupleDTO(quotations);
     }
 }

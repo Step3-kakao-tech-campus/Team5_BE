@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/portfolios")
 public class PortfolioRestController {
     private final PortfolioService portfolioService;
@@ -50,12 +50,13 @@ public class PortfolioRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id) {
-        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id);
+    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PutMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
+    @PostMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
     public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.UpdateDTO request,
                                            @RequestPart MultipartFile[] images,
                                            Error errors,

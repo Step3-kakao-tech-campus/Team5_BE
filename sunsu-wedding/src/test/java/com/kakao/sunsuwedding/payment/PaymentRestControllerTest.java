@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class PaymentRestControllerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserRestControllerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PaymentRestControllerTest.class);
 
     @Autowired
     private MockMvc mvc;
@@ -57,8 +57,7 @@ public class PaymentRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -83,8 +82,7 @@ public class PaymentRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -112,8 +110,8 @@ public class PaymentRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
+
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
 
@@ -136,8 +134,8 @@ public class PaymentRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
+
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response").value("fail"));
     }
@@ -163,8 +161,7 @@ public class PaymentRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -190,12 +187,16 @@ public class PaymentRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("잘못된 결제 정보입니다."));
+    }
+
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
     }
 }

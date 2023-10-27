@@ -22,10 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserJPARepository userJPARepository;

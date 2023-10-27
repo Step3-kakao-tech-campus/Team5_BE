@@ -2,8 +2,8 @@ package com.kakao.sunsuwedding._core.utils;
 
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchStatus;
-import com.kakao.sunsuwedding.Quotation.Quotation;
-import com.kakao.sunsuwedding.Quotation.QuotationStatus;
+import com.kakao.sunsuwedding.quotation.Quotation;
+import com.kakao.sunsuwedding.quotation.QuotationStatus;
 import com.kakao.sunsuwedding.portfolio.PortfolioResponse;
 
 import java.util.List;

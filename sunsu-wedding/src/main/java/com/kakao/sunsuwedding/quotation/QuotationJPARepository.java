@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.Quotation;
+package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding.match.Match;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -14,4 +14,8 @@ public interface QuotationJPARepository extends JpaRepository<Quotation, Long> {
 
     @Query("select q from Quotation q where q.match.id in :matchIds")
     List<Quotation> findAllByMatchIds(@Param("matchIds") List<Long> MatchIds);
+
+    List<Quotation> findAllByMatchCoupleId(Long coupleId);
+
+    List<Quotation> findAllByMatchPlannerId(Long plannerId);
 }

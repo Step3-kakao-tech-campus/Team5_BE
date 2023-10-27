@@ -1,6 +1,5 @@
 package com.kakao.sunsuwedding.match;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -33,142 +31,82 @@ public class MatchRestControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper om;
-
-    // ============ 채팅방 생성 테스트 ============
-    @DisplayName("채팅방 생성 성공 테스트")
+    // ============ 견적서 전체(매칭) 확정 테스트 ============
+    @DisplayName("견적서 전체 확정 성공 테스트")
     @Test
-    @WithUserDetails("couple3@gmail.com")
-    public void match_create_success_test() throws Exception {
+    @WithUserDetails("couple4@gmail.com")
+    public void match_confirm_all_success_test() throws Exception {
         //given
-        MatchRequest.AddMatchDTO requestDTO = new MatchRequest.AddMatchDTO();
-        requestDTO.setPlannerId(1L);
-        String requestBody = om.writeValueAsString(requestDTO);
+        Long chatId = 7L;
 
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/chat")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .post("/match/confirmAll?chatId=" + chatId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(7L));
-    }
-
-    @DisplayName("채팅방 생성 실패 테스트 - 이미 존재하는 매칭내역")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_create_fail_test() throws Exception {
-        //given
-        MatchRequest.AddMatchDTO requestDTO = new MatchRequest.AddMatchDTO();
-        requestDTO.setPlannerId(2L);
-        String requestBody = om.writeValueAsString(requestDTO);
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/chat")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("이미 존재하는 매칭입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-    }
-
-    // ============ 채팅방 삭제 테스트 ============
-    @DisplayName("채팅방 삭제 성공 테스트")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void match_delete_success_test() throws Exception {
-        //given
-        Long matchId = 1L;
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .delete("/chat?matchId=" + matchId)
-        );
-
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
 
-    @DisplayName("채팅방 삭제 실패 테스트 1 - 견적서 전체 확정 되지 않음")
+    @DisplayName("견적서 전체 확정 실패 테스트 1 - 일부 견적서 미확정 시")
     @Test
     @WithUserDetails("couple@gmail.com")
-    public void match_delete_fail_test1() throws Exception {
+    public void match_confirm_all_fail_test1() throws Exception {
         //given
-        Long matchId = 2L;
+        Long chatId = 2L;
 
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/chat?matchId=" + matchId)
+                        .post("/match/confirmAll?chatId=" + chatId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("견적서 전체 확정을 해야 합니다."));
-
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정되지 않은 견적서가 있습니다."));
     }
 
-    @DisplayName("채팅방 삭제 실패 테스트 2 - 본인의 채팅방이 아님")
+    @DisplayName("견적서 전체 확정 실패 테스트 2 - 견적서 없을 시")
     @Test
     @WithUserDetails("couple@gmail.com")
-    public void match_delete_fail_test2() throws Exception {
+    public void match_confirm_all_fail_test2() throws Exception {
         //given
-        Long matchId = 3L;
+        Long chatId = 4L;
 
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/chat?matchId=" + matchId)
+                        .post("/match/confirmAll?chatId=" + chatId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정할 견적서가 없습니다"));
     }
 
-    @DisplayName("채팅방 삭제 실패 테스트 3 - 존재하지 않는 채팅방(매칭 내역)")
+    @DisplayName("견적서 전체 확정 실패 테스트 3 - 존재하지 않는 매칭 내역")
     @Test
     @WithUserDetails("couple@gmail.com")
-    public void match_delete_fail_test3() throws Exception {
+    public void match_confirm_all_fail_test3() throws Exception {
         //given
-        Long matchId = 10L;
+        Long chatId = 8L;
 
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/chat?matchId=" + matchId)
+                        .post("/match/confirmAll?chatId=" + chatId)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -176,5 +114,30 @@ public class MatchRestControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("매칭 내역을 찾을 수 없습니다."));
     }
 
+    @DisplayName("견적서 전체 확정 실패 테스트 4 - 본인의 매칭 내역이 아님")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void match_confirm_all_fail_test4() throws Exception {
+        //given
+        Long chatId = 3L;
 
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/match/confirmAll?chatId=" + chatId)
+        );
+
+        logResult(result);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
+    }
+
+
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
+    }
 }

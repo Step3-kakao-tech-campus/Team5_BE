@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -68,13 +67,12 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.POST, "/portfolios")
+                        .multipart("/portfolios")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -98,13 +96,12 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.POST, "/portfolios")
+                        .multipart("/portfolios")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -130,13 +127,12 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.POST, "/portfolios")
+                        .multipart("/portfolios")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -166,13 +162,12 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.POST, "/portfolios")
+                        .multipart("/portfolios")
                         .file(images[0]).file(images[1]).file(images[2]).file(images[3]).file(images[4]).file(images[5])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -193,8 +188,7 @@ public class PortfolioControllerTest {
                         .get("/portfolios?cursor=" + cursor)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -215,8 +209,7 @@ public class PortfolioControllerTest {
                         .get("/portfolios?cursor={nextCursor}", nextCursor)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -228,9 +221,10 @@ public class PortfolioControllerTest {
 
 
     // ============ 포트폴리오 상세 조회 테스트 ============
-    @DisplayName("포트폴리오 상세 조회 성공 테스트")
+    @DisplayName("포트폴리오 상세 조회 성공 테스트 - 예비부부 (PREMIUM 등급)")
     @Test
-    public void get_portfolio_by_id_success_test() throws Exception {
+    @WithUserDetails("couple2@gmail.com")
+    public void get_portfolio_by_id_premium_success_test() throws Exception {
         //given
         Long id = 1L;
         // when
@@ -239,8 +233,7 @@ public class PortfolioControllerTest {
                         .get("/portfolios/{id}", id)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -252,8 +245,32 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory.payments[0].confirmedAt").value("2023-10"));
     }
 
+    @DisplayName("포트폴리오 상세 조회 성공 테스트 - 플래너 (NORMAL 등급)")
+    @Test
+    @WithUserDetails("planner0@gmail.com")
+    public void get_portfolio_by_id_normal_success_test() throws Exception {
+        //given
+        Long id = 1L;
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/portfolios/{id}", id)
+        );
+
+        logResult(result);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(1));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.userId").value(2));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.priceInfo.items[0].itemTitle").value("스튜디오1"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.priceInfo.items[0].itemPrice").value(500000));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory").isEmpty());
+    }
+
     @DisplayName("포트폴리오 상세 조회 실패 테스트 1 - 존재하지 않는 포트폴리오")
     @Test
+    @WithUserDetails("couple2@gmail.com")
     public void get_portfolio_by_id_fail_test_portfolio_not_found() throws Exception {
         //given
         Long id = 30L;
@@ -263,8 +280,7 @@ public class PortfolioControllerTest {
                         .get("/portfolios/{id}", id)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -274,6 +290,7 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 상세 조회 실패 테스트 2 - 탈퇴한 플래너")
     @Test
+    @WithUserDetails("couple2@gmail.com")
     public void get_portfolio_by_id_fail_test_planner_not_found() throws Exception {
         //given
         Long id = 15L; // 탈퇴한 플래너의 포트폴리오 id
@@ -283,8 +300,7 @@ public class PortfolioControllerTest {
                         .get("/portfolios/{id}", id)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -296,7 +312,6 @@ public class PortfolioControllerTest {
 
     // ============ 포트폴리오 수정 테스트 ============
     // portfolioService update 부분 코드 수정 후 다시 테스트 필요
-    /*
     @DisplayName("포트폴리오 수정 성공 테스트")
     @Test
     @WithUserDetails("planner@gmail.com")
@@ -315,18 +330,16 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.PUT,"/portfolios")
+                        .multipart("/portfolios/update")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
-     */
 
     @DisplayName("포트폴리오 수정 실패 테스트 1 - 존재하지 않는 유저")
     @Test
@@ -346,13 +359,12 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.PUT,"/portfolios")
+                        .multipart("/portfolios/update")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -378,13 +390,12 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.PUT,"/portfolios")
+                        .multipart("/portfolios/update")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -392,7 +403,6 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다."));
     }
     // portfolioService update 부분 코드 수정 후 다시 테스트 필요
-    /*
     @DisplayName("포트폴리오 수정 실패 테스트 3 - 이미지 개수 5개 초과")
     @Test
     @WithUserDetails("planner@gmail.com")
@@ -415,20 +425,18 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart(HttpMethod.PUT,"/portfolios")
+                        .multipart("/portfolios/update")
                         .file(images[0]).file(images[1]).file(images[2]).file(images[3]).file(images[4]).file(images[5])
                         .file(request)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("요청한 이미지의 수가 5개를 초과합니다."));
     }
-     */
 
 
 
@@ -443,8 +451,7 @@ public class PortfolioControllerTest {
                         .delete("/portfolios")
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -460,8 +467,7 @@ public class PortfolioControllerTest {
                         .delete("/portfolios")
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -472,10 +478,10 @@ public class PortfolioControllerTest {
 
 
     private PortfolioRequest.AddDTO getAddDTO() {
-        PortfolioRequest.AddDTO.ItemDTO itemDTO = new PortfolioRequest.AddDTO.ItemDTO();
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO();
         itemDTO.setItemTitle("헤어");
         itemDTO.setItemPrice(300000L);
-        List<PortfolioRequest.AddDTO.ItemDTO> itemDTOS = new ArrayList<PortfolioRequest.AddDTO.ItemDTO>();
+        List<PortfolioRequest.ItemDTO> itemDTOS = new ArrayList<PortfolioRequest.ItemDTO>();
         itemDTOS.add(itemDTO);
 
         PortfolioRequest.AddDTO requestDTO = new PortfolioRequest.AddDTO();
@@ -491,10 +497,10 @@ public class PortfolioControllerTest {
     }
 
     private PortfolioRequest.UpdateDTO getUpdateDTO() {
-        PortfolioRequest.UpdateDTO.ItemDTO itemDTO = new PortfolioRequest.UpdateDTO.ItemDTO();
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO();
         itemDTO.setItemTitle("드레스");
         itemDTO.setItemPrice(400000L);
-        List<PortfolioRequest.UpdateDTO.ItemDTO> itemDTOS = new ArrayList<PortfolioRequest.UpdateDTO.ItemDTO>();
+        List<PortfolioRequest.ItemDTO> itemDTOS = new ArrayList<>();
         itemDTOS.add(itemDTO);
 
         PortfolioRequest.UpdateDTO requestDTO = new PortfolioRequest.UpdateDTO();
@@ -516,6 +522,11 @@ public class PortfolioControllerTest {
         byte[] content = Files.readAllBytes(path);
 
         return new MockMultipartFile(name, originalFilename, contentType, content);
+    }
+
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
     }
 
     /*

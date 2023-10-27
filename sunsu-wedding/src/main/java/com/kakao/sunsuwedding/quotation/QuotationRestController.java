@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.Quotation;
+package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
@@ -19,38 +19,39 @@ public class QuotationRestController {
 
     @PostMapping("")
     public ResponseEntity<?> createQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @RequestParam @Min(1) Long matchId,
+                                             @RequestParam @Min(1) Long chatId,
                                              @Valid @RequestBody QuotationRequest.Add request) {
-        quotationService.insertQuotation(userDetails.getInfo(), matchId, request);
+        quotationService.insertQuotation(userDetails.getInfo(), chatId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping("")
-    public ResponseEntity<?> findQuotations(@RequestParam @Min(1) Long matchId) {
-        QuotationResponse.FindAllByMatchId response = quotationService.findQuotationsByMatchId(matchId);
+    public ResponseEntity<?> findQuotations(@RequestParam @Min(1) Long chatId) {
+        QuotationResponse.FindAllByMatchId response = quotationService.findQuotationsByChatId(chatId);
         return ResponseEntity.ok().body(ApiUtils.success(response));
-    }
-
-    @PostMapping("/confirmAll")
-    public ResponseEntity<?> confirmAll(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam @Min(1) Long matchId) {
-        matchService.confirmAll(userDetails.getInfo(), matchId);
-        return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @PostMapping("/confirm/{quotationId}")
     public ResponseEntity<?> confirm(@AuthenticationPrincipal CustomUserDetails userDetails,
                                      @PathVariable @Min(1) Long quotationId,
-                                     @RequestParam @Min(1) Long matchId) {
-        quotationService.confirm(userDetails.getInfo(), matchId, quotationId);
+                                     @RequestParam @Min(1) Long chatId) {
+        quotationService.confirm(userDetails.getInfo(), chatId, quotationId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @PutMapping("/{quotationId}")
     public ResponseEntity<?> updateQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @PathVariable @Min(1) Long quotationId,
-                                             @RequestParam @Min(1) Long matchId,
+                                             @RequestParam @Min(1) Long chatId,
                                              @Valid @RequestBody QuotationRequest.Update request) {
-        quotationService.update(userDetails.getInfo(), matchId, quotationId, request);
+        quotationService.update(userDetails.getInfo(), chatId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @GetMapping("/collect")
+    public ResponseEntity<?> findByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        QuotationResponse.FindByUserDTO response = quotationService.findQuotationsByUser(userDetails.getInfo());
+
+        return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 }

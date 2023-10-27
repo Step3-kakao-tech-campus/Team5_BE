@@ -8,13 +8,13 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="payment_tb")
+@SQLDelete(sql = "UPDATE payment_tb SET is_active = false WHERE id = ?")
+@Where(clause = "is_active = true")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Entity
-@SQLDelete(sql = "UPDATE payment_tb SET is_active = false WHERE id = ?")
-@Where(clause = "is_active = true")
-@Table(name="payment_tb")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
