@@ -19,5 +19,5 @@ public interface MatchJPARepository extends JpaRepository<Match, Long> {
     List<Match> findLatestTenByPlanner(@Param("planner") Planner planner);
 
     @Query("select m from Match m where m.planner = :planner and m.couple = :couple")
-    List<Match> findByCoupleAndPlanner(@Param("couple") Couple couple, @Param("planner") Planner plannerId);
+    List<Match> findByCoupleAndPlanner(@Param("couple") Couple couple, @Param("planner") Planner planner);
 }
