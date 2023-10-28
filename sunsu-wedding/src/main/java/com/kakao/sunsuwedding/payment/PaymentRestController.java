@@ -47,4 +47,14 @@ public class PaymentRestController {
         paymentService.upgrade(userDetails.getUser().getId(), requestDTO);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
+
+    // 유저 통합 승인
+    @PostMapping("/approve")
+    public ResponseEntity<?> approve(
+            @RequestBody @Valid PaymentRequest.ApproveDTO requestDTO,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        paymentService.approve(userDetails.getUser().getId(), requestDTO);
+        return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
 }
