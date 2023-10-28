@@ -54,7 +54,7 @@ public class UserService {
 
     public TokenDTO login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
-                () -> new BadRequestException(BaseException.USER_EMAIL_NOT_FOUND.getMessage() + requestDTO.getEmail())
+                () -> new BadRequestException(BaseException.USER_EMAIL_NOT_FOUND)
         );
         log.debug("디버그: 로그인 토큰 {}", user.getId());
         if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {

@@ -1,21 +1,15 @@
 package com.kakao.sunsuwedding._core.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
-import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
-import com.kakao.sunsuwedding._core.errors.exception.TokenException;
-import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
+import com.kakao.sunsuwedding._core.errors.CustomException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
 public class FilterResponseUtils {
-
     private final ObjectMapper om;
 
     @Autowired
@@ -23,27 +17,11 @@ public class FilterResponseUtils {
         this.om = om;
     }
 
-    private void responseSetting(HttpServletResponse resp, HttpStatusCode status, Object body) throws IOException {
-        resp.resetBuffer();
-        resp.setStatus(status.value());
-        resp.setContentType("application/json; charset=utf-8");
-        String responseBody = om.writeValueAsString(body);
-        resp.getWriter().println(responseBody);
-    }
-
-    public void unAuthorized(HttpServletResponse resp, UnauthorizedException e) throws IOException {
-        responseSetting(resp, e.status(), e.body());
-    }
-
-    public void forbidden(HttpServletResponse resp, ForbiddenException e) throws IOException {
-        responseSetting(resp, e.status(), e.body());
-    }
-
-    public void notFound(HttpServletResponse resp, NotFoundException e) throws IOException {
-        responseSetting(resp, e.status(), e.body());
-    }
-
-    public void tokenError(HttpServletResponse response, TokenException tokenException) throws IOException {
-        responseSetting(response, HttpStatus.UNAUTHORIZED, tokenException.body());
+    public void writeResponse(HttpServletResponse response, CustomException exception) throws IOException {
+        response.resetBuffer();
+        response.setStatus(exception.status().value());
+        response.setContentType("application/json; charset=utf-8");
+        String responseBody = om.writeValueAsString(exception.body());
+        response.getWriter().println(responseBody);
     }
 }

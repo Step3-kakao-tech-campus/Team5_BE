@@ -5,12 +5,12 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.TokenException;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
-import com.kakao.sunsuwedding.user.token.ErrorStatus;
 import com.kakao.sunsuwedding.user.token.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                             .getClaim("id")
                             .asLong();
                     tokenService.expireTokenByUserId(userId);
-                    throw new TokenException(ErrorStatus.ACCESS_TOKEN_ALIVE);
+                    throw new TokenException(BaseException.ACCESS_TOKEN_STILL_ALIVE);
                 }
 
                 // 여기에 도달하면 access token 은 만료된 상태에서 refresh 토큰은 존재하는 상태
@@ -96,14 +96,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 }
                 // 서버에 저장된 토큰 쌍과 일치하지 않으면 오류 반환
                 else {
-                    throw new TokenException(ErrorStatus.INVALID_TOKEN);
+                    throw new TokenException(BaseException.TOKEN_NOT_VALID);
                 }
             } catch (SignatureVerificationException sve) {
                 log.error("refresh token 검증 실패");
             } catch (TokenExpiredException tee) {
                 log.error("refresh token 만료됨");
                 // access, refresh token 둘 다 만료 시에는 401 에러 전달
-                throw new TokenException(ErrorStatus.ALL_TOKEN_EXPIRED);
+                throw new TokenException(BaseException.ALL_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 refresh token");
             } finally {
@@ -126,7 +126,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             } catch (TokenExpiredException tee) {
                 log.error("access token 만료됨");
                 // access token 만 만료 시에는 403 에러 전달
-                throw new TokenException(ErrorStatus.EXPIRED_TOKEN);
+                throw new TokenException(BaseException.ACCESS_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 access token");
             } catch (Exception e){
