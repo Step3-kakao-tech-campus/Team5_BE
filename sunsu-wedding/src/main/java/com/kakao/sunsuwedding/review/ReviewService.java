@@ -41,9 +41,7 @@ public class ReviewService {
 
     public ReviewResponse.FindAllByChatIdDTO findAllByChatId(Long chatId) {
         List<Review> reviews = reviewJPARepository.findAllByMatchChatId(chatId);
-        if (reviews.isEmpty()) {
-            throw new NotFoundException(BaseException.REVIEW_NOT_EXIST);
-        }
+
         List<ReviewResponse.ReviewDTO> reviewDTOS = ReviewDTOConverter.toFindAllByChatIdDTO(reviews);
 
         return new ReviewResponse.FindAllByChatIdDTO(reviewDTOS);
