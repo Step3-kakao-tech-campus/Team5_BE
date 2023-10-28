@@ -13,14 +13,12 @@ public class PaymentRequest {
         @NotEmpty(message = "orderId는 비어있으면 안됩니다.")
         private String orderId;
 
-        @NotEmpty(message = "paymentKey는 비어있으면 안됩니다.")
-        private String paymentKey;
-
         @Min(value = 0, message = "금액은 양수여야 합니다.")
         private Long amount;
     }
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class ConfirmDTO{
         @NotEmpty(message = "orderId는 비어있으면 안됩니다.")
         private String orderId;
@@ -32,7 +30,8 @@ public class PaymentRequest {
         private Long amount;
     }
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class UpgradeDTO{
         @NotEmpty(message = "orderId는 비어있으면 안됩니다.")
         private String orderId;
@@ -42,6 +41,19 @@ public class PaymentRequest {
 
         @NotEmpty(message = "상태값은 비어있으면 안됩니다.")
         private String status;
+
+        @Min(value = 0, message = "금액은 양수여야 합니다.")
+        private Long amount;
+    }
+
+    @Getter
+    @Setter
+    public static class ApproveDTO{
+        @NotEmpty(message = "orderId는 비어있으면 안됩니다.")
+        private String orderId;
+
+        @NotEmpty(message = "paymentKey는 비어있으면 안됩니다.")
+        private String paymentKey;
 
         @Min(value = 0, message = "금액은 양수여야 합니다.")
         private Long amount;

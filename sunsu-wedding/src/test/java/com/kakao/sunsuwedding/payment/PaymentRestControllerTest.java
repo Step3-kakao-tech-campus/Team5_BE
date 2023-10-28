@@ -45,7 +45,6 @@ public class PaymentRestControllerTest {
         // given
         PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO();
         requestDTO.setAmount(1000L);
-        requestDTO.setPaymentKey("paymentKey");
         requestDTO.setOrderId("orderId1");
         String requestBody = om.writeValueAsString(requestDTO);
 
@@ -70,7 +69,6 @@ public class PaymentRestControllerTest {
         // given
         PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO();
         requestDTO.setAmount(1000L);
-        requestDTO.setPaymentKey("paymentKey");
         requestDTO.setOrderId("");
         String requestBody = om.writeValueAsString(requestDTO);
 

@@ -26,7 +26,7 @@ public class Payment {
     @Column(name = "order_id", nullable = false)
     private String orderId;
 
-    @Column(name = "payment_key", nullable = false)
+    @Column(name = "payment_key")
     private String paymentKey;
 
     @Column(name = "payed_amount", nullable = false)
@@ -52,10 +52,12 @@ public class Payment {
         this.isActive = true;
     }
 
-    public void updatePaymentInfo(String orderId, String paymentKey, Long amount){
+    public void updatePaymentInfo(String orderId, Long amount){
         this.orderId = orderId;
-        this.paymentKey = paymentKey;
         this.payedAmount = amount;
+    }
+    public void updatePaymentKey(String paymentKey){
+        this.paymentKey = paymentKey;
     }
 
     public void updatePayedAt() {
