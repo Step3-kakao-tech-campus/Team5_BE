@@ -3,9 +3,11 @@ package com.kakao.sunsuwedding._core.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding._core.errors.exception.TokenException;
 import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,7 @@ public class FilterResponseUtils {
     }
 
     private void responseSetting(HttpServletResponse resp, HttpStatusCode status, Object body) throws IOException {
+        resp.resetBuffer();
         resp.setStatus(status.value());
         resp.setContentType("application/json; charset=utf-8");
         String responseBody = om.writeValueAsString(body);
@@ -38,5 +41,9 @@ public class FilterResponseUtils {
 
     public void notFound(HttpServletResponse resp, NotFoundException e) throws IOException {
         responseSetting(resp, e.status(), e.body());
+    }
+
+    public void tokenError(HttpServletResponse response, TokenException tokenException) throws IOException {
+        responseSetting(response, HttpStatus.UNAUTHORIZED, tokenException.body());
     }
 }

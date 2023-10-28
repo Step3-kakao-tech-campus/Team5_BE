@@ -26,6 +26,7 @@ public class ImageItemService {
     private static final Logger logger = LoggerFactory.getLogger(ImageItemService.class);
 
     private final ImageItemJPARepository imageItemJPARepository;
+    private final ImageItemJDBCRepository imageItemJDBCRepository;
 
     private String setDirectoryPath(Long id, String username) {
         String separator = System.getProperty("file.separator");
@@ -90,7 +91,7 @@ public class ImageItemService {
                     .build();
             imageItems.add(imageItem);
         }
-        imageItemJPARepository.saveAll(imageItems);
+        imageItemJDBCRepository.batchInsertImageItems(imageItems);
     }
 
 

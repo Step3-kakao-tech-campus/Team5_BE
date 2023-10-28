@@ -3,7 +3,7 @@ package com.kakao.sunsuwedding.quotation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.SecurityConfig;
-import com.kakao.sunsuwedding.match.Quotation.QuotationRequest;
+import com.kakao.sunsuwedding.Quotation.QuotationRequest;
 import com.kakao.sunsuwedding.user.UserRequest;
 import com.kakao.sunsuwedding.user.UserService;
 import com.kakao.sunsuwedding.user.token.TokenDTO;
@@ -45,6 +45,9 @@ public class QuotationRestControllerTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JWTProvider jwtProvider;
 
     private String plannerToken;
 
@@ -230,7 +233,7 @@ public class QuotationRestControllerTest {
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/quotations")
-                        .header(JWTProvider.AUTHORIZATION_HEADER, plannerToken)
+                        .header(jwtProvider.AUTHORIZATION_HEADER, plannerToken)
                         .param("matchId", String.valueOf(matchId))
         );
 

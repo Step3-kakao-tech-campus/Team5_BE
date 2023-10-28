@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.match.Quotation;
+package com.kakao.sunsuwedding.Quotation;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

@@ -40,6 +40,9 @@ public class UserRestControllerTest {
     @Autowired
     private ObjectMapper om;
 
+    @Autowired
+    private JWTProvider jwtProvider;
+
     // ============ 회원가입 테스트 ============
     @DisplayName("회원가입 성공 테스트")
     @Test
@@ -145,8 +148,8 @@ public class UserRestControllerTest {
         );
 
         String responseBody = result.andReturn().getResponse().getContentAsString();
-        String accessTokenHeader = result.andReturn().getResponse().getHeader(JWTProvider.AUTHORIZATION_HEADER);
-        String refreshTokenHeader = result.andReturn().getResponse().getHeader(JWTProvider.REFRESH_HEADER);
+        String accessTokenHeader = result.andReturn().getResponse().getHeader(jwtProvider.AUTHORIZATION_HEADER);
+        String refreshTokenHeader = result.andReturn().getResponse().getHeader(jwtProvider.REFRESH_HEADER);
         logger.debug("테스트 : " + responseBody);
         logger.debug("테스트 access token  : " + accessTokenHeader);
         logger.debug("테스트 refresh token : " + refreshTokenHeader);

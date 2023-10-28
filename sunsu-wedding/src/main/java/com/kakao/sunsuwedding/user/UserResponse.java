@@ -1,10 +1,9 @@
 package com.kakao.sunsuwedding.user;
 
+import com.kakao.sunsuwedding._core.utils.DateFormat;
 import com.kakao.sunsuwedding.user.base_user.User;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.format.DateTimeFormatter;
 
 public class UserResponse {
     @Getter
@@ -23,7 +22,7 @@ public class UserResponse {
             this.email = user.getEmail();
             this.role = user.getDtype();
             this.grade = user.getGrade().getGradeName();
-            this.payedAt = (user.getPayedAt() == null) ? null : user.getPayedAt().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
+            this.payedAt = DateFormat.dateFormatKorean(user.getUpgradeAt());
         }
     }
 }

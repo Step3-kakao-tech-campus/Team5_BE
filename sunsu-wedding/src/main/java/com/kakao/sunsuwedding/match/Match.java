@@ -69,9 +69,8 @@ public class Match {
         this.confirmedAt = LocalDateTime.now();
     }
 
-    public void updateStatusConfirmed(Long price) {
+    public void updateStatusConfirmed() {
         this.status = MatchStatus.CONFIRMED;
-        this.confirmedPrice = price;
         this.confirmedAt = LocalDateTime.now();
     }
 }

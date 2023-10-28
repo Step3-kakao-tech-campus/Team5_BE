@@ -2,7 +2,6 @@ package com.kakao.sunsuwedding.match;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
-import com.kakao.sunsuwedding.match.Quotation.QuotationRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
