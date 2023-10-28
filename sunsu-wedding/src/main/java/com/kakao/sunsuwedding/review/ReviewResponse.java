@@ -4,8 +4,18 @@ import java.util.List;
 
 public class ReviewResponse {
     public record FindAllByUserDTO(
-            List<ReviewDTO> reviews
+            List<ReviewWithNameDTO> reviews
     ){}
+
+    public record ReviewWithNameDTO(
+            Long id,
+            String username,
+            String content
+    ) {}
+
+    public record FindAllByChatIdDTO(
+            List<ReviewDTO> reviews
+    ) {}
 
     public record ReviewDTO(
             Long id,

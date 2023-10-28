@@ -23,8 +23,8 @@ public class ReviewService {
     private final MatchJPARepository matchJPARepository;
 
     @Transactional
-    public void addReview(Pair<String, Long> info, ReviewRequest.AddDTO request) {
-        Match match = matchJPARepository.findByChatId(request.chatId()).orElseThrow(
+    public void addReview(Pair<String, Long> info, Long chatId, ReviewRequest.AddDTO request) {
+        Match match = matchJPARepository.findByChatId(chatId).orElseThrow(
                 () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND)
         );
 
@@ -39,27 +39,22 @@ public class ReviewService {
         );
     }
 
-    public ReviewResponse.ReviewDTO findByReviewId(Long reviewId) {
-        Review review = reviewJPARepository.findById(reviewId).orElseThrow(
-                () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
-        );
+    public ReviewResponse.FindAllByChatIdDTO findAllByChatId(Long chatId) {
+        List<Review> reviews = reviewJPARepository.findAllByMatchChatId(chatId);
+        if (reviews.isEmpty()) {
+            throw new NotFoundException(BaseException.REVIEW_NOT_EXIST);
+        }
+        List<ReviewResponse.ReviewDTO> reviewDTOS = ReviewDTOConverter.toFindAllByChatIdDTO(reviews);
 
-        return new ReviewResponse.ReviewDTO(review.id, review.content);
+        return new ReviewResponse.FindAllByChatIdDTO(reviewDTOS);
     }
 
     public ReviewResponse.FindAllByUserDTO findAllByUser(Pair<String, Long> info) {
         String role = info.getFirst();
         Long userId = info.getSecond();
 
-        List<Review> reviews;
-        if (role.equals(Role.PLANNER.getRoleName())) {
-            reviews = reviewJPARepository.findAllByMatchPlannerId(userId);
-        }
-        else {
-            reviews = reviewJPARepository.findAllByMatchCoupleId(userId);
-        }
-
-        List<ReviewResponse.ReviewDTO> reviewDTOS = ReviewDTOConverter.toFindAllByUserDTO(reviews);
+        List<Review> reviews = getReviewsByUser(role, userId);
+        List<ReviewResponse.ReviewWithNameDTO> reviewDTOS = getReviewDTOS(role, reviews);
 
         return new ReviewResponse.FindAllByUserDTO(reviewDTOS);
     }
@@ -100,5 +95,17 @@ public class ReviewService {
         if (!match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new BadRequestException(BaseException.MATCHING_NOT_CONFIRMED);
         }
+    }
+
+    private List<Review> getReviewsByUser(String role, Long userId) {
+        return (role.equals(Role.PLANNER.getRoleName())) ?
+                reviewJPARepository.findAllByMatchPlannerId(userId) :
+                reviewJPARepository.findAllByMatchCoupleId(userId);
+    }
+
+    private List<ReviewResponse.ReviewWithNameDTO> getReviewDTOS (String role, List<Review> reviews) {
+        return (role.equals(Role.PLANNER.getRoleName())) ?
+                ReviewDTOConverter.toFindAllByPlannerDTO(reviews) :
+                ReviewDTOConverter.toFindAllByCoupleDTO(reviews);
     }
 }

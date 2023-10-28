@@ -16,23 +16,24 @@ public class ReviewRestController {
     private final ReviewService reviewService;
     @PostMapping("")
     public ResponseEntity<?> addReview(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                       @RequestParam @Min(1) Long chatId,
                                        @Valid @RequestBody ReviewRequest.AddDTO request) {
-        reviewService.addReview(userDetails.getInfo(), request);
+        reviewService.addReview(userDetails.getInfo(), chatId, request);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @GetMapping("")
+    @GetMapping("/collect")
     public  ResponseEntity<?> findAllByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
         ReviewResponse.FindAllByUserDTO response = reviewService.findAllByUser(userDetails.getInfo());
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
-    @GetMapping("/{reviewId}")
-    public ResponseEntity<?> findByReviewId(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                            @PathVariable @Min(1) Long reviewId) {
-        ReviewResponse.ReviewDTO response = reviewService.findByReviewId(reviewId);
+    @GetMapping("")
+    public ResponseEntity<?> findAllByChatId(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @RequestParam @Min(1) Long chatId) {
+        ReviewResponse.FindAllByChatIdDTO response = reviewService.findAllByChatId(chatId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
