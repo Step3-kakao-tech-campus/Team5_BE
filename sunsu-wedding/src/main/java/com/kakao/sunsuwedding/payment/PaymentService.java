@@ -7,11 +7,13 @@ import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Grade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,14 +32,13 @@ public class PaymentService {
         // 사용자의 결제 정보가 존재하면 업데이트
         if (paymentOptional.isPresent()){
             Payment payment = paymentOptional.get();
-            payment.updatePaymentInfo(requestDTO.getOrderId(), requestDTO.getPaymentKey(), requestDTO.getAmount());
+            payment.updatePaymentInfo(requestDTO.getOrderId(), requestDTO.getAmount());
         }
         else {
             // 결제 정보 저장
             Payment payment = Payment.builder()
                     .user(user)
                     .orderId(requestDTO.getOrderId())
-                    .paymentKey(requestDTO.getPaymentKey())
                     .payedAmount(requestDTO.getAmount())
                     .build();
 
@@ -49,7 +50,7 @@ public class PaymentService {
     public String confirm(Long userId, PaymentRequest.ConfirmDTO requestDTO){
         User user = findUserById(userId);
         Payment payment = findPaymentByUserId(userId);
-        boolean isOK = isCorrectData(payment, requestDTO.getOrderId(), requestDTO.getAmount(), requestDTO.getPaymentKey());
+        boolean isOK = isCorrectData(payment, requestDTO.getOrderId(), requestDTO.getAmount());
 
         return isOK ? "success" : "fail";
     }
@@ -60,7 +61,7 @@ public class PaymentService {
         User user = findUserById(userId);
         Payment payment = findPaymentByUserId(userId);
 
-        boolean isOK = isCorrectData(payment, requestDTO.getOrderId(), requestDTO.getAmount(), requestDTO.getPaymentKey())
+        boolean isOK = isCorrectData(payment, requestDTO.getOrderId(), requestDTO.getAmount())
                 && requestDTO.getStatus().equals("DONE");
 
         if (isOK) {
@@ -70,10 +71,60 @@ public class PaymentService {
         else throw new BadRequestException(BaseException.PAYMENT_WRONG_INFORMATION);
     }
 
-    // 받아온 payment와 관련된 데이터(orderId, paymentKey, amount)가 정확한지 확인)
-    private boolean isCorrectData(Payment payment, String orderId, Long amount, String paymentKey){
+    @Transactional
+    public void approve(Long userId, PaymentRequest.ApproveDTO requestDTO) {
+        User user = findUserById(userId);
+        Payment payment = findPaymentByUserId(user.getId());
+
+        //  1. 검증: 프론트 정보와 백엔드 정보 비교
+        boolean isOK = isCorrectData(payment, requestDTO.getOrderId(), requestDTO.getAmount());
+        payment.updatePaymentKey(requestDTO.getPaymentKey());
+
+        if (isOK){
+            // 2. 토스 페이먼츠 승인 요청
+            tossPayApprove(requestDTO);
+
+            // 3. 유저 업그레이드
+            user.upgrade();
+            payment.updatePayedAt();
+        }
+        else throw new BadRequestException(BaseException.PAYMENT_WRONG_INFORMATION);
+    }
+
+    private void tossPayApprove(PaymentRequest.ApproveDTO requestDTO){
+        // 토스페이먼츠 승인 api 요청
+        // todo Authorization키 따로 환경 변수로 빼야 함
+        String secretKey = "test_sk_GePWvyJnrKb2NW2jwE6VgLzN97Eo";
+        String basicToken = "Basic " + Base64.getEncoder().encodeToString((secretKey + ":").getBytes());
+
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("paymentKey", requestDTO.getPaymentKey());
+        parameters.put("orderId", requestDTO.getOrderId());
+        parameters.put("amount", requestDTO.getAmount().toString());
+
+        WebClient webClient =
+                WebClient
+                        .builder()
+                        .baseUrl("https://api.tosspayments.com")
+                        .build();
+
+        TossPaymentResponse.TosspayDTO result =
+                webClient
+                        .post()
+                        .uri("/v1/payments/confirm")
+                        .headers(headers -> {
+                            headers.add(HttpHeaders.AUTHORIZATION, basicToken);
+                            headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+                        })
+                        .bodyValue(parameters)
+                        .retrieve()
+                        .bodyToMono(TossPaymentResponse.TosspayDTO.class)
+                        .block();
+    }
+
+    // 받아온 payment와 관련된 데이터(orderId, amount)가 정확한지 확인)
+    private boolean isCorrectData(Payment payment, String orderId, Long amount){
         return payment.getOrderId().equals(orderId)
-                && payment.getPaymentKey().equals(paymentKey)
                 && Objects.equals(payment.getPayedAmount(), amount);
     }
 
