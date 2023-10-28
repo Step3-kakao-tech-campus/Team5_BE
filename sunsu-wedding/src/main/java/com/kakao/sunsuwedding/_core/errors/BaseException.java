@@ -58,6 +58,7 @@ public enum BaseException {
 
     // 리뷰 관련
     REVIEW_NOT_FOUND("해당 리뷰가 삭제되었거나 존재하지 않습니다.",404),
+    REVIEW_NOT_EXIST("작성된 리뷰가 없습니다.", 404),
 
     // 공통
     PERMISSION_DENIED_METHOD_ACCESS("사용할 수 없는 기능입니다.", 403),

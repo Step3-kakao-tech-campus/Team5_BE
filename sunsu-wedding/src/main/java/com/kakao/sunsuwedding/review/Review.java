@@ -11,18 +11,18 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name="review_tb")
 @SQLDelete(sql = "UPDATE review_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
-@Table(name="review_tb")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     Match match;
 
     @Column(nullable = false)
