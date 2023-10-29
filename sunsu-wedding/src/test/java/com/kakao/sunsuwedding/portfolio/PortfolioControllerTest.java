@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 @Import({
@@ -478,41 +477,17 @@ public class PortfolioControllerTest {
 
 
     private PortfolioRequest.AddDTO getAddDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO();
-        itemDTO.setItemTitle("헤어");
-        itemDTO.setItemPrice(300000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = new ArrayList<PortfolioRequest.ItemDTO>();
-        itemDTOS.add(itemDTO);
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("헤어", 300000L);
+        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
 
-        PortfolioRequest.AddDTO requestDTO = new PortfolioRequest.AddDTO();
-        requestDTO.setPlannerName("유희정");
-        requestDTO.setLocation("부산");
-        requestDTO.setTitle("title");
-        requestDTO.setDescription("description");
-        requestDTO.setCareer("career");
-        requestDTO.setPartnerCompany("partnerCompany");
-        requestDTO.setItems(itemDTOS);
-
-        return requestDTO;
+        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS);
     }
 
     private PortfolioRequest.UpdateDTO getUpdateDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO();
-        itemDTO.setItemTitle("드레스");
-        itemDTO.setItemPrice(400000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = new ArrayList<>();
-        itemDTOS.add(itemDTO);
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("드레스", 400000L);
+        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
 
-        PortfolioRequest.UpdateDTO requestDTO = new PortfolioRequest.UpdateDTO();
-        requestDTO.setPlannerName("김희정");
-        requestDTO.setLocation("부산");
-        requestDTO.setTitle("title2");
-        requestDTO.setDescription("description2");
-        requestDTO.setCareer("career2");
-        requestDTO.setPartnerCompany("partnerCompany2");
-        requestDTO.setItems(itemDTOS);
-
-        return requestDTO;
+        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS);
     }
 
     private MockMultipartFile createMockMultipartFileImage(String filePath, String contentType) throws IOException {
