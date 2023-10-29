@@ -6,10 +6,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -25,5 +22,12 @@ public class MatchRestController {
         matchService.confirmAll(userDetails.getInfo(), chatId);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
+    }
+
+    @GetMapping("/reviews")
+    public ResponseEntity<?> findMatchesWithNoReview(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        MatchResponse.MatchesWithNoReviewDTO response = matchService.findMatchesWithNoReview(userDetails.getInfo());
+
+        return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 }
