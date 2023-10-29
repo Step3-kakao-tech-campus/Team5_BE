@@ -75,19 +75,6 @@ public class MatchService {
         }
     }
 
-    public MatchResponse.MatchesWithNoReviewDTO findMatchesWithNoReview(Pair<String, Long> info) {
-        Couple couple = coupleJPARepository.findById(info.getSecond()).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND)
-        );
-
-        List<Match> matches = matchJPARepository.findAllByCouple(couple);
-        List<Match> confirmedMatches = getConfirmedMatches(matches);
-        List<Match> matchesWithNoReview = getMatchesWithNoReview(confirmedMatches);
-
-        List<MatchResponse.MatchDTO> matchDTOS = MatchDTOConverter.toMatchesWithNoReviewDTO(matchesWithNoReview);
-
-        return new MatchResponse.MatchesWithNoReviewDTO(matchDTOS);
-    }
 
     private Boolean isAllConfirmed(List<Quotation> quotations) {
         if (quotations.isEmpty()) {
@@ -110,17 +97,5 @@ public class MatchService {
             if (!match.getCouple().getId().equals(id))
                 throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
-    }
-
-    private List<Match> getConfirmedMatches(List<Match> matches) {
-        return matches.stream()
-                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .toList();
-    }
-
-    private List<Match> getMatchesWithNoReview(List<Match> matches) {
-        return matches.stream()
-                .filter(match -> match.getReviewExist().equals(false))
-                .toList();
     }
 }

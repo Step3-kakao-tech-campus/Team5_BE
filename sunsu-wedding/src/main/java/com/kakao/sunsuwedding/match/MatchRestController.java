@@ -24,10 +24,4 @@ public class MatchRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @GetMapping("/reviews")
-    public ResponseEntity<?> findMatchesWithNoReview(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        MatchResponse.MatchesWithNoReviewDTO response = matchService.findMatchesWithNoReview(userDetails.getInfo());
-
-        return ResponseEntity.ok().body(ApiUtils.success(response));
-    }
 }
