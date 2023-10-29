@@ -31,6 +31,9 @@ public class ReviewService {
         matchConfirmedCheck(match);
         permissionCheck(info, match);
 
+        match.updateReviewExist();
+        matchJPARepository.save(match);
+
         reviewJPARepository.save(
                 Review.builder()
                     .match(match)
