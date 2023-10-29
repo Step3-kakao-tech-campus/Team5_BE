@@ -7,6 +7,7 @@ import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Grade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class PaymentService {
 
     private final PaymentJPARepository paymentJPARepository;
     private final UserJPARepository userJPARepository;
+
+    @Value("${payment.toss.secret}")
+    private String secretKey;
 
     // 결제와 관련된 정보를 user에 저장함
     @Transactional
@@ -93,8 +97,6 @@ public class PaymentService {
 
     private void tossPayApprove(PaymentRequest.ApproveDTO requestDTO){
         // 토스페이먼츠 승인 api 요청
-        // todo Authorization키 따로 환경 변수로 빼야 함
-        String secretKey = "test_sk_GePWvyJnrKb2NW2jwE6VgLzN97Eo";
         String basicToken = "Basic " + Base64.getEncoder().encodeToString((secretKey + ":").getBytes());
 
         Map<String, String> parameters = new HashMap<>();
