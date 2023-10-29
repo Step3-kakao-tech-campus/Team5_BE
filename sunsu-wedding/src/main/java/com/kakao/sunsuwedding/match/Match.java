@@ -51,6 +51,9 @@ public class Match {
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
 
+    @Column(name = "review_exist", nullable = false)
+    private Boolean reviewExist;
+
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;
 
@@ -66,6 +69,7 @@ public class Match {
         this.status = MatchStatus.UNCONFIRMED;
         this.price = price;
         this.confirmedPrice = (confirmedPrice == null? 0 : confirmedPrice);
+        this.reviewExist = false;
         this.createdAt = LocalDateTime.now();
         this.isActive = true;
     }
@@ -82,5 +86,9 @@ public class Match {
     public void updateStatusConfirmed() {
         this.status = MatchStatus.CONFIRMED;
         this.confirmedAt = LocalDateTime.now();
+    }
+
+    public void updateReviewExist() {
+        this.reviewExist = true;
     }
 }
