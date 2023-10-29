@@ -30,15 +30,15 @@ public class PaymentService {
         // 사용자의 결제 정보가 존재하면 업데이트
         if (paymentOptional.isPresent()){
             Payment payment = paymentOptional.get();
-            payment.updatePaymentInfo(requestDTO.getOrderId(), requestDTO.getPaymentKey(), requestDTO.getAmount());
+            payment.updatePaymentInfo(requestDTO.orderId(), requestDTO.paymentKey(), requestDTO.amount());
         }
         else {
             // 결제 정보 저장
             Payment payment = Payment.builder()
                     .user(user)
-                    .orderId(requestDTO.getOrderId())
-                    .paymentKey(requestDTO.getPaymentKey())
-                    .payedAmount(requestDTO.getAmount())
+                    .orderId(requestDTO.orderId())
+                    .paymentKey(requestDTO.paymentKey())
+                    .payedAmount(requestDTO.amount())
                     .build();
 
             paymentJPARepository.save(payment);
@@ -49,7 +49,7 @@ public class PaymentService {
     public String confirm(Long userId, PaymentRequest.ConfirmDTO requestDTO){
         User user = findUserById(userId);
         Payment payment = findPaymentByUserId(userId);
-        boolean isOK = isCorrectData(payment, requestDTO.getOrderId(), requestDTO.getAmount(), requestDTO.getPaymentKey());
+        boolean isOK = isCorrectData(payment, requestDTO.orderId(), requestDTO.amount(), requestDTO.paymentKey());
 
         return isOK ? "success" : "fail";
     }
@@ -60,8 +60,8 @@ public class PaymentService {
         User user = findUserById(userId);
         Payment payment = findPaymentByUserId(userId);
 
-        boolean isOK = isCorrectData(payment, requestDTO.getOrderId(), requestDTO.getAmount(), requestDTO.getPaymentKey())
-                && requestDTO.getStatus().equals("DONE");
+        boolean isOK = isCorrectData(payment, requestDTO.orderId(), requestDTO.amount(), requestDTO.paymentKey())
+                && requestDTO.status().equals("DONE");
 
         if (isOK) {
             user.upgrade();
