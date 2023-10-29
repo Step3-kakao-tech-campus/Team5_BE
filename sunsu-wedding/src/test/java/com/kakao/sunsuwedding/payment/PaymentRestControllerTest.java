@@ -42,7 +42,7 @@ public class PaymentRestControllerTest {
     @WithUserDetails("planner@gmail.com")
     void save_payment_success() throws Exception {
         // given
-        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO("orderId1", "paymentKey", 1000L);
+        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO("orderId1", 1000L);
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -64,7 +64,7 @@ public class PaymentRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     void save_payment_fail() throws Exception {
         // given
-        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO("", "paymentKey", 1000L);
+        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO("",1000L);
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
