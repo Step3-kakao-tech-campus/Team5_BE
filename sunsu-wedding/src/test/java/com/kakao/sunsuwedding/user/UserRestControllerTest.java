@@ -201,7 +201,7 @@ public class UserRestControllerTest {
         // then
         result.andExpect(jsonPath("$.success").value("false"));
         result.andExpect(jsonPath("$.error.status").value(400));
-        result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다"));
+        result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다."));
     }
 
     // ============ 회원 탈퇴 테스트 ============
