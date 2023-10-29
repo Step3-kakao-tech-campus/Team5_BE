@@ -29,8 +29,8 @@ public class ReviewService {
                 () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND)
         );
 
-        matchConfirmedCheck(match); // 리뷰 작성 가능한 상태인지 확인
         permissionCheck(info, match); // 예비부부이며, 본인의 매칭이 맞는지 확인
+        matchConfirmedCheck(match); // 리뷰 작성 가능한 상태인지 확인
 
         // 첫 리뷰라면 리뷰 작성 여부 업데이트
         if (match.getReviewStatus().equals(ReviewStatus.UNWRITTEN)) {
