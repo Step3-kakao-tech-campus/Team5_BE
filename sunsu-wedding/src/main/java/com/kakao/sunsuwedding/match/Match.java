@@ -83,4 +83,5 @@ public class Match {
         this.status = MatchStatus.CONFIRMED;
         this.confirmedAt = LocalDateTime.now();
     }
+
 }

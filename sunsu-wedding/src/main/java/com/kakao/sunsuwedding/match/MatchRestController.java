@@ -2,7 +2,6 @@ package com.kakao.sunsuwedding.match;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,4 +23,5 @@ public class MatchRestController {
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
+
 }

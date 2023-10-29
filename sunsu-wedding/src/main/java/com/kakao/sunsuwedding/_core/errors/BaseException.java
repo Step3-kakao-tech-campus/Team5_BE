@@ -54,6 +54,10 @@ public enum BaseException {
     MATCHING_ALREADY_CONFIRMED("전체 확정되어 견적서를 추가할 수 없습니다.", 403),
     MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 404),
     MATCHING_ALREADY_EXIST("이미 존재하는 매칭입니다.", 400),
+    MATCHING_NOT_CONFIRMED("견적서 전체 확정이 되지 않았습니다.",400),
+
+    // 리뷰 관련
+    REVIEW_NOT_FOUND("해당 리뷰가 삭제되었거나 존재하지 않습니다.",404),
 
     // 공통
     PERMISSION_DENIED_METHOD_ACCESS("사용할 수 없는 기능입니다.", 403),

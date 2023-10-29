@@ -11,6 +11,7 @@ import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.quotation.QuotationStatus;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
+import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
@@ -27,6 +28,7 @@ public class MatchService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
     private final PortfolioService portfolioService;
+    private final CoupleJPARepository coupleJPARepository;
 
     @Transactional
     public void addMatch(Couple couple, Planner planner, Chat chat) {
@@ -72,6 +74,7 @@ public class MatchService {
             throw new BadRequestException(BaseException.QUOTATIONS_NOT_ALL_CONFIRMED);
         }
     }
+
 
     private Boolean isAllConfirmed(List<Quotation> quotations) {
         if (quotations.isEmpty()) {
