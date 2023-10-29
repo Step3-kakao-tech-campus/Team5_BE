@@ -1,8 +1,11 @@
-package com.kakao.sunsuwedding._core.security;
+package com.kakao.sunsuwedding._core.config;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.security.JWTProvider;
+import com.kakao.sunsuwedding._core.security.JwtAuthenticationFilter;
+import com.kakao.sunsuwedding._core.security.JwtExceptionFilter;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
 import com.kakao.sunsuwedding.user.token.TokenService;
 import lombok.RequiredArgsConstructor;

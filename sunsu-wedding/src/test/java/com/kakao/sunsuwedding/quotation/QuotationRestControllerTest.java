@@ -2,7 +2,7 @@ package com.kakao.sunsuwedding.quotation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import com.kakao.sunsuwedding.user.UserRequest;
 import com.kakao.sunsuwedding.user.UserService;
 import com.kakao.sunsuwedding.user.token.TokenDTO;

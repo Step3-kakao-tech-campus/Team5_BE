@@ -1,9 +1,8 @@
 package com.kakao.sunsuwedding.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.security.CustomUserDetailsService;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
