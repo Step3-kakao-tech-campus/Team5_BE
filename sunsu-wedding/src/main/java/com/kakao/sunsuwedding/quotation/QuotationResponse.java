@@ -26,13 +26,13 @@ public class QuotationResponse {
     ) {}
 
     public record QuotationsCollectDTO(
-            String partnerName,
             Long id,
+            String partnerName,
             String title,
             Long price,
             String company,
             String description,
             String status,
-            LocalDateTime modifiedAt
+            String modifiedAt
     ) {}
 }
