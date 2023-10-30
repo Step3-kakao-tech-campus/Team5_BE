@@ -108,3 +108,5 @@ INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `descri
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('6', '5', 'test2', '1000000', 'abc2', 'asdf2', 'UNCONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('7', '7', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('8', '7', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+
+INSERT INTO review_tb (`id`, `match_id`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (1, 1, '최고의 플래너!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);
