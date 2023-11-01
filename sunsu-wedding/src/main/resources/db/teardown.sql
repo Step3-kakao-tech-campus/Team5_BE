@@ -8,6 +8,7 @@ truncate table priceitem_tb;
 truncate table match_tb;
 truncate table quotation_tb;
 truncate table chat_tb;
+truncate table review_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 -- planner 비밀번호 : planner1234!
@@ -90,13 +91,13 @@ INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (5, '2023-10-08 08:
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (6, '2023-10-08 08:30:12.00', true);
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (7, '2023-10-08 08:30:12.00', true);
 
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', '1', 'CONFIRMED', '1000000', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '2', '4', '2', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('3', '2', '5', '3', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('4', '2', '4', '4', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('5', '3', '4', '5', 'UNCONFIRMED', '1000000', '0', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('6', '2', '4', '6', 'CONFIRMED', '1000000', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `confirmed_at`, `created_at`, `is_active`) VALUES ('7', '2', '22', '7', 'UNCONFIRMED', '1000000', '1000000', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', '1', 'CONFIRMED', '1000000', '1000000', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '2', '4', '2', 'UNCONFIRMED', '1000000', '0', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('3', '2', '5', '3', 'UNCONFIRMED', '1000000', '0', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('4', '2', '4', '4', 'UNCONFIRMED', '1000000', '0', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('5', '3', '4', '5', 'UNCONFIRMED', '1000000', '0', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('6', '2', '4', '6', 'CONFIRMED', '1000000', '1000000', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('7', '2', '22', '7', 'UNCONFIRMED', '1000000', '1000000', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 
 
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('1', '6', 'test', '1000000', 'abc', 'asdf', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
@@ -107,3 +108,5 @@ INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `descri
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('6', '5', 'test2', '1000000', 'abc2', 'asdf2', 'UNCONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('7', '7', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('8', '7', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+
+INSERT INTO review_tb (`id`, `match_id`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (1, 1, '최고의 플래너!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);

@@ -9,6 +9,7 @@ import com.kakao.sunsuwedding.portfolio.PortfolioService;
 import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.quotation.QuotationStatus;
+import com.kakao.sunsuwedding.review.ReviewResponse;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
@@ -47,6 +48,20 @@ public class MatchService {
                         .price(0L)
                         .build()
         );
+    }
+
+    public MatchResponse.FindAllWithNoReviewDTO findAllWithNoReview(Pair<String, Long> info) {
+        Couple couple = coupleJPARepository.findById(info.getSecond()).orElseThrow(
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND)
+        );
+
+        List<Match> matches = matchJPARepository.findAllByCouple(couple);
+        List<Match> confirmedMatches = getConfirmedMatches(matches);
+        List<Match> matchesWithNoReview = getMatchesWithNoReview(confirmedMatches);
+
+        List<MatchResponse.MatchDTO> matchDTOS = MatchDTOConverter.toFindAllWithNoReviewDTO(matchesWithNoReview);
+
+        return new MatchResponse.FindAllWithNoReviewDTO(matchDTOS);
     }
 
     // Match Update : 확정 상태, 가격, 확정 날짜
@@ -97,5 +112,17 @@ public class MatchService {
             if (!match.getCouple().getId().equals(id))
                 throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
+    }
+
+    private List<Match> getConfirmedMatches(List<Match> matches) {
+        return matches.stream()
+                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
+                .toList();
+    }
+
+    private List<Match> getMatchesWithNoReview(List<Match> matches) {
+        return matches.stream()
+                .filter(match -> match.getReviewStatus().equals(ReviewStatus.UNWRITTEN))
+                .toList();
     }
 }
