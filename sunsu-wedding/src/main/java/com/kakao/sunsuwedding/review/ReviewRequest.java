@@ -16,4 +16,9 @@ public class ReviewRequest {
             @Length(max = 500, message = "리뷰는 500자까지만 작성 가능합니다.")
             String content
     ){}
+
+    public record FindAllByPlannerDTO(
+            @NotNull(message = "plannerId는 비어있으면 안됩니다.")
+            Long plannerId
+    ) {}
 }
