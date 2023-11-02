@@ -27,6 +27,7 @@ public class QuotationResponse {
 
     public record QuotationsCollectDTO(
             Long id,
+            Long chatId,
             String partnerName,
             String title,
             Long price,

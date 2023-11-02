@@ -17,6 +17,7 @@ public class QuotationDTOConverter {
     public static List<QuotationResponse.QuotationsCollectDTO> toFindByCoupleDTO(List<Quotation> quotations) {
         return quotations.stream()
                 .map(quotation -> new QuotationResponse.QuotationsCollectDTO(quotation.getId(),
+                        quotation.getMatch().getChat().getId(),
                         (quotation.getMatch().getPlanner() != null) ? quotation.getMatch().getPlanner().getUsername() : "탈퇴한 사용자",
                         quotation.getTitle(), quotation.getPrice(), quotation.getCompany(),
                         quotation.getDescription(), quotation.getStatus().toString(),
@@ -27,6 +28,7 @@ public class QuotationDTOConverter {
     public static List<QuotationResponse.QuotationsCollectDTO> toFindByPlannerDTO(List<Quotation> quotations) {
         return quotations.stream()
                 .map(quotation -> new QuotationResponse.QuotationsCollectDTO(quotation.getId(),
+                        quotation.getMatch().getChat().getId(),
                         (quotation.getMatch().getCouple() != null) ? quotation.getMatch().getCouple().getUsername() : "탈퇴한 사용자",
                         quotation.getTitle(), quotation.getPrice(), quotation.getCompany(),
                         quotation.getDescription(), quotation.getStatus().toString(),
