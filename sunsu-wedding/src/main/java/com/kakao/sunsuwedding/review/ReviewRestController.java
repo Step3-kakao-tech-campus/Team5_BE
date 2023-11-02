@@ -18,25 +18,30 @@ public class ReviewRestController {
     public ResponseEntity<?> addReview(@AuthenticationPrincipal CustomUserDetails userDetails,
                                        @RequestParam @Min(1) Long chatId,
                                        @Valid @RequestBody ReviewRequest.AddDTO request) {
-        reviewService.addReview(userDetails.getInfo(), chatId, request);
+        reviewService.addReview(userDetails.getInfo().getFirst(), userDetails.getInfo().getSecond(), chatId, request);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    @GetMapping("/collect")
-    public  ResponseEntity<?> findAllByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        ReviewResponse.FindAllByUserDTO response = reviewService.findAllByUser(userDetails.getInfo());
-
-        return ResponseEntity.ok().body(ApiUtils.success(response));
-    }
-
     @GetMapping("")
-    public ResponseEntity<?> findAllByChatId(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                            @RequestParam @Min(1) Long chatId) {
-        ReviewResponse.FindAllByChatIdDTO response = reviewService.findAllByChatId(chatId);
+    public ResponseEntity<?> findAllByPlanner(@Valid @RequestBody Long plannerId) {
+        reviewService.findAllByPlanner(plannerId);
+    }
+
+    @GetMapping("/collect")
+    public  ResponseEntity<?> findAllByCouple(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        ReviewResponse.FindAllByCoupleDTO response = reviewService.findAllByCouple(userDetails.getInfo().getFirst(),
+                                                                                    userDetails.getInfo().getSecond());
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<?> findByReviewId(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @PathVariable Long reviewId) {
+        reviewService.findByReviewId(userDetails.getInfo().getFirst(), userDetails.getInfo().getSecond(), reviewId);
+    }
+
 
     @PutMapping("/{reviewId}")
     public ResponseEntity<?> updateReview(@AuthenticationPrincipal CustomUserDetails userDetails,
