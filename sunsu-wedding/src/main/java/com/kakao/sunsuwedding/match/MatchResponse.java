@@ -9,6 +9,7 @@ public class MatchResponse {
 
     public record MatchDTO(
             Long chatId,
-            String plannerName
+            String plannerName,
+            String confirmedAt
     ) {}
 }
