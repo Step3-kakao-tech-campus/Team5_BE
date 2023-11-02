@@ -10,6 +10,9 @@ import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.match.ReviewStatus;
 import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +32,7 @@ public class ReviewService {
                 () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND)
         );
 
-        roleCheck(role); // 예비부부이며,
+        roleCheck(role); // 예비부부이며
         permissionCheck(coupleId, match); //본인의 매칭이 맞는지 확인
         matchConfirmedCheck(match); // 리뷰 작성 가능한 상태인지 확인
 
@@ -47,9 +50,11 @@ public class ReviewService {
         );
     }
 
-    // 페이지네이션 필요
-    public ReviewResponse.FindAllByPlannerDTO findAllByPlanner(Long plannerId) {
-        List<Review> reviews = reviewJPARepository.findAllByMatchPlannerId(plannerId);
+    public ReviewResponse.FindAllByPlannerDTO findAllByPlanner(int page, Long plannerId) {
+        Pageable pageable = PageRequest.of(page,10);
+        Page<Review> pageContent = reviewJPARepository.findAllByMatchPlannerId(plannerId, pageable);
+        List<Review> reviews = pageContent.getContent();
+
         List<ReviewResponse.FindByPlannerDTO> reviewDTOS = ReviewDTOConverter.toFindAllByPlannerDTO(reviews);
 
         return new ReviewResponse.FindAllByPlannerDTO(reviewDTOS);

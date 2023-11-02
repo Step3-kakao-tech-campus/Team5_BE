@@ -24,22 +24,27 @@ public class ReviewRestController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> findAllByPlanner(@Valid @RequestBody Long plannerId) {
-        reviewService.findAllByPlanner(plannerId);
+    public ResponseEntity<?> findAllByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+                                              @Valid @RequestBody ReviewRequest.findAllByPlannerDTO request) {
+        ReviewResponse.FindAllByPlannerDTO response = reviewService.findAllByPlanner(page, request.plannerId());
+
+        return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/collect")
     public  ResponseEntity<?> findAllByCouple(@AuthenticationPrincipal CustomUserDetails userDetails) {
         ReviewResponse.FindAllByCoupleDTO response = reviewService.findAllByCouple(userDetails.getInfo().getFirst(),
                                                                                     userDetails.getInfo().getSecond());
-
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<?> findByReviewId(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @PathVariable Long reviewId) {
-        reviewService.findByReviewId(userDetails.getInfo().getFirst(), userDetails.getInfo().getSecond(), reviewId);
+        ReviewResponse.FindByReviewIdDTO response = reviewService.findByReviewId(userDetails.getInfo().getFirst(),
+                                                                                 userDetails.getInfo().getSecond(),
+                                                                                 reviewId);
+        return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
 
