@@ -51,6 +51,10 @@ public class Match {
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
 
+    @Column(name = "review_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus;
+
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;
 
@@ -66,6 +70,7 @@ public class Match {
         this.status = MatchStatus.UNCONFIRMED;
         this.price = price;
         this.confirmedPrice = (confirmedPrice == null? 0 : confirmedPrice);
+        this.reviewStatus = ReviewStatus.UNWRITTEN;
         this.createdAt = LocalDateTime.now();
         this.isActive = true;
     }
@@ -76,11 +81,15 @@ public class Match {
 
     public void updateConfirmedPrice(Long price) {
         this.confirmedPrice = price;
-        this.confirmedAt = LocalDateTime.now();
     }
 
     public void updateStatusConfirmed() {
         this.status = MatchStatus.CONFIRMED;
         this.confirmedAt = LocalDateTime.now();
     }
+
+    public void updateReviewStatus() {
+        this.reviewStatus = ReviewStatus.WRITTEN;
+    }
+
 }

@@ -54,6 +54,7 @@ public enum BaseException {
     MATCHING_ALREADY_CONFIRMED("전체 확정되어 견적서를 추가할 수 없습니다.", 5000, 403),
     MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 5001, 404),
     MATCHING_ALREADY_EXIST("이미 존재하는 매칭입니다.", 5002, 400),
+    MATCHING_NOT_CONFIRMED("견적서 전체 확정이 되지 않았습니다.", 5003, 400),
 
     // 견적서 관련 6000
     QUOTATIONS_NOT_ALL_CONFIRMED("확정되지 않은 견적서가 있습니다.", 6000, 400),
@@ -61,12 +62,14 @@ public enum BaseException {
     QUOTATION_NOT_FOUND("해당 견적서를 찾을 수 없습니다.", 6002, 404),
     QUOTATION_ACCESS_DENIED("해당 매칭 내역에 접근할 수 없습니다.", 6003, 403),
     QUOTATION_ALREADY_CONFIRMED("견적서가 확정된 상태입니다.",6004, 403), // 수정 필요 400
-    ;
+
     // 리뷰 7000
+    REVIEW_NOT_FOUND("해당 리뷰가 삭제되었거나 존재하지 않습니다.", 7001, 404)
 
     // 찜하기 8000
 
     // 9000 번대는 예약 대역
+    ;
 
     @Getter
     private final String message;
