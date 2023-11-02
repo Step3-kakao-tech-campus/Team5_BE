@@ -109,7 +109,7 @@ public class ReviewService {
     }
 
     private void roleCheck(String role) {
-        if (role.equals(Role.PLANNER)) {
+        if (role.equals(Role.PLANNER.getRoleName())) {
             throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
     }
