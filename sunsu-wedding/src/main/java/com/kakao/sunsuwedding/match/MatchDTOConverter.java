@@ -12,6 +12,7 @@ public class MatchDTOConverter {
         return availableMatches.stream()
                 .map(match -> new MatchResponse.MatchDTO(
                         match.getChat().getId(),
+                        match.getPlanner().getId(),
                         match.getPlanner().getUsername(),
                         DateFormat.dateFormatKorean(match.getConfirmedAt()))
                 )
