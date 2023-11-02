@@ -25,7 +25,7 @@ public class ReviewRestController {
 
     @GetMapping("")
     public ResponseEntity<?> findAllByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page,
-                                              @Valid @RequestBody ReviewRequest.findAllByPlannerDTO request) {
+                                              @Valid @RequestBody ReviewRequest.FindAllByPlannerDTO request) {
         ReviewResponse.FindAllByPlannerDTO response = reviewService.findAllByPlanner(page, request.plannerId());
 
         return ResponseEntity.ok().body(ApiUtils.success(response));

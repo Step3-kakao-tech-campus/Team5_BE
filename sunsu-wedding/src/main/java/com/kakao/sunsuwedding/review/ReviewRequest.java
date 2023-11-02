@@ -17,7 +17,7 @@ public class ReviewRequest {
             String content
     ){}
 
-    public record findAllByPlannerDTO (
+    public record FindAllByPlannerDTO(
             @NotNull(message = "plannerId는 비어있으면 안됩니다.")
             Long plannerId
     ) {}
