@@ -22,13 +22,18 @@ public class QuotationResponse {
     ) {}
 
     public record FindByUserDTO(
+            List<QuotationsByChatIdDTO> chats
+    ) {}
+
+
+    public record QuotationsByChatIdDTO (
+            Long chatId,
+            String partnerName,
             List<QuotationsCollectDTO> quotations
     ) {}
 
     public record QuotationsCollectDTO(
             Long id,
-            Long chatId,
-            String partnerName,
             String title,
             Long price,
             String company,
