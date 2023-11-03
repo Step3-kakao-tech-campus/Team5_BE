@@ -149,6 +149,7 @@ public class ReviewRestControllerTest {
     // 1. planner로 조회
     @DisplayName("플래너별 리뷰 조회 성공 테스트")
     @Test
+    @WithUserDetails("couple@gmail.com")
     public void find_review_by_planner_success_test() throws Exception {
         // given
         int page = 0;

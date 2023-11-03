@@ -177,7 +177,7 @@ public class UserRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다 : ssar@nate.com"));
+        result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다."));
     }
 
     @DisplayName("로그인 실패 테스트 2 - 패스워드 잘못 입력")
