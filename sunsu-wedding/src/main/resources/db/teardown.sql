@@ -9,11 +9,12 @@ truncate table match_tb;
 truncate table quotation_tb;
 truncate table chat_tb;
 truncate table review_tb;
+truncate table favorite_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 -- planner 비밀번호 : planner1234!
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('1','planner0@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner0','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'planner');
-INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('2','planner@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'planner');
+INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('2','planner1@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','NORMAL', 'true', 'planner');
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('3','planner2@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner2','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('6','planner5@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner5','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
 INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at`,`grade`, `is_active`, `dtype`) VALUES ('7','planner6@gmail.com','{bcrypt}$2a$10$89SwVjyXVDhK3GFcN4c8Bu3kQlNiWqjaTvgiXaCi9D/1eWx2w7CBa','planner6','2023-09-16 01:06:55.00','2023-09-20 15:26:55.00','PREMIUM', 'true', 'planner');
@@ -110,3 +111,9 @@ INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `descri
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('8', '7', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 
 INSERT INTO review_tb (`id`, `match_id`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (1, 1, '최고의 플래너!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);
+
+
+INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(1, 1, 1, '2023-10-08 08:30:12.00');
+INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(2, 1, 2, '2023-10-08 08:30:13.00');
+INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(3, 2, 1, '2023-10-08 08:30:14.00');
+INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(4, 4, 1, '2023-10-08 08:30:15.00');
