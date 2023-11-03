@@ -28,7 +28,6 @@ public class Favorite {
     @Column(name = "created_at", nullable = false)
     LocalDateTime createdAt;
 
-
     @Builder
     public Favorite(Long id, User user, Portfolio portfolio, LocalDateTime createdAt) {
         this.id = id;
