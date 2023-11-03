@@ -1,19 +1,22 @@
 package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
+import com.kakao.sunsuwedding.favorite.Favorite;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.user.planner.Planner;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
     public static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Planner planner,
                                                             Portfolio portfolio,
                                                             List<String> images, List<PriceItem> priceItems,
-                                                            List<Match> matches, List<Quotation> quotations) {
+                                                            List<Match> matches, List<Quotation> quotations,
+                                                            Boolean isLiked) {
         // 가격 항목 DTO 변환
         List<PortfolioResponse.PriceItemDTO> priceItemDTOS = PriceItemDTOConvertor(priceItems);
         Long totalPrice = PriceCalculator.calculatePortfolioPrice(priceItemDTOS);
@@ -36,12 +39,13 @@ public class PortfolioDTOConverter {
         }
 
 
-        return FindByIdDTOConvertor(planner, portfolio, images, priceDTO, paymentHistoryDTO);
+        return FindByIdDTOConvertor(planner, portfolio, images, priceDTO, paymentHistoryDTO, isLiked);
     }
 
     private static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Planner planner, Portfolio portfolio, List<String> images,
                                                              PortfolioResponse.PriceDTO priceDTO,
-                                                             PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO) {
+                                                             PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO,
+                                                             Boolean isLiked) {
         return new PortfolioResponse.FindByIdDTO(
                 portfolio.getId(),
                 planner.getId(),
@@ -54,11 +58,12 @@ public class PortfolioDTOConverter {
                 portfolio.getDescription(),
                 portfolio.getCareer(),
                 portfolio.getPartnerCompany(),
-                paymentHistoryDTO
+                paymentHistoryDTO,
+                isLiked
         );
     }
 
-    public static List<PortfolioResponse.FindAllDTO> FindAllDTOConvertor(List<Portfolio> portfolios, List<String> images) {
+    public static List<PortfolioResponse.FindAllDTO> FindAllDTOConvertor(List<Portfolio> portfolios, List<String> images, List<Favorite> favorites) {
         return IntStream
                 .range(0, portfolios.size())
                 .mapToObj(i -> {
@@ -70,7 +75,8 @@ public class PortfolioDTOConverter {
                             portfolio.getPlanner().getUsername(),
                             portfolio.getTotalPrice(),
                             portfolio.getLocation(),
-                            portfolio.getContractCount()
+                            portfolio.getContractCount(),
+                            favorites.stream().anyMatch(favorite -> Objects.equals(favorite.getPortfolio().getId(), portfolio.getId()))
                     );
                 })
                 .toList();
@@ -85,7 +91,9 @@ public class PortfolioDTOConverter {
 
     public static PortfolioResponse.MyPortfolioDTO MyPortfolioDTOConvertor(Planner planner,
                                                                            Portfolio portfolio,
-                                                                           List<String> images, List<PriceItem> priceItems) {
+                                                                           List<String> images,
+                                                                           List<PriceItem> priceItems,
+                                                                           Boolean isLiked) {
         return new PortfolioResponse.MyPortfolioDTO(
                 planner.getUsername(),
                 images,
@@ -94,7 +102,8 @@ public class PortfolioDTOConverter {
                 portfolio.getDescription(),
                 portfolio.getLocation(),
                 portfolio.getCareer(),
-                portfolio.getPartnerCompany()
+                portfolio.getPartnerCompany(),
+                isLiked
         );
     }
 
