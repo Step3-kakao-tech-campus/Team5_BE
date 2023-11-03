@@ -1,6 +1,7 @@
 package com.kakao.sunsuwedding._core;
 
 import com.kakao.sunsuwedding.match.Match;
+import com.kakao.sunsuwedding.payment.Payment;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -46,4 +47,12 @@ public class DummyEntity {
                 .build();
     }
 
+    protected Payment newPayment(User user, String orderId, String paymentKey, Long payedAmount){
+        return Payment.builder()
+                .user(user)
+                .orderId(orderId)
+                .paymentKey(paymentKey)
+                .payedAmount(payedAmount)
+                .build();
+    }
 }
