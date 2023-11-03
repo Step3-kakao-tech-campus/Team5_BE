@@ -9,12 +9,17 @@ import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,15 +65,21 @@ public class QuotationService {
     }
 
     // 견적서 모아보기
-    public QuotationResponse.FindByUserDTO findQuotationsByUser(Pair<String, Long> info) {
-        String role = info.getFirst();
-        Long userId = info.getSecond();
+    public QuotationResponse.FindByUserDTO findQuotationsByUser(String role, Long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
 
-        List<Quotation> quotations = getQuotationsByUser(role, userId);
+        Page<Quotation> pageContent = getQuotationsByUser(role, userId, pageable);
+        List<Quotation> quotations = pageContent.getContent();
 
-        List<QuotationResponse.QuotationsCollectDTO> quotationDTOS = getQuotationDTOSByUser(role, userId, quotations);
+        Map<Long, List<Quotation>> quotationsByChatId = quotations.stream().collect(
+                Collectors.groupingBy(quotation -> quotation.getMatch().getChat().getId())
+        );
+        List<Long> chatIds = quotationsByChatId.keySet().stream().toList();
 
-        return new QuotationResponse.FindByUserDTO(quotationDTOS);
+        List<QuotationResponse.QuotationsByChatIdDTO> quotationsByChatIdDTOS =
+                QuotationDTOConverter.toQuotationsByChatIdDTO(quotationsByChatId, chatIds, role);
+
+        return new QuotationResponse.FindByUserDTO(quotationsByChatIdDTOS);
     }
 
     @Transactional
@@ -135,12 +146,13 @@ public class QuotationService {
         return quotation;
     }
 
-    private List<Quotation> getQuotationsByUser(String role, Long id) {
+    private Page<Quotation> getQuotationsByUser(String role, Long id, Pageable pageable) {
         return role.equals(Role.PLANNER.getRoleName()) ?
-                quotationJPARepository.findAllByMatchPlannerId(id) : quotationJPARepository.findAllByMatchCoupleId(id);
+                quotationJPARepository.findAllByMatchPlannerId(id, pageable) :
+                quotationJPARepository.findAllByMatchCoupleId(id, pageable);
     }
 
-    private List<QuotationResponse.QuotationsCollectDTO> getQuotationDTOSByUser(String role, Long id, List<Quotation> quotations) {
+    private List<QuotationResponse.QuotationsCollectDTO> getQuotationDTOSByUser(String role, List<Quotation> quotations) {
         return role.equals(Role.PLANNER.getRoleName()) ?
                 QuotationDTOConverter.toFindByPlannerDTO(quotations) : QuotationDTOConverter.toFindByCoupleDTO(quotations);
     }

@@ -49,8 +49,11 @@ public class QuotationRestController {
     }
 
     @GetMapping("/collect")
-    public ResponseEntity<?> findByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        QuotationResponse.FindByUserDTO response = quotationService.findQuotationsByUser(userDetails.getInfo());
+    public ResponseEntity<?> findByUser(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                        @RequestParam(defaultValue = "0") Integer page) {
+        QuotationResponse.FindByUserDTO response = quotationService.findQuotationsByUser(userDetails.getInfo().getFirst(),
+                                                                                         userDetails.getInfo().getSecond(),
+                                                                                         page);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
