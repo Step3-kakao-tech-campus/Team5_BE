@@ -124,6 +124,19 @@ public class QuotationService {
         }
     }
 
+    @Transactional
+    public void deleteQuotation(Long userId, Long quotationId) {
+        Quotation quotation = quotationJPARepository.findById(quotationId).orElseThrow(
+                () -> new NotFoundException(BaseException.QUOTATION_NOT_FOUND)
+        );
+
+        if (!quotation.getMatch().getPlanner().getId().equals(userId)) {
+            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
+        }
+
+        quotationJPARepository.delete(quotation);
+    }
+
     private Match getMatchByChatIdAndPlannerId(Pair<String, Long> info, Long chatId) {
         // 매칭 내역이 존재하지 않을 때는 404 에러를 내보내야 하고
         // 해당 매칭 내역에 접근할 수 없다면 403 에러를 내보내야 하기 때문에
