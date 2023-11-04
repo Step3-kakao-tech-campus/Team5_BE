@@ -141,6 +141,25 @@ public class MatchRestControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
     }
 
+    // ============ 리뷰 작성 가능한 매칭 조회 테스트 ============
+    @DisplayName("리뷰 작성 가능한 매칭 조회 성공 테스트")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void find_match_with_no_review_success_test() throws Exception {
+        //when
+        ResultActions result = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/match/reviews")
+        );
+
+        logResult(result);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.matches[0].chatId").value(6));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.matches[0].plannerId").value(2));
+    }
+
 
     private void logResult(ResultActions result) throws Exception {
         String responseBody = result.andReturn().getResponse().getContentAsString();

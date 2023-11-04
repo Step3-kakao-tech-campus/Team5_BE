@@ -92,7 +92,7 @@ INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (5, '2023-10-08 08:
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (6, '2023-10-08 08:30:12.00', true);
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (7, '2023-10-08 08:30:12.00', true);
 
-INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', '1', 'CONFIRMED', '1000000', '1000000', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
+INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('1', '2', '4', '1', 'CONFIRMED', '1000000', '1000000', 'WRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('2', '2', '4', '2', 'UNCONFIRMED', '1000000', '0', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('3', '2', '5', '3', 'UNCONFIRMED', '1000000', '0', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO match_tb (`id`, `planner_id`, `couple_id`, `chat_id`, `status`, `price`, `confirmed_price`, `review_status`, `confirmed_at`, `created_at`, `is_active`) VALUES ('4', '2', '4', '4', 'UNCONFIRMED', '1000000', '0', 'UNWRITTEN', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
