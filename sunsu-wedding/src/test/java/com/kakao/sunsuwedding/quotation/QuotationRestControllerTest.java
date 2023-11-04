@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -30,6 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+        "security.jwt-config.secret.access=your-test-access-secret",
+        "security.jwt-config.secret.refresh=your-test-refresh-secret",
+        "payment.toss.secret=your-test-toss-payment-secret"
+})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class QuotationRestControllerTest {
     private static final Logger logger = LoggerFactory.getLogger(QuotationRestControllerTest.class);
