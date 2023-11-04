@@ -61,7 +61,7 @@ public enum BaseException {
     QUOTATION_NOTHING_TO_CONFIRM("확정할 견적서가 없습니다.", 6001, 400),
     QUOTATION_NOT_FOUND("해당 견적서를 찾을 수 없습니다.", 6002, 404),
     QUOTATION_ACCESS_DENIED("해당 매칭 내역에 접근할 수 없습니다.", 6003, 403),
-    QUOTATION_ALREADY_CONFIRMED("견적서가 확정된 상태입니다.",6004, 403), // 수정 필요 400
+    QUOTATION_ALREADY_CONFIRMED("견적서가 확정된 상태입니다.",6004, 400), // 수정 필요 400
 
     // 리뷰 7000
     REVIEW_NOT_FOUND("해당 리뷰가 삭제되었거나 존재하지 않습니다.", 7001, 404)
