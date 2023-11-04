@@ -74,8 +74,7 @@ public class PortfolioResponse {
             String description,
             String location,
             String career,
-            String partnerCompany,
-            Boolean isLiked
+            String partnerCompany
     ) {
     }
 }

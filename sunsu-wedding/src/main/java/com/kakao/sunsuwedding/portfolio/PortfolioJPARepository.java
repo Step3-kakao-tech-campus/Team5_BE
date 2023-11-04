@@ -1,5 +1,6 @@
 package com.kakao.sunsuwedding.portfolio;
 
+import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long>, JpaSpecificationExecutor<Portfolio> {
     Page<Portfolio> findAll(@NotNull Specification specification, @Nullable Pageable pageable);
 
-    void deleteByPlanner(Planner planner);
+    void deleteByPlanner(User user);
 
     @Query("select p from Portfolio p where p.planner.id = :plannerId")
     Optional<Portfolio> findByPlannerId(@Param("plannerId") Long plannerId);

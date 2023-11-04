@@ -26,18 +26,21 @@ public class Portfolio {
     private Planner planner;
 
     @Column(nullable = false)
+    private String plannerName;
+
+    @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(nullable = false)
     private String description;
 
-    @Column
+    @Column(nullable = false)
     private String location;
 
-    @Column
+    @Column(nullable = false)
     private String career;
 
-    @Column(name = "partner_company")
+    @Column(name = "partner_company", nullable = false)
     private String partnerCompany;
 
     @Column(name = "total_price")
@@ -58,13 +61,14 @@ public class Portfolio {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "is_active", columnDefinition = "boolean default true")
-    private boolean isActive = true;
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     @Builder
-    public Portfolio(Long id, Planner planner, String title, String description, String location, String career, String partnerCompany, Long totalPrice, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice, LocalDateTime createdAt) {
+    public Portfolio(Long id, Planner planner, String plannerName, String title, String description, String location, String career, String partnerCompany, Long totalPrice, Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {
         this.id = id;
         this.planner = planner;
+        this.plannerName = plannerName;
         this.title = title;
         this.description = description;
         this.location = location;
@@ -75,7 +79,19 @@ public class Portfolio {
         this.avgPrice = avgPrice;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
-        this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
+        this.createdAt = LocalDateTime.now();
+        this.isActive = true;
+    }
+
+    public void update(String plannerName, String title, String description, String location,
+                       String career, String partnerCompany, Long totalPrice){
+        this.plannerName = plannerName;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.career = career;
+        this.partnerCompany = partnerCompany;
+        this.totalPrice = totalPrice;
     }
 
     public void updateConfirmedPrices(Long contractCount, Long avgPrice, Long minPrice, Long maxPrice) {

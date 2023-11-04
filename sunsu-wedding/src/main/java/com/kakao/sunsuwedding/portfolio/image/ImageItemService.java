@@ -28,20 +28,47 @@ public class ImageItemService {
     private final ImageItemJPARepository imageItemJPARepository;
     private final ImageItemJDBCRepository imageItemJDBCRepository;
 
+    public void uploadImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
+        // 요청받은 이미지가 5개를 넘으면 예외처리
+        if (images.length > 5) throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
+
+        // 저장 경로 설정 (root -> gallery -> {userId}_{username} 폴더)
+        String uploadDirectory = setDirectoryPath(planner.getId(), planner.getUsername());
+        makeDirectory(uploadDirectory);
+
+        // 이미지 생성 및 DB 저장
+        saveImage(images, portfolio, uploadDirectory);
+    }
+
+    public void updateImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
+        // 요청받은 이미지가 5개를 넘으면 예외처리
+        if (images.length > 5)
+            throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
+
+        // 저장 경로 설정 (root -> gallery -> {userId}_{username} 폴더)
+        String uploadDirectory = setDirectoryPath(planner.getId(), planner.getUsername());
+        File directory = makeDirectory(uploadDirectory);
+
+        // 기존의 서버 이미지 파일 및 DB 메타데이터 삭제
+        cleanExistedImage(directory, portfolio.getId());
+
+        // 이미지 생성 및 DB 저장
+        saveImage(images, portfolio, uploadDirectory);
+    }
+
     private String setDirectoryPath(Long id, String username) {
         String separator = System.getProperty("file.separator");
         String baseDirectory = System.getProperty("user.dir") + separator + "gallery" + separator;
-        String uploadDirectory = baseDirectory + id + "_" + username + separator;
 
-        return uploadDirectory;
+        return baseDirectory + id + "_" + username + separator;
     }
 
     private File makeDirectory(String uploadDirectory) {
         File directory = new File(uploadDirectory);
         if (!directory.exists()) {
             // 디렉토리가 존재하지 않으면 생성
-            boolean created = directory.mkdirs();
-            if (!created) {
+            boolean isCreated = directory.mkdirs();
+            if (!isCreated) {
                 // 디렉토리 생성에 실패한 경우 예외 처리
                 throw new ServerException(BaseException.PORTFOLIO_CREATE_DIRECTORY_ERROR);
             }
@@ -54,8 +81,9 @@ public class ImageItemService {
         try {
             FileUtils.cleanDirectory(directory);
         }
-        catch (Exception e) {throw new ServerException(BaseException.PORTFOLIO_CLEAN_DIRECTORY_ERROR);}
-
+        catch (Exception e) {
+            throw new ServerException(BaseException.PORTFOLIO_CLEAN_DIRECTORY_ERROR);
+        }
         // TODO: 삭제할 이미지 데이터가 존재하지 않는 경우 예외처리
         imageItemJPARepository.deleteAllByPortfolioId(portfolioId);
     }
@@ -93,35 +121,4 @@ public class ImageItemService {
         }
         imageItemJDBCRepository.batchInsertImageItems(imageItems);
     }
-
-
-    public void uploadImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
-        // 요청받은 이미지가 5개를 넘으면 예외처리
-        if (images.length > 5) throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
-
-        // 저장 경로 설정 (root -> gallery -> {userId}_{username} 폴더)
-        String uploadDirectory = setDirectoryPath(planner.getId(), planner.getUsername());
-        makeDirectory(uploadDirectory);
-
-        // 이미지 생성 및 DB 저장
-        saveImage(images, portfolio, uploadDirectory);
-    }
-
-    @Transactional
-    public void updateImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
-        // 요청받은 이미지가 5개를 넘으면 예외처리
-        if (images.length > 5) throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
-
-        // 저장 경로 설정 (root -> gallery -> {userId}_{username} 폴더)
-        String uploadDirectory = setDirectoryPath(planner.getId(), planner.getUsername());
-        File directory = makeDirectory(uploadDirectory);
-
-        // 기존의 서버 이미지 파일 및 DB 메타데이터 삭제
-        cleanExistedImage(directory, portfolio.getId());
-
-        // 이미지 생성 및 DB 저장
-        saveImage(images, portfolio, uploadDirectory);
-    }
-
-
 }
