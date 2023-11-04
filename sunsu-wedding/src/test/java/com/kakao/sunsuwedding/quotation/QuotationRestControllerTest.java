@@ -566,7 +566,41 @@ public class QuotationRestControllerTest {
     }
 
     // ============ 견적서 삭제 테스트 ============
+    @DisplayName("견적서 삭제 성공 테스트")
+    @Test
+    void delete_quotation_success_test() throws Exception {
+        // given
+        Long quotationId = 3L;
 
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("true"));
+    }
+
+    @DisplayName("견적서 삭제 실패 테스트 - 본인의 요청 X")
+    @Test
+    void delete_quotation_fail_test_permission_denied() throws Exception {
+        // given
+        Long quotationId = 6L;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+        resultActions.andExpect(jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
+        resultActions.andExpect(jsonPath("$.error.status").value("403"));
+    }
 
 
 
