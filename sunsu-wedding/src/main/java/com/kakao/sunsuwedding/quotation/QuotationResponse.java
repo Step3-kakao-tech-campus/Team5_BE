@@ -29,6 +29,7 @@ public class QuotationResponse {
     public record QuotationsByChatIdDTO (
             Long chatId,
             String partnerName,
+            String status,
             List<QuotationsCollectDTO> quotations
     ) {}
 

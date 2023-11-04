@@ -40,7 +40,7 @@ public class Quotation {
     @Enumerated(EnumType.STRING)
     private QuotationStatus status;
 
-    @Column(name = "modified_at")
+    @Column(nullable = false, name = "modified_at")
     private LocalDateTime modifiedAt;
 
     @Column(nullable = false, name = "created_at")
@@ -59,6 +59,7 @@ public class Quotation {
         this.description = description;
         this.status = (status == null? QuotationStatus.UNCONFIRMED : status);
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
+        this.modifiedAt = this.createdAt;
         this.isActive = true;
     }
 

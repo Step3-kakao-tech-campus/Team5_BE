@@ -16,9 +16,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -148,12 +146,7 @@ public class QuotationService {
 
     private Page<Quotation> getQuotationsByUser(String role, Long id, Pageable pageable) {
         return role.equals(Role.PLANNER.getRoleName()) ?
-                quotationJPARepository.findAllByMatchPlannerId(id, pageable) :
-                quotationJPARepository.findAllByMatchCoupleId(id, pageable);
-    }
-
-    private List<QuotationResponse.QuotationsCollectDTO> getQuotationDTOSByUser(String role, List<Quotation> quotations) {
-        return role.equals(Role.PLANNER.getRoleName()) ?
-                QuotationDTOConverter.toFindByPlannerDTO(quotations) : QuotationDTOConverter.toFindByCoupleDTO(quotations);
+                quotationJPARepository.findAllByMatchPlannerIdOrderByModifiedAtDesc(id, pageable) :
+                quotationJPARepository.findAllByMatchCoupleIdOrderByModifiedAtDesc(id, pageable);
     }
 }

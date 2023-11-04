@@ -3,9 +3,7 @@ package com.kakao.sunsuwedding.quotation;
 import com.kakao.sunsuwedding._core.utils.DateFormat;
 import com.kakao.sunsuwedding.user.constant.Role;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class QuotationDTOConverter {
     public static List<QuotationResponse.QuotationDTO> toFindByMatchIdDTO(List<Quotation> quotations) {
@@ -27,6 +25,7 @@ public class QuotationDTOConverter {
             List<Quotation> tempQuotations = quotationsGroupByChatId.get(chatId);
             List<QuotationResponse.QuotationsCollectDTO> quotationsCollectDTOS;
             String partnerName;
+            String status = tempQuotations.get(0).getMatch().getStatus().getStatus();
 
             if (role.equals(Role.PLANNER.getRoleName())) {
                 quotationsCollectDTOS = toFindByPlannerDTO(tempQuotations);
@@ -39,8 +38,11 @@ public class QuotationDTOConverter {
                         tempQuotations.get(0).getMatch().getPlanner().getUsername() : "탈퇴한 사용자";
             }
 
-            quotationsByChatIdDTOS.add(new QuotationResponse.QuotationsByChatIdDTO(chatId, partnerName, quotationsCollectDTOS));
+            quotationsByChatIdDTOS.add(new QuotationResponse.QuotationsByChatIdDTO(chatId, partnerName,
+                                                                                   status, quotationsCollectDTOS));
         }
+        Collections.reverse(quotationsByChatIdDTOS);
+
         return quotationsByChatIdDTOS;
     }
 
