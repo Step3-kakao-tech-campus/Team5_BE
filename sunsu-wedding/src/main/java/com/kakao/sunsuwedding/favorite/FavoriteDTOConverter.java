@@ -5,14 +5,14 @@ import java.util.stream.IntStream;
 
 public class FavoriteDTOConverter {
 
-    public static List<FavoriteResponse.FindPortfolioDTO> findAllFavoritePortfolio(List<Favorite> favorites) {
+    public static List<FavoriteResponse.FindPortfolioDTO> findAllFavoritePortfolio(List<Favorite> favorites, List<String> images) {
         return IntStream
                 .range(0, favorites.size())
                 .mapToObj(i -> {
                     Favorite favorite = favorites.get(i);
                     return new FavoriteResponse.FindPortfolioDTO(
                             favorite.getPortfolio().getId(),
-                            "", // todo 찜하기 썸네일 이미지
+                            images.get(i),
                             favorite.getPortfolio().getTitle(),
                             favorite.getPortfolio().getPlanner().getUsername(),
                             favorite.getPortfolio().getTotalPrice(),

@@ -5,6 +5,8 @@ import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding.portfolio.PortfolioJPARepository;
+import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
+import com.kakao.sunsuwedding.portfolio.image.ImageItem;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
@@ -60,7 +62,10 @@ public class FavoriteService {
     public List<FavoriteResponse.FindPortfolioDTO> getFavoritePortfolios(Long userId, Pageable pageable){
         // userId와 일치하는 favorite의 포트폴리오 내용들 가져옴
         List<Favorite> favoriteList = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
-        return FavoriteDTOConverter.findAllFavoritePortfolio(favoriteList);
+        List<Portfolio> portfolioList = favoriteList.stream().map(Favorite::getPortfolio).toList();
+        List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolioList);
+        List<String> encodedImages = ImageEncoder.encode(portfolioList, imageItems);
+        return FavoriteDTOConverter.findAllFavoritePortfolio(favoriteList, encodedImages);
     }
 
     private Portfolio findByPortfolioId(Long portfolioId) {
