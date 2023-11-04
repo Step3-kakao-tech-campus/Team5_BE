@@ -88,8 +88,8 @@ public class Match {
         this.confirmedAt = LocalDateTime.now();
     }
 
-    public void updateReviewStatus() {
-        this.reviewStatus = ReviewStatus.WRITTEN;
+    public void updateReviewStatus(ReviewStatus reviewStatus) {
+        this.reviewStatus = reviewStatus;
     }
 
 }

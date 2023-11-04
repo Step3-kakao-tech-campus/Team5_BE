@@ -41,7 +41,7 @@ public class ReviewRestController {
     @GetMapping("/{reviewId}")
     public ResponseEntity<?> findByReviewId(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @PathVariable Long reviewId) {
-        ReviewResponse.FindByReviewIdDTO response = reviewService.findByReviewId(userDetails.getInfo().getFirst(),
+        ReviewResponse.ReviewDTO response = reviewService.findByReviewId(userDetails.getInfo().getFirst(),
                                                                                  userDetails.getInfo().getSecond(),
                                                                                  reviewId);
         return ResponseEntity.ok().body(ApiUtils.success(response));

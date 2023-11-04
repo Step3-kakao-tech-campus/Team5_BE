@@ -16,17 +16,10 @@ public class ReviewResponse {
     ) {}
 
     public record FindAllByCoupleDTO(
-            List<FindByCoupleDTO> reviews
+            List<ReviewDTO> reviews
     ) {}
 
-    public record FindByCoupleDTO(
-            Long id,
-            String plannerName,
-            // String? Long? stars, 추후 구현
-            String content
-    ) {}
-
-    public record FindByReviewIdDTO(
+    public record ReviewDTO(
             Long id,
             String plannerName,
             // String? Long? stars, 추후 구현

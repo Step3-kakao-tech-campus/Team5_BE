@@ -290,9 +290,10 @@ public class QuotationRestControllerTest {
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
-        resultActions.andExpect(jsonPath("$.response.quotations[0].partnerName").value("couple"));
-        resultActions.andExpect(jsonPath("$.response.quotations[0].id").value(1));
-        resultActions.andExpect(jsonPath("$.response.quotations[0].price").value(1000000));
+        resultActions.andExpect(jsonPath("$.response.chats[0].chatId").value(7));
+        resultActions.andExpect(jsonPath("$.response.chats[0].partnerName").value("couple4"));
+        resultActions.andExpect(jsonPath("$.response.chats[0].quotations[0].id").value(7));
+        resultActions.andExpect(jsonPath("$.response.chats[0].quotations[0].price").value(1000000));
     }
 
 
@@ -565,7 +566,41 @@ public class QuotationRestControllerTest {
     }
 
     // ============ 견적서 삭제 테스트 ============
+    @DisplayName("견적서 삭제 성공 테스트")
+    @Test
+    void delete_quotation_success_test() throws Exception {
+        // given
+        Long quotationId = 3L;
 
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("true"));
+    }
+
+    @DisplayName("견적서 삭제 실패 테스트 - 본인의 요청 X")
+    @Test
+    void delete_quotation_fail_test_permission_denied() throws Exception {
+        // given
+        Long quotationId = 6L;
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders
+                        .delete("/quotations/" + quotationId)
+                        .header("Authorization", plannerToken)
+        );
+
+        // then
+        resultActions.andExpect(jsonPath("$.success").value("false"));
+        resultActions.andExpect(jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
+        resultActions.andExpect(jsonPath("$.error.status").value("403"));
+    }
 
 
 
