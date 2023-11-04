@@ -110,7 +110,7 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 등록 실패 테스트 2 - 이미 포트폴리오 존재")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void add_portfolio_fail_test_already_exist() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getAddDTO());
@@ -246,7 +246,7 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 상세 조회 성공 테스트 - 플래너 (NORMAL 등급)")
     @Test
-    @WithUserDetails("planner0@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void get_portfolio_by_id_normal_success_test() throws Exception {
         //given
         Long id = 1L;
@@ -313,7 +313,7 @@ public class PortfolioControllerTest {
     // portfolioService update 부분 코드 수정 후 다시 테스트 필요
     @DisplayName("포트폴리오 수정 성공 테스트")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void update_portfolio_success_test() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
@@ -404,7 +404,7 @@ public class PortfolioControllerTest {
     // portfolioService update 부분 코드 수정 후 다시 테스트 필요
     @DisplayName("포트폴리오 수정 실패 테스트 3 - 이미지 개수 5개 초과")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void update_portfolio_fail_test_image_limit_exceed() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
@@ -509,7 +509,7 @@ public class PortfolioControllerTest {
     void setUp() {
         UserRequest.LoginDTO plannerLoginRequest = new UserRequest.LoginDTO();
         plannerLoginRequest.setRole("planner");
-        plannerLoginRequest.setEmail("planner@gmail.com");
+        plannerLoginRequest.setEmail("planner1@gmail.com");
         plannerLoginRequest.setPassword("planner1234!");
         plannerToken = userService.login(plannerLoginRequest);
 

@@ -45,34 +45,8 @@ public class PaymentService {
                     .orderId(requestDTO.orderId())
                     .payedAmount(requestDTO.amount())
                     .build();
-
             paymentJPARepository.save(payment);
         }
-    }
-
-    // 검증에 성공하면 success, 실패하면 fail 을 반환
-    public String confirm(Long userId, PaymentRequest.ConfirmDTO requestDTO){
-        User user = findUserById(userId);
-        Payment payment = findPaymentByUserId(userId);
-        boolean isOK = isCorrectData(payment, requestDTO.orderId(), requestDTO.amount());
-
-        return isOK ? "success" : "fail";
-    }
-
-    // 유저 등급을 NORMAL -> PREMIUM으로 업그레이드 시켜줌
-    @Transactional
-    public void upgrade(Long userId, PaymentRequest.UpgradeDTO requestDTO) {
-        User user = findUserById(userId);
-        Payment payment = findPaymentByUserId(userId);
-
-        boolean isOK = isCorrectData(payment, requestDTO.orderId(), requestDTO.amount())
-                && requestDTO.status().equals("DONE");
-
-        if (isOK) {
-            user.upgrade();
-            payment.updatePayedAt();
-        }
-        else throw new BadRequestException(BaseException.PAYMENT_WRONG_INFORMATION);
     }
 
     @Transactional
@@ -87,9 +61,9 @@ public class PaymentService {
         if (isOK){
             // 2. 토스 페이먼츠 승인 요청
             tossPayApprove(requestDTO);
-
             // 3. 유저 업그레이드
             user.upgrade();
+            // 4. 결제시간 업데이트
             payment.updatePayedAt();
         }
         else throw new BadRequestException(BaseException.PAYMENT_WRONG_INFORMATION);

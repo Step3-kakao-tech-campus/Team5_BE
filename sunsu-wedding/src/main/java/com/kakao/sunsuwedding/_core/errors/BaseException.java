@@ -64,9 +64,11 @@ public enum BaseException {
     QUOTATION_ALREADY_CONFIRMED("견적서가 확정된 상태입니다.",6004, 400), // 수정 필요 400
 
     // 리뷰 7000
-    REVIEW_NOT_FOUND("해당 리뷰가 삭제되었거나 존재하지 않습니다.", 7001, 404)
+    REVIEW_NOT_FOUND("해당 리뷰가 삭제되었거나 존재하지 않습니다.", 7001, 404),
 
     // 찜하기 8000
+    FAVORITE_ALREADY_EXISTS("이미 존재하는 찜하기 입니다.", 8001, 400),
+    FAVORITE_NOT_FOUND("존재하지 않는 찜하기 입니다.", 8002, 404)
 
     // 9000 번대는 예약 대역
     ;

@@ -1,5 +1,7 @@
 package com.kakao.sunsuwedding.portfolio;
 
+import com.kakao.sunsuwedding.favorite.Favorite;
+import com.kakao.sunsuwedding.favorite.FavoriteJPARepository;
 import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding._core.errors.BaseException;
@@ -48,6 +50,7 @@ public class PortfolioService {
     private final QuotationJPARepository quotationJPARepository;
     private final PlannerJPARepository plannerJPARepository;
     private final UserJPARepository userJPARepository;
+    private final FavoriteJPARepository favoriteJPARepository;
 
     @Transactional
     public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
@@ -92,7 +95,7 @@ public class PortfolioService {
         return Pair.of(portfolio, planner);
     }
 
-    public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request) {
+    public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request, Long userId) {
         if (!request.hasKey()) {
             return new PageCursor<>(null, null);
         }
@@ -110,8 +113,12 @@ public class PortfolioService {
 
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
         List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
+        List<Favorite> favorites = new ArrayList<>();
+        if (userId >= 0){
+             favorites = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
+        }
 
-        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages);
+        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages, favorites);
         return new PageCursor<>(data, request.next(nextKey).key());
     }
 
@@ -132,10 +139,7 @@ public class PortfolioService {
     }
 
     public PortfolioResponse.FindByIdDTO getPortfolioById(Long portfolioId, Long userId) {
-        // 요청한 유저의 등급을 확인
-        User user = userJPARepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
-        Grade userGrade = user.getGrade();
+        Optional<User> user = userJPARepository.findById(userId);
 
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolioId);
         if (imageItems.isEmpty()) {
@@ -156,15 +160,20 @@ public class PortfolioService {
         // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
         List<Match> matches = new ArrayList<>();
         List<Quotation> quotations = new ArrayList<>();
+        boolean isLiked = false;
 
         // 프리미엄 등급 유저일 경우 최근 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
-        if (userGrade == Grade.PREMIUM) {
-            matches = matchJPARepository.findLatestTenByPlanner(planner);
-            List<Long> matchIds = matches.stream().map(Match::getId).toList();
-            quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+        if (user.isPresent()) {
+            User user1 = user.get();
+            isLiked = favoriteJPARepository.findByUserAndPortfolio(user1, portfolio).isPresent();
+            if (user1.getGrade() == Grade.PREMIUM) {
+                matches = matchJPARepository.findLatestTenByPlanner(planner);
+                List<Long> matchIds = matches.stream().map(Match::getId).toList();
+                quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+            }
         }
 
-        return PortfolioDTOConverter.FindByIdDTOConvertor(planner, portfolio, images, priceItems, matches, quotations);
+        return PortfolioDTOConverter.FindByIdDTOConvertor(planner, portfolio, images, priceItems, matches, quotations, isLiked);
     }
 
     @Transactional
@@ -263,8 +272,9 @@ public class PortfolioService {
         List<String> encodedImages = encodeImages(imageItems);
 
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
+        boolean isLiked = favoriteJPARepository.findByUserAndPortfolio(planner, portfolio).isPresent();
 
-        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
+        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems, isLiked);
     }
 
     private List<String> encodeImages(List<ImageItem> imageItems) {

@@ -102,8 +102,11 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/user/**"),
                                 new AntPathRequestMatcher("/portfolios/**"),
                                 new AntPathRequestMatcher("/chat/**"),
+                                new AntPathRequestMatcher("/match/**"),
                                 new AntPathRequestMatcher("/quotations/**"),
-                                new AntPathRequestMatcher("/payments/**")
+                                new AntPathRequestMatcher("/payments/**"),
+                                new AntPathRequestMatcher("/reviews/**"),
+                                new AntPathRequestMatcher("/favorites/**")
                                 ).authenticated()
                         // 검증 필요
                         .requestMatchers(

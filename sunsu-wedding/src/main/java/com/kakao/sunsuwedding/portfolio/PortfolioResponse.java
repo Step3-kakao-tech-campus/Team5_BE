@@ -10,7 +10,8 @@ public class PortfolioResponse {
             String plannerName,
             Long price,
             String location,
-            Long contractCount
+            Long contractCount,
+            Boolean isLiked
     ) {
     }
 
@@ -26,8 +27,8 @@ public class PortfolioResponse {
             String description,
             String career,
             String partnerCompany,
-            PaymentHistoryDTO paymentsHistory
-    ) {
+            PaymentHistoryDTO paymentsHistory,
+            Boolean isLiked) {
     }
 
     public record PriceDTO(
@@ -73,7 +74,8 @@ public class PortfolioResponse {
             String description,
             String location,
             String career,
-            String partnerCompany
+            String partnerCompany,
+            Boolean isLiked
     ) {
     }
 }

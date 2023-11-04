@@ -51,7 +51,7 @@ public class QuotationRestControllerTest {
     @BeforeEach
     void beforeEach() {
         UserRequest.LoginDTO request = new UserRequest.LoginDTO();
-        request.setEmail("planner@gmail.com");
+        request.setEmail("planner1@gmail.com");
         request.setPassword("planner1234!");
         TokenDTO tokenDTO = userService.login(request);
         plannerToken = tokenDTO.accessToken();
