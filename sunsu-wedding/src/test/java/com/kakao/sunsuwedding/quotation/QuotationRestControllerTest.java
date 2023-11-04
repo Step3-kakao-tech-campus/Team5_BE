@@ -290,9 +290,9 @@ public class QuotationRestControllerTest {
 
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
-        resultActions.andExpect(jsonPath("$.response.chats[0].chatId").value(2));
-        resultActions.andExpect(jsonPath("$.response.chats[0].partnerName").value("couple"));
-        resultActions.andExpect(jsonPath("$.response.chats[0].quotations[0].id").value(3));
+        resultActions.andExpect(jsonPath("$.response.chats[0].chatId").value(7));
+        resultActions.andExpect(jsonPath("$.response.chats[0].partnerName").value("couple4"));
+        resultActions.andExpect(jsonPath("$.response.chats[0].quotations[0].id").value(7));
         resultActions.andExpect(jsonPath("$.response.chats[0].quotations[0].price").value(1000000));
     }
 
