@@ -3,6 +3,7 @@ package com.kakao.sunsuwedding.user.token;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding.user.base_user.User;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class TokenService {
             tokenJPARepository.save(token);
         }
         catch (DataIntegrityViolationException exception) {
-            throw new ForbiddenException(BaseException.TOKEN_REFRESH_FORBIDDEN);
+            throw new UnauthorizedException(BaseException.TOKEN_REFRESH_FORBIDDEN);
         }
 
         return new TokenDTO(accessToken, refreshToken);
