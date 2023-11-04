@@ -28,26 +28,6 @@ public class PaymentRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
-    // 결제 정보 검증 (프론트 결제 요청 후)
-    @PostMapping("/confirm")
-    public ResponseEntity<?> confirm(
-            @RequestBody @Valid PaymentRequest.ConfirmDTO requestDTO,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        String response = paymentService.confirm(userDetails.getUser().getId(), requestDTO);
-        return ResponseEntity.ok().body(ApiUtils.success(response));
-    }
-
-    // 유저 업그레이드 (프론트 결제 승인 후)
-    @PostMapping("/upgrade")
-    public ResponseEntity<?> upgrade(
-            @RequestBody @Valid PaymentRequest.UpgradeDTO requestDTO,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        paymentService.upgrade(userDetails.getUser().getId(), requestDTO);
-        return ResponseEntity.ok().body(ApiUtils.success(null));
-    }
-
     // 유저 통합 승인
     @PostMapping("/approve")
     public ResponseEntity<?> approve(

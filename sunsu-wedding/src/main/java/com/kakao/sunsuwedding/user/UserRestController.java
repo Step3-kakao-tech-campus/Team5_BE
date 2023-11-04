@@ -37,7 +37,7 @@ public class UserRestController {
                 .body(ApiUtils.success(null));
     }
 
-    @PutMapping("/token")
+    @PostMapping("/token")
     public ResponseEntity<?> refresh(@AuthenticationPrincipal CustomUserDetails userDetails) {
         TokenDTO tokens = tokenService.refreshAllTokens(userDetails.getUser());
         return ResponseEntity

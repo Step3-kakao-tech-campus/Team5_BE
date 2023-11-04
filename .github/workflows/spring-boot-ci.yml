@@ -5,6 +5,11 @@ on:
     branches:
       - weekly  # 'weekly' 브랜치로 PR이 생성될 때만 실행
 
+env:
+  JWT_ACCESS_SECRET: ${{secrets.JWT_ACCESS_SECRET}}
+  JWT_REFRESH_SECRET: ${{secrets.JWT_REFRESH_SECRET}}
+  TOSS_PAYMENT_SECRET: ${{secrets.TOSS_PAYMENT_SECRET}}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,6 +34,7 @@ jobs:
       - name: Build and Test
         run: ./gradlew clean build
         working-directory: ./sunsu-wedding
+        
       - name: Run Spring Boot App for 30 seconds
         run: |
           ./gradlew bootRun &

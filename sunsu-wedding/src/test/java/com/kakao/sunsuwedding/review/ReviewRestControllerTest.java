@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding.review;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,6 +26,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+                "security.jwt-config.secret.access=your-test-access-secret",
+                "security.jwt-config.secret.refresh=your-test-refresh-secret",
+                "payment.toss.secret=your-test-toss-payment-secret"
+})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ReviewRestControllerTest {
     private static final Logger logger = LoggerFactory.getLogger(ReviewRestControllerTest.class);
@@ -149,6 +155,7 @@ public class ReviewRestControllerTest {
     // 1. planner로 조회
     @DisplayName("플래너별 리뷰 조회 성공 테스트")
     @Test
+    @WithUserDetails("couple@gmail.com")
     public void find_review_by_planner_success_test() throws Exception {
         // given
         int page = 0;
@@ -193,7 +200,7 @@ public class ReviewRestControllerTest {
 
     @DisplayName("커플별로 리뷰 조회 실패 테스트 1 - 플래너가 요청")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void find_review_by_couple_fail_test_planner_request() throws Exception {
         // when
         ResultActions result = mockMvc.perform(
@@ -232,7 +239,7 @@ public class ReviewRestControllerTest {
 
     @DisplayName("리뷰 id로 조회 실패 테스트 1 - 플래너가 요청")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void find_review_by_id_fail_test_planner_request() throws Exception {
         // given
         Long reviewId = 1L;

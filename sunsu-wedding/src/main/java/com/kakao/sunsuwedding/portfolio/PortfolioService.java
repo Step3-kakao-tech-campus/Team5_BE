@@ -1,5 +1,7 @@
 package com.kakao.sunsuwedding.portfolio;
 
+import com.kakao.sunsuwedding.favorite.Favorite;
+import com.kakao.sunsuwedding.favorite.FavoriteJPARepository;
 import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding._core.errors.BaseException;
@@ -48,6 +50,7 @@ public class PortfolioService {
     private final QuotationJPARepository quotationJPARepository;
     private final PlannerJPARepository plannerJPARepository;
     private final UserJPARepository userJPARepository;
+    private final FavoriteJPARepository favoriteJPARepository;
 
     @Transactional
     public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
@@ -63,16 +66,16 @@ public class PortfolioService {
             throw new BadRequestException(BaseException.PORTFOLIO_ALREADY_EXIST);
 
         // 필요한 계산값 연산
-        Long totalPrice = getTotalPrice(request.getItems());
+        Long totalPrice = getTotalPrice(request.items());
 
         // 포트폴리오 엔티티에 저장
         Portfolio portfolio = Portfolio.builder()
                 .planner(planner)
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .location(request.getLocation())
-                .career(request.getCareer())
-                .partnerCompany(request.getPartnerCompany())
+                .title(request.title())
+                .description(request.description())
+                .location(request.location())
+                .career(request.career())
+                .partnerCompany(request.partnerCompany())
                 .totalPrice(totalPrice)
                 .contractCount(0L)
                 .avgPrice(0L)
@@ -82,7 +85,7 @@ public class PortfolioService {
         portfolioJPARepository.save(portfolio);
 
         // 가격 항목 엔티티에 저장
-        List<PriceItem> priceItems = getPriceItems(request.getItems(), portfolio);
+        List<PriceItem> priceItems = getPriceItems(request.items(), portfolio);
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
@@ -92,7 +95,7 @@ public class PortfolioService {
         return Pair.of(portfolio, planner);
     }
 
-    public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request) {
+    public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request, Long userId) {
         if (!request.hasKey()) {
             return new PageCursor<>(null, null);
         }
@@ -110,8 +113,12 @@ public class PortfolioService {
 
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
         List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
+        List<Favorite> favorites = new ArrayList<>();
+        if (userId >= 0){
+             favorites = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
+        }
 
-        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages);
+        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages, favorites);
         return new PageCursor<>(data, request.next(nextKey).key());
     }
 
@@ -132,10 +139,7 @@ public class PortfolioService {
     }
 
     public PortfolioResponse.FindByIdDTO getPortfolioById(Long portfolioId, Long userId) {
-        // 요청한 유저의 등급을 확인
-        User user = userJPARepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
-        Grade userGrade = user.getGrade();
+        Optional<User> user = userJPARepository.findById(userId);
 
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolioId);
         if (imageItems.isEmpty()) {
@@ -156,15 +160,20 @@ public class PortfolioService {
         // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
         List<Match> matches = new ArrayList<>();
         List<Quotation> quotations = new ArrayList<>();
+        boolean isLiked = false;
 
         // 프리미엄 등급 유저일 경우 최근 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
-        if (userGrade == Grade.PREMIUM) {
-            matches = matchJPARepository.findLatestTenByPlanner(planner);
-            List<Long> matchIds = matches.stream().map(Match::getId).toList();
-            quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+        if (user.isPresent()) {
+            User user1 = user.get();
+            isLiked = favoriteJPARepository.findByUserAndPortfolio(user1, portfolio).isPresent();
+            if (user1.getGrade() == Grade.PREMIUM) {
+                matches = matchJPARepository.findLatestTenByPlanner(planner);
+                List<Long> matchIds = matches.stream().map(Match::getId).toList();
+                quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+            }
         }
 
-        return PortfolioDTOConverter.FindByIdDTOConvertor(planner, portfolio, images, priceItems, matches, quotations);
+        return PortfolioDTOConverter.FindByIdDTOConvertor(planner, portfolio, images, priceItems, matches, quotations, isLiked);
     }
 
     @Transactional
@@ -178,17 +187,17 @@ public class PortfolioService {
                 .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
 
         // 필요한 계산값 연산
-        Long totalPrice =  getTotalPrice(request.getItems());
+        Long totalPrice =  getTotalPrice(request.items());
 
         // 포트폴리오 변경사항 업데이트 객체 생성 (업데이트 쿼리가 마지막 함수 종료될 때 날아가긴 함)
         Portfolio updatedPortfolio = Portfolio.builder()
                 .id(portfolio.getId())
                 .planner(planner)
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .location(request.getLocation())
-                .career(request.getCareer())
-                .partnerCompany(request.getPartnerCompany())
+                .title(request.title())
+                .description(request.description())
+                .location(request.location())
+                .career(request.career())
+                .partnerCompany(request.partnerCompany())
                 .totalPrice(totalPrice)
                 .contractCount(portfolio.getContractCount())
                 .avgPrice(portfolio.getAvgPrice())
@@ -202,7 +211,7 @@ public class PortfolioService {
         priceItemJPARepository.deleteAllByPortfolioId(portfolio.getId());
 
         // 업데이트 가격 항목 새로 저장
-        List<PriceItem> updatedPriceItems = getPriceItems(request.getItems(), portfolio);
+        List<PriceItem> updatedPriceItems = getPriceItems(request.items(), portfolio);
 
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
@@ -263,8 +272,9 @@ public class PortfolioService {
         List<String> encodedImages = encodeImages(imageItems);
 
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
+        boolean isLiked = favoriteJPARepository.findByUserAndPortfolio(planner, portfolio).isPresent();
 
-        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
+        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems, isLiked);
     }
 
     private List<String> encodeImages(List<ImageItem> imageItems) {
@@ -276,7 +286,7 @@ public class PortfolioService {
 
     private Long getTotalPrice(List<PortfolioRequest.ItemDTO> items) {
         return items.stream()
-                .mapToLong(PortfolioRequest.ItemDTO::getItemPrice)
+                .mapToLong(PortfolioRequest.ItemDTO::itemPrice)
                 .sum();
     }
 
@@ -285,8 +295,8 @@ public class PortfolioService {
         for (PortfolioRequest.ItemDTO item : items) {
             PriceItem priceItem = PriceItem.builder()
                     .portfolio(portfolio)
-                    .itemTitle(item.getItemTitle())
-                    .itemPrice(item.getItemPrice())
+                    .itemTitle(item.itemTitle())
+                    .itemPrice(item.itemPrice())
                     .build();
             priceItems.add(priceItem);
         }

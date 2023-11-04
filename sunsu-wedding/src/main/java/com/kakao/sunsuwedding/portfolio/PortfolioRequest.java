@@ -1,74 +1,59 @@
 package com.kakao.sunsuwedding.portfolio;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 
 public class PortfolioRequest {
-    @Getter
-    @Setter
-    @ToString
-    public static class AddDTO {
+    public record AddDTO(
         @NotNull(message = "plannerName은 비어있으면 안됩니다.")
-        private String plannerName;
+        String plannerName,
 
         @NotNull(message = "title은 비어있으면 안됩니다.")
-        private String title;
+        String title,
 
         @NotNull(message = "description은 비어있으면 안됩니다.")
-        private String description;
+        String description,
 
         @NotNull(message = "location은 비어있으면 안됩니다.")
-        private String location;
+        String location,
 
         @NotNull(message = "career는 비어있으면 안됩니다.")
-        private String career;
+        String career,
 
         @NotNull(message = "partnerCompany는 비어있으면 안됩니다.")
-        private String partnerCompany;
+        String partnerCompany,
 
-        private List<ItemDTO> items;
+        List<ItemDTO> items
+    ) {}
 
-
-
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    public static class UpdateDTO {
+    public record UpdateDTO(
         @NotNull(message = "plannerName은 비어있으면 안됩니다.")
-        private String plannerName;
+        String plannerName,
 
         @NotNull(message = "title은 비어있으면 안됩니다.")
-        private String title;
+        String title,
 
         @NotNull(message = "description은 비어있으면 안됩니다.")
-        private String description;
+        String description,
 
         @NotNull(message = "location은 비어있으면 안됩니다.")
-        private String location;
+        String location,
 
         @NotNull(message = "career는 비어있으면 안됩니다.")
-        private String career;
+        String career,
 
         @NotNull(message = "partnerCompany는 비어있으면 안됩니다.")
-        private String partnerCompany;
+        String partnerCompany,
 
-        private List<ItemDTO> items;
-    }
+        List<ItemDTO> items
+    ) {}
 
-    @Getter
-    @Setter
-    @ToString
-    public static class ItemDTO {
+    public record ItemDTO(
         @NotNull(message = "itemTitle은 비어있으면 안됩니다.")
-        private String itemTitle;
+        String itemTitle,
 
         @NotNull(message = "itemPrice는 비어있으면 안됩니다.")
-        private Long itemPrice;
-    }
+        Long itemPrice
+    ) {}
 }

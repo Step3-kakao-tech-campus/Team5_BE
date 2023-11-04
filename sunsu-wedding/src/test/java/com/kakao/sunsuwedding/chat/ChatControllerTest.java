@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -26,6 +27,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+        "security.jwt-config.secret.access=your-test-access-secret",
+        "security.jwt-config.secret.refresh=your-test-refresh-secret",
+        "payment.toss.secret=your-test-toss-payment-secret"
+})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ChatControllerTest {
 
@@ -105,7 +111,7 @@ public class ChatControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴하거나 가입하지 않은 플래너입니다"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴하거나 가입하지 않은 플래너입니다."));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
     }
 

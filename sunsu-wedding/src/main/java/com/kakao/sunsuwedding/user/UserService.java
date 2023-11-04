@@ -40,37 +40,31 @@ public class UserService {
         sameCheckPassword(requestDTO.getPassword(), requestDTO.getPassword2());
         requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         Role role = Role.valueOfRole(requestDTO.getRole());
-        try {
-            if (role == Role.COUPLE) {
-                coupleJPARepository.save(requestDTO.toCoupleEntity());
-            }
-            else {
-                plannerJPARepository.save(requestDTO.toPlannerEntity());
-            }
-        } catch (Exception e) {
-            throw new ServerException(BaseException.USER_UNEXPECTED_ERROR);
+        if (role == Role.COUPLE) {
+            coupleJPARepository.save(requestDTO.toCoupleEntity());
+        }
+        else {
+            plannerJPARepository.save(requestDTO.toPlannerEntity());
         }
     }
 
     @Transactional
     public TokenDTO login(UserRequest.LoginDTO requestDTO) {
         User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
-                () -> new BadRequestException(BaseException.USER_EMAIL_NOT_FOUND.getMessage() + requestDTO.getEmail())
+                () -> new BadRequestException(BaseException.USER_EMAIL_NOT_FOUND)
         );
-        log.debug("디버그: 로그인 토큰 {}", user.getId());
         if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             throw new BadRequestException(BaseException.USER_PASSWORD_WRONG);
         }
 
         Token token = tokenJPARepository.findByUserId(user.getId())
-                .orElseGet(() -> Token.builder()
-                        .user(user)
-                        .accessToken(jwtProvider.createAccessToken(user))
-                        .refreshToken(jwtProvider.createRefreshToken(user))
-                        .build());
+                .orElseGet(() -> Token.builder().user(user).build());
+
+        String accessToken = jwtProvider.createAccessToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user);
+        token.update(accessToken, refreshToken);
 
         tokenJPARepository.save(token);
-
         return new TokenDTO(token.getAccessToken(), token.getRefreshToken());
     }
 

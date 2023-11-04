@@ -1,6 +1,7 @@
 package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
+import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
@@ -84,6 +85,10 @@ public class QuotationService {
     public void confirm(Pair<String, Long> info, Long chatId, Long quotationId) {
         Match match = getMatchByChatIdAndPlannerId(info, chatId);
 
+        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
+            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
+        }
+
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
 
@@ -99,6 +104,10 @@ public class QuotationService {
     @Transactional
     public void update(Pair<String, Long> info, Long chatId, Long quotationId, QuotationRequest.Update request) {
         Match match = getMatchByChatIdAndPlannerId(info, chatId);
+
+        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
+            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
+        }
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = getQuotationById(quotationId, quotations);
@@ -138,7 +147,7 @@ public class QuotationService {
                 .orElseThrow(() -> new NotFoundException(BaseException.QUOTATION_NOT_FOUND));
 
         if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
-            throw new ForbiddenException(BaseException.QUOTATION_ALREADY_CONFIRMED);
+            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
         }
 
         return quotation;

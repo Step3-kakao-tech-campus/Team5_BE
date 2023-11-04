@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding.portfolio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 @Import({
@@ -34,6 +34,11 @@ import java.util.List;
 @ActiveProfiles("test")
 @Sql("classpath:/db/teardown.sql")
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+        "security.jwt-config.secret.access=your-test-access-secret",
+        "security.jwt-config.secret.refresh=your-test-refresh-secret",
+        "payment.toss.secret=your-test-toss-payment-secret"
+})
 @EnableWebMvc
 @SpringBootTest
 public class PortfolioControllerTest {
@@ -111,7 +116,7 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 등록 실패 테스트 2 - 이미 포트폴리오 존재")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void add_portfolio_fail_test_already_exist() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getAddDTO());
@@ -247,7 +252,7 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 상세 조회 성공 테스트 - 플래너 (NORMAL 등급)")
     @Test
-    @WithUserDetails("planner0@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void get_portfolio_by_id_normal_success_test() throws Exception {
         //given
         Long id = 1L;
@@ -305,7 +310,7 @@ public class PortfolioControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴하거나 가입하지 않은 플래너입니다"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴하거나 가입하지 않은 플래너입니다."));
     }
 
 
@@ -314,7 +319,7 @@ public class PortfolioControllerTest {
     // portfolioService update 부분 코드 수정 후 다시 테스트 필요
     @DisplayName("포트폴리오 수정 성공 테스트")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void update_portfolio_success_test() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
@@ -405,7 +410,7 @@ public class PortfolioControllerTest {
     // portfolioService update 부분 코드 수정 후 다시 테스트 필요
     @DisplayName("포트폴리오 수정 실패 테스트 3 - 이미지 개수 5개 초과")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void update_portfolio_fail_test_image_limit_exceed() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
@@ -478,41 +483,17 @@ public class PortfolioControllerTest {
 
 
     private PortfolioRequest.AddDTO getAddDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO();
-        itemDTO.setItemTitle("헤어");
-        itemDTO.setItemPrice(300000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = new ArrayList<PortfolioRequest.ItemDTO>();
-        itemDTOS.add(itemDTO);
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("헤어", 300000L);
+        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
 
-        PortfolioRequest.AddDTO requestDTO = new PortfolioRequest.AddDTO();
-        requestDTO.setPlannerName("유희정");
-        requestDTO.setLocation("부산");
-        requestDTO.setTitle("title");
-        requestDTO.setDescription("description");
-        requestDTO.setCareer("career");
-        requestDTO.setPartnerCompany("partnerCompany");
-        requestDTO.setItems(itemDTOS);
-
-        return requestDTO;
+        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS);
     }
 
     private PortfolioRequest.UpdateDTO getUpdateDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO();
-        itemDTO.setItemTitle("드레스");
-        itemDTO.setItemPrice(400000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = new ArrayList<>();
-        itemDTOS.add(itemDTO);
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("드레스", 400000L);
+        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
 
-        PortfolioRequest.UpdateDTO requestDTO = new PortfolioRequest.UpdateDTO();
-        requestDTO.setPlannerName("김희정");
-        requestDTO.setLocation("부산");
-        requestDTO.setTitle("title2");
-        requestDTO.setDescription("description2");
-        requestDTO.setCareer("career2");
-        requestDTO.setPartnerCompany("partnerCompany2");
-        requestDTO.setItems(itemDTOS);
-
-        return requestDTO;
+        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS);
     }
 
     private MockMultipartFile createMockMultipartFileImage(String filePath, String contentType) throws IOException {
@@ -534,7 +515,7 @@ public class PortfolioControllerTest {
     void setUp() {
         UserRequest.LoginDTO plannerLoginRequest = new UserRequest.LoginDTO();
         plannerLoginRequest.setRole("planner");
-        plannerLoginRequest.setEmail("planner@gmail.com");
+        plannerLoginRequest.setEmail("planner1@gmail.com");
         plannerLoginRequest.setPassword("planner1234!");
         plannerToken = userService.login(plannerLoginRequest);
 

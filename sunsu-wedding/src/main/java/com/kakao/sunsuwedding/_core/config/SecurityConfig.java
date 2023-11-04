@@ -1,7 +1,11 @@
-package com.kakao.sunsuwedding._core.security;
+package com.kakao.sunsuwedding._core.config;
 
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.security.JWTProvider;
+import com.kakao.sunsuwedding._core.security.JwtAuthenticationFilter;
+import com.kakao.sunsuwedding._core.security.JwtExceptionFilter;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
 import com.kakao.sunsuwedding.user.token.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -70,14 +74,14 @@ public class SecurityConfig {
         // 8. 인증 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.authenticationEntryPoint((request, response, authException) -> {
-                    filterResponseUtils.unAuthorized(response, new UnauthorizedException("인증되지 않았습니다"));
+                    filterResponseUtils.writeResponse(response, new UnauthorizedException(BaseException.USER_UNAUTHORIZED));
                 })
         );
 
         // 9. 권한 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    filterResponseUtils.forbidden(response, new ForbiddenException("권한이 없습니다"));
+                    filterResponseUtils.writeResponse(response, new ForbiddenException(BaseException.USER_PERMISSION_DENIED));
                 })
         );
 
@@ -98,8 +102,11 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/user/**"),
                                 new AntPathRequestMatcher("/portfolios/**"),
                                 new AntPathRequestMatcher("/chat/**"),
+                                new AntPathRequestMatcher("/match/**"),
                                 new AntPathRequestMatcher("/quotations/**"),
-                                new AntPathRequestMatcher("/payments/**")
+                                new AntPathRequestMatcher("/payments/**"),
+                                new AntPathRequestMatcher("/reviews/**"),
+                                new AntPathRequestMatcher("/favorites/**")
                                 ).authenticated()
                         // 검증 필요
                         .requestMatchers(

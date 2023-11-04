@@ -1,7 +1,6 @@
 package com.kakao.sunsuwedding._core.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import org.springframework.http.HttpStatus;
 
 public class ApiUtils {
@@ -11,21 +10,23 @@ public class ApiUtils {
     }
 
     public static ApiResult<?> error(String message, HttpStatus status) {
-        return new ApiResult<>(false, null, new ApiError(message, status.value()));
+        return new ApiResult<>(false, null, new ApiError(status.value(), message));
     }
 
-    @Getter
-    @AllArgsConstructor
-    public static class ApiResult<T> {
-        private final boolean success;
-        private final T response;
-        private final ApiError error;
+    public static ApiResult<?> error(BaseException exception) {
+        return new ApiResult<>(false, null, new ApiError(exception.getCode(), exception.getMessage()));
     }
 
-    @Getter
-    @AllArgsConstructor
-    public static class ApiError {
-        private final String message;
-        private final int status;
+    public record ApiResult<T>(
+            boolean success,
+            T response,
+            ApiError error
+    ) {
+    }
+
+    public record ApiError(
+            int status,
+            String message
+    ) {
     }
 }

@@ -1,6 +1,9 @@
 package com.kakao.sunsuwedding._core;
 
+import com.kakao.sunsuwedding.favorite.Favorite;
 import com.kakao.sunsuwedding.match.Match;
+import com.kakao.sunsuwedding.payment.Payment;
+import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -46,4 +49,35 @@ public class DummyEntity {
                 .build();
     }
 
+    protected Payment newPayment(User user, String orderId, String paymentKey, Long payedAmount){
+        return Payment.builder()
+                .user(user)
+                .orderId(orderId)
+                .paymentKey(paymentKey)
+                .payedAmount(payedAmount)
+                .build();
+    }
+
+    protected Portfolio newPortfolio(Planner planner){
+        return Portfolio.builder()
+                .planner(planner)
+                .title("newTitle")
+                .description("newDescription")
+                .location("newLocation")
+                .career("newCareer")
+                .partnerCompany("newPartnerCompany")
+                .totalPrice(10000L)
+                .contractCount(20000L)
+                .avgPrice(30000L)
+                .minPrice(40000L)
+                .maxPrice(60000L)
+                .build();
+    }
+
+    protected Favorite newFavorite(User user, Portfolio portfolio) {
+        return Favorite.builder()
+                .user(user)
+                .portfolio(portfolio)
+                .build();
+    }
 }
