@@ -58,14 +58,13 @@ public class UserService {
         }
 
         Token token = tokenJPARepository.findByUserId(user.getId())
-                .orElseGet(() -> Token.builder()
-                        .user(user)
-                        .accessToken(jwtProvider.createAccessToken(user))
-                        .refreshToken(jwtProvider.createRefreshToken(user))
-                        .build());
+                .orElseGet(() -> Token.builder().user(user).build());
+
+        String accessToken = jwtProvider.createAccessToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user);
+        token.update(accessToken, refreshToken);
 
         tokenJPARepository.save(token);
-
         return new TokenDTO(token.getAccessToken(), token.getRefreshToken());
     }
 

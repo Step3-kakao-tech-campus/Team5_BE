@@ -58,7 +58,7 @@ public class PortfolioSpecification {
     }
 
     private static boolean valid(String data) {
-        return data != null && !data.equals("null");
+        return data != null && !data.equals("null") && !data.equals("");
     }
 
     private static boolean valid(Long data) {

@@ -66,16 +66,16 @@ public class PortfolioService {
             throw new BadRequestException(BaseException.PORTFOLIO_ALREADY_EXIST);
 
         // 필요한 계산값 연산
-        Long totalPrice = getTotalPrice(request.getItems());
+        Long totalPrice = getTotalPrice(request.items());
 
         // 포트폴리오 엔티티에 저장
         Portfolio portfolio = Portfolio.builder()
                 .planner(planner)
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .location(request.getLocation())
-                .career(request.getCareer())
-                .partnerCompany(request.getPartnerCompany())
+                .title(request.title())
+                .description(request.description())
+                .location(request.location())
+                .career(request.career())
+                .partnerCompany(request.partnerCompany())
                 .totalPrice(totalPrice)
                 .contractCount(0L)
                 .avgPrice(0L)
@@ -85,7 +85,7 @@ public class PortfolioService {
         portfolioJPARepository.save(portfolio);
 
         // 가격 항목 엔티티에 저장
-        List<PriceItem> priceItems = getPriceItems(request.getItems(), portfolio);
+        List<PriceItem> priceItems = getPriceItems(request.items(), portfolio);
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
@@ -187,17 +187,17 @@ public class PortfolioService {
                 .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
 
         // 필요한 계산값 연산
-        Long totalPrice =  getTotalPrice(request.getItems());
+        Long totalPrice =  getTotalPrice(request.items());
 
         // 포트폴리오 변경사항 업데이트 객체 생성 (업데이트 쿼리가 마지막 함수 종료될 때 날아가긴 함)
         Portfolio updatedPortfolio = Portfolio.builder()
                 .id(portfolio.getId())
                 .planner(planner)
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .location(request.getLocation())
-                .career(request.getCareer())
-                .partnerCompany(request.getPartnerCompany())
+                .title(request.title())
+                .description(request.description())
+                .location(request.location())
+                .career(request.career())
+                .partnerCompany(request.partnerCompany())
                 .totalPrice(totalPrice)
                 .contractCount(portfolio.getContractCount())
                 .avgPrice(portfolio.getAvgPrice())
@@ -211,7 +211,7 @@ public class PortfolioService {
         priceItemJPARepository.deleteAllByPortfolioId(portfolio.getId());
 
         // 업데이트 가격 항목 새로 저장
-        List<PriceItem> updatedPriceItems = getPriceItems(request.getItems(), portfolio);
+        List<PriceItem> updatedPriceItems = getPriceItems(request.items(), portfolio);
 
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
@@ -286,7 +286,7 @@ public class PortfolioService {
 
     private Long getTotalPrice(List<PortfolioRequest.ItemDTO> items) {
         return items.stream()
-                .mapToLong(PortfolioRequest.ItemDTO::getItemPrice)
+                .mapToLong(PortfolioRequest.ItemDTO::itemPrice)
                 .sum();
     }
 
@@ -295,8 +295,8 @@ public class PortfolioService {
         for (PortfolioRequest.ItemDTO item : items) {
             PriceItem priceItem = PriceItem.builder()
                     .portfolio(portfolio)
-                    .itemTitle(item.getItemTitle())
-                    .itemPrice(item.getItemPrice())
+                    .itemTitle(item.itemTitle())
+                    .itemPrice(item.itemPrice())
                     .build();
             priceItems.add(priceItem);
         }

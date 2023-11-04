@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kakao.sunsuwedding.user.base_user.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -23,9 +24,11 @@ public class JWTProvider {
     public final String AUTHORIZATION_HEADER = "Authorization";
     public final String REFRESH_HEADER = "Refresh";
 
-    // 테스트용 secret. 이후 환경변수 파일 분리시켜야 합니다 !!!
-    public final String ACCESS_TOKEN_SECRET = "hjxgPJUzzHL7Uy3wWBbFdbTOn1qKZXAlbsl8XqSv3MQw9uV8dy73cp5lkgJZmSay0BnffwjBNRAttLVoy1Fqtg==";
-    public final String REFRESH_TOKEN_SECRET = "/pNWcqH3BGCSyooP+vjaMPm+gPmsJByaeQ55mOi00ZGGqFWPJ2NUmEkkWHwl1mye988UXF7TgvvHZg+vEwlYwg==";
+    @Value("${security.jwt-config.secret.access}")
+    public String ACCESS_TOKEN_SECRET;
+
+    @Value("${security.jwt-config.secret.refresh}")
+    private String REFRESH_TOKEN_SECRET;
 
     public String createAccessToken(User user) {
         String jwt = create(user, ACCESS_TOKEN_EXP, ACCESS_TOKEN_SECRET);

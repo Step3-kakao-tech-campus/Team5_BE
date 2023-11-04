@@ -1,7 +1,7 @@
 package com.kakao.sunsuwedding.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,6 +26,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+        "security.jwt-config.secret.access=your-test-access-secret",
+        "security.jwt-config.secret.refresh=your-test-refresh-secret",
+        "payment.toss.secret=your-test-toss-payment-secret"
+})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class PaymentRestControllerTest {
 
@@ -42,9 +48,7 @@ public class PaymentRestControllerTest {
     @WithUserDetails("planner0@gmail.com")
     void save_payment_success() throws Exception {
         // given
-        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO();
-        requestDTO.setAmount(1000L);
-        requestDTO.setOrderId("order");
+        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO("order", 1000L);
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -66,9 +70,7 @@ public class PaymentRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     void save_payment_fail() throws Exception {
         // given
-        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO();
-        requestDTO.setAmount(1000L);
-        requestDTO.setOrderId("");
+        PaymentRequest.SaveDTO requestDTO = new PaymentRequest.SaveDTO("",1000L);
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -94,10 +96,7 @@ public class PaymentRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     void approve_payment_success() throws Exception {
         // given
-        PaymentRequest.ApproveDTO requestDTO = new PaymentRequest.ApproveDTO();
-        requestDTO.setAmount(1000L);
-        requestDTO.setPaymentKey("payment");
-        requestDTO.setOrderId("098");
+        PaymentRequest.ApproveDTO requestDTO = new PaymentRequest.ApproveDTO("098", "payment", 1000L);
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when

@@ -1,6 +1,6 @@
 package com.kakao.sunsuwedding.match;
 
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -22,8 +23,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 })
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
+@TestPropertySource(properties = {
+        "security.jwt-config.secret.access=your-test-access-secret",
+        "security.jwt-config.secret.refresh=your-test-refresh-secret",
+        "payment.toss.secret=your-test-toss-payment-secret"
+})
 @AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest
 public class MatchRestControllerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MatchRestControllerTest.class);
@@ -90,7 +96,7 @@ public class MatchRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정할 견적서가 없습니다"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정할 견적서가 없습니다."));
     }
 
     @DisplayName("견적서 전체 확정 실패 테스트 3 - 존재하지 않는 매칭 내역")
