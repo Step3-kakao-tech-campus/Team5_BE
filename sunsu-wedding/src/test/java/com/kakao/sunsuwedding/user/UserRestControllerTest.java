@@ -53,12 +53,7 @@ public class UserRestControllerTest {
     @Test
     public void user_join_success_test() throws Exception {
         // given
-        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
-        requestDTO.setEmail("ssarmango@nate.com");
-        requestDTO.setRole("couple");
-        requestDTO.setPassword("meta1234!");
-        requestDTO.setPassword2("meta1234!");
-        requestDTO.setUsername("qwer");
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO("couple", "qwer", "ssarmango@nate.com", "meta1234!", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -80,12 +75,7 @@ public class UserRestControllerTest {
     @Test
     public void user_join_fail_wrong_email_test() throws Exception {
         // given
-        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
-        requestDTO.setEmail("asdfqwer");
-        requestDTO.setRole("couple");
-        requestDTO.setPassword("meta1234!");
-        requestDTO.setPassword2("meta1234!");
-        requestDTO.setUsername("qwe");
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO("couple", "qwe", "asdfqwer", "meta1234!", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -107,12 +97,7 @@ public class UserRestControllerTest {
     @Test
     public void user_join_fail_wrong_role_test() throws Exception {
         // given
-        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
-        requestDTO.setEmail("asdf@naver.com");
-        requestDTO.setRole("asdf");
-        requestDTO.setPassword("meta1234!");
-        requestDTO.setPassword2("meta1234!");
-        requestDTO.setUsername("asdf");
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO("asdf", "asdf", "asdf@naver.com", "meta1234!", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -136,9 +121,7 @@ public class UserRestControllerTest {
     @Test
     public void user_login_success_test() throws Exception {
         // given
-        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("planner1@gmail.com");
-        requestDTO.setPassword("planner1234!");
+        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO("planner1@gmail.com", "planner1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -164,9 +147,7 @@ public class UserRestControllerTest {
     @Test
     public void user_login_fail_email_not_found_test() throws Exception {
         // given
-        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("ssar@nate.com");
-        requestDTO.setPassword("meta1234!");
+        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO("ssar@nate.com", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -189,9 +170,7 @@ public class UserRestControllerTest {
     @Test
     public void user_login_fail_wrong_password_test() throws Exception {
         // given
-        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("planner1@gmail.com");
-        requestDTO.setPassword("meta1234!");
+        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO("planner1@gmail.com", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when

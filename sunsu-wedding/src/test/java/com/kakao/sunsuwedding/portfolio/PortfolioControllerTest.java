@@ -198,7 +198,7 @@ public class PortfolioControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.data[0].id").value(12));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.data[0].plannerName").value("planner14"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.data[0].plannerName").value("planner12"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.data[0].location").value("부산"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.cursor").value(3));
     }
@@ -222,8 +222,6 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.data.length()").value(2));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.cursor").value(IsNull.nullValue()));
     }
-
-
 
     // ============ 포트폴리오 상세 조회 테스트 ============
     @DisplayName("포트폴리오 상세 조회 성공 테스트 - 예비부부 (PREMIUM 등급)")
@@ -298,7 +296,7 @@ public class PortfolioControllerTest {
     @WithUserDetails("couple2@gmail.com")
     public void get_portfolio_by_id_fail_test_planner_not_found() throws Exception {
         //given
-        Long id = 15L; // 탈퇴한 플래너의 포트폴리오 id
+        Long id = 19L; // 탈퇴한 플래너의 포트폴리오 id
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
@@ -310,10 +308,8 @@ public class PortfolioControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴하거나 가입하지 않은 플래너입니다."));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다."));
     }
-
-
 
     // ============ 포트폴리오 수정 테스트 ============
     // portfolioService update 부분 코드 수정 후 다시 테스트 필요

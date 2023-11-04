@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import com.kakao.sunsuwedding.user.UserRequest;
+import com.kakao.sunsuwedding.user.UserResponse;
 import com.kakao.sunsuwedding.user.UserService;
 import com.kakao.sunsuwedding.user.token.TokenDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -56,11 +58,9 @@ public class QuotationRestControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        UserRequest.LoginDTO request = new UserRequest.LoginDTO();
-        request.setEmail("planner1@gmail.com");
-        request.setPassword("planner1234!");
-        TokenDTO tokenDTO = userService.login(request);
-        plannerToken = tokenDTO.accessToken();
+        UserRequest.LoginDTO request = new UserRequest.LoginDTO("planner1@gmail.com", "planner1234!");
+        Pair<TokenDTO, UserResponse.FindUserId> response = userService.login(request);
+        plannerToken = response.getFirst().accessToken();
     }
     // ============ 견적서 등록 테스트 ============
     @DisplayName("POST /quotations : success")
