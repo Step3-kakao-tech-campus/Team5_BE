@@ -5,6 +5,7 @@ import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
+import com.kakao.sunsuwedding._core.utils.DateFormat;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Role;
@@ -15,6 +16,7 @@ import com.kakao.sunsuwedding.user.token.TokenDTO;
 import com.kakao.sunsuwedding.user.token.TokenJPARepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,25 +37,27 @@ public class UserService {
     private final JWTProvider jwtProvider;
 
     @Transactional
-    public void signup(UserRequest.SignUpDTO requestDTO) {
-        sameCheckEmail(requestDTO.getEmail());
-        sameCheckPassword(requestDTO.getPassword(), requestDTO.getPassword2());
-        requestDTO.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
-        Role role = Role.valueOfRole(requestDTO.getRole());
+    public UserResponse.FindUserId signup(UserRequest.SignUpDTO requestDTO) {
+        sameCheckEmail(requestDTO.email());
+        sameCheckPassword(requestDTO.password(), requestDTO.password2());
+        Role role = Role.valueOfRole(requestDTO.role());
+        String encodedPassword = passwordEncoder.encode(requestDTO.password());
+        User user;
         if (role == Role.COUPLE) {
-            coupleJPARepository.save(requestDTO.toCoupleEntity());
+            user = coupleJPARepository.save(requestDTO.toCoupleEntity(encodedPassword));
         }
         else {
-            plannerJPARepository.save(requestDTO.toPlannerEntity());
+            user = plannerJPARepository.save(requestDTO.toPlannerEntity(encodedPassword));
         }
+        return new UserResponse.FindUserId(user.getId());
     }
 
     @Transactional
-    public TokenDTO login(UserRequest.LoginDTO requestDTO) {
-        User user = userJPARepository.findByEmail(requestDTO.getEmail()).orElseThrow(
+    public Pair<TokenDTO, UserResponse.FindUserId> login(UserRequest.LoginDTO requestDTO) {
+        User user = userJPARepository.findByEmail(requestDTO.email()).orElseThrow(
                 () -> new BadRequestException(BaseException.USER_EMAIL_NOT_FOUND)
         );
-        if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(requestDTO.password(), user.getPassword())) {
             throw new BadRequestException(BaseException.USER_PASSWORD_WRONG);
         }
 
@@ -65,23 +69,25 @@ public class UserService {
         token.update(accessToken, refreshToken);
 
         tokenJPARepository.save(token);
-        return new TokenDTO(token.getAccessToken(), token.getRefreshToken());
+        return Pair.of(
+                new TokenDTO(token.getAccessToken(), token.getRefreshToken()),
+                new UserResponse.FindUserId(user.getId()));
     }
 
-    public UserResponse.FindById findById(Long userId) {
-        User user = findUserById(userId);
-        return new UserResponse.FindById(user);
+    public UserResponse.FindById findById(User user) {
+        User user1 = findUserById(user.getId());
+        return UserDTOConverter.toFindByIdDTO(user1);
     }
 
     // 회원 탈퇴
     @Transactional
-    public void withdraw(Long userId) {
-        findUserById(userId);
-        userJPARepository.deleteById(userId);
+    public void withdraw(User user) {
+        findUserById(user.getId());
+        userJPARepository.deleteById(user.getId());
     }
 
     private void sameCheckPassword(String password, String password2) {
-        boolean isEqual = Objects.equals(password, password2);
+        Boolean isEqual = Objects.equals(password, password2);
         if (!isEqual){
             throw new BadRequestException(BaseException.USER_PASSWORD_NOT_SAME);
         }
