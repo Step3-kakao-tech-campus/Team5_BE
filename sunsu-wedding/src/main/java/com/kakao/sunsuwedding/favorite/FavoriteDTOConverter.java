@@ -14,7 +14,7 @@ public class FavoriteDTOConverter {
                             favorite.getPortfolio().getId(),
                             images.get(i),
                             favorite.getPortfolio().getTitle(),
-                            favorite.getPortfolio().getPlanner().getUsername(),
+                            favorite.getPortfolio().getPlannerName(),
                             favorite.getPortfolio().getTotalPrice(),
                             favorite.getPortfolio().getLocation(),
                             favorite.getPortfolio().getContractCount(),

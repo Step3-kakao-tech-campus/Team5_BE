@@ -7,6 +7,7 @@ import com.kakao.sunsuwedding.quotation.QuotationStatus;
 import com.kakao.sunsuwedding.portfolio.PortfolioResponse;
 
 import java.util.List;
+import java.util.stream.LongStream;
 
 public class PriceCalculator {
     public static Long calculatePortfolioPrice(List<PortfolioResponse.PriceItemDTO> priceItemDTOS) {
@@ -27,25 +28,28 @@ public class PriceCalculator {
         .sum();
     }
 
-    public static Long calculateAvgPrice(List<Match> matches, Long contractCount) {
-        if (contractCount.equals(0L)) return 0L;
+    public static Long getContractCount(List<Match> matches){
         return matches.stream()
                 .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .mapToLong(Match::getConfirmedPrice)
-                .sum() / contractCount;
+                .count();
+    }
+
+    public static Long calculateAvgPrice(List<Match> matches, Long contractCount) {
+        if (contractCount.equals(0L)) return 0L;
+        return getConfirmedPriceStream(matches).sum() / contractCount;
     }
 
     public static Long calculateMinPrice(List<Match> matches) {
-        return matches.stream()
-                .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .mapToLong(Match::getConfirmedPrice)
-                .min().orElse(0);
+        return getConfirmedPriceStream(matches).min().orElse(0);
     }
 
     public static Long calculateMaxPrice(List<Match> matches) {
+        return getConfirmedPriceStream(matches).max().orElse(0);
+    }
+
+    private static LongStream getConfirmedPriceStream(List<Match> matches){
         return matches.stream()
                 .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                .mapToLong(Match::getConfirmedPrice)
-                .max().orElse(0);
+                .mapToLong(Match::getConfirmedPrice);
     }
 }

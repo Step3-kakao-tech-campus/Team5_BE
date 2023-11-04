@@ -50,30 +50,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         if (refreshToken != null) {
             try {
-                Boolean isAccessTokenValid = jwtProvider.isValidAccessToken(accessToken);
-
-                if (isAccessTokenValid) {
-                    Long userId = jwtProvider
-                            .verifyAccessToken(accessToken)
-                            .getClaim("id")
-                            .asLong();
-                    tokenService.expireTokenByUserId(userId);
-                    throw new TokenException(BaseException.ACCESS_TOKEN_STILL_ALIVE);
-                }
-
-                DecodedJWT decodedJWT = jwtProvider.verifyRefreshToken(refreshToken);
-                Long userId = decodedJWT.getClaim("id").asLong();
-                Boolean isTokenPairValid = tokenService.checkTokenValidation(userId, accessToken, refreshToken);
-
-                tokenService.expireTokenByUserId(userId);
-
-                if (isTokenPairValid) {
-                    createAuthentication(decodedJWT, userId);
-                    log.debug("refresh-token 을 이용한 인증 객체 생성");
-                }
-                else {
-                    throw new TokenException(BaseException.TOKEN_NOT_VALID);
-                }
+                refreshTokenAndCreateAuthentication(accessToken, refreshToken);
             } catch (SignatureVerificationException sve) {
                 log.error("refresh token 검증 실패");
             } catch (TokenExpiredException tee) {
@@ -85,12 +62,10 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 chain.doFilter(request, response);
             }
         }
-
         else {
             try {
                 DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessToken);
                 Long userId = decodedJWT.getClaim("id").asLong();
-
                 createAuthentication(decodedJWT, userId);
                 log.debug("access-token 을 이용한 인증 객체 생성");
             } catch (SignatureVerificationException sve) {
@@ -105,6 +80,33 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             } finally {
                 chain.doFilter(request, response);
             }
+        }
+    }
+
+    private void refreshTokenAndCreateAuthentication(String accessToken, String refreshToken) {
+        Boolean isAccessTokenValid = jwtProvider.isValidAccessToken(accessToken);
+
+        if (isAccessTokenValid) {
+            Long userId = jwtProvider
+                    .verifyAccessToken(accessToken)
+                    .getClaim("id")
+                    .asLong();
+            tokenService.expireTokenByUserId(userId);
+            throw new TokenException(BaseException.ACCESS_TOKEN_STILL_ALIVE);
+        }
+
+        DecodedJWT decodedJWT = jwtProvider.verifyRefreshToken(refreshToken);
+        Long userId = decodedJWT.getClaim("id").asLong();
+        Boolean isTokenPairValid = tokenService.checkTokenValidation(userId, accessToken, refreshToken);
+
+        tokenService.expireTokenByUserId(userId);
+
+        if (isTokenPairValid) {
+            createAuthentication(decodedJWT, userId);
+            log.debug("refresh-token 을 이용한 인증 객체 생성");
+        }
+        else {
+            throw new TokenException(BaseException.TOKEN_NOT_VALID);
         }
     }
 

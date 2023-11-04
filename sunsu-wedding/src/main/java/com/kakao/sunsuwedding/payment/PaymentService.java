@@ -55,10 +55,10 @@ public class PaymentService {
         Payment payment = findPaymentByUserId(user.getId());
 
         //  1. 검증: 프론트 정보와 백엔드 정보 비교
-        boolean isOK = isCorrectData(payment, requestDTO.orderId(), requestDTO.amount());
-        payment.updatePaymentKey(requestDTO.paymentKey());
+        Boolean isOK = isCorrectData(payment, requestDTO.orderId(), requestDTO.amount());
 
         if (isOK){
+            payment.updatePaymentKey(requestDTO.paymentKey());
             // 2. 토스 페이먼츠 승인 요청
             tossPayApprove(requestDTO);
             // 3. 유저 업그레이드
@@ -99,7 +99,7 @@ public class PaymentService {
     }
 
     // 받아온 payment와 관련된 데이터(orderId, amount)가 정확한지 확인)
-    private boolean isCorrectData(Payment payment, String orderId, Long amount){
+    private Boolean isCorrectData(Payment payment, String orderId, Long amount){
         return payment.getOrderId().equals(orderId)
                 && Objects.equals(payment.getPayedAmount(), amount);
     }
