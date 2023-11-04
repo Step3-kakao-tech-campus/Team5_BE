@@ -19,6 +19,16 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: add environment variables
+        run: |
+          echo "JWT_ACCESS_SECRET=$JWT_ACCESS_SECRET" >> .env 
+          echo "JWT_REFRESH_SECRET=$JWT_REFRESH_SECRET" >> .env 
+          echo "TOSS_PAYMENT_SECRET=$TOSS_PAYMENT_SECRET" >> .env 
+        env:
+          JWT_ACCESS_SECRET: ${{secrets.JWT_ACCESS_SECRET}}
+          JWT_REFRESH_SECRET: ${{secrets.JWT_REFRESH_SECRET}}
+          TOSS_PAYMENT_SECRET: ${{secrets.TOSS_PAYMENT_SECRET}}
+
       - name: Cache Gradle dependencies
         uses: actions/cache@v2
         with:
@@ -29,6 +39,7 @@ jobs:
       - name: Build and Test
         run: ./gradlew clean build
         working-directory: ./sunsu-wedding
+        
       - name: Run Spring Boot App for 30 seconds
         run: |
           ./gradlew bootRun &
