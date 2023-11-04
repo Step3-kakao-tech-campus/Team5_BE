@@ -13,9 +13,9 @@ public class ReviewDTOConverter {
                 .toList();
     }
 
-    public static List<ReviewResponse.FindByCoupleDTO> toFindAllByCoupleDTO(List<Review> reviews) {
+    public static List<ReviewResponse.ReviewDTO> toFindAllByCoupleDTO(List<Review> reviews) {
         return reviews.stream()
-                .map(review -> new ReviewResponse.FindByCoupleDTO(
+                .map(review -> new ReviewResponse.ReviewDTO(
                         review.id,
                         (review.getMatch().getPlanner() != null) ? review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자" ,
                         review.content)

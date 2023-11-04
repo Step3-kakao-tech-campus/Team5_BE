@@ -65,12 +65,12 @@ public class ReviewService {
         roleCheck(role);
 
         List<Review> reviews = reviewJPARepository.findAllByMatchCoupleId(coupleId);
-        List<ReviewResponse.FindByCoupleDTO> reviewDTOS = ReviewDTOConverter.toFindAllByCoupleDTO(reviews);
+        List<ReviewResponse.ReviewDTO> reviewDTOS = ReviewDTOConverter.toFindAllByCoupleDTO(reviews);
 
         return new ReviewResponse.FindAllByCoupleDTO(reviewDTOS);
     }
 
-    public ReviewResponse.FindByReviewIdDTO findByReviewId(String role, Long coupleId, Long reviewId) {
+    public ReviewResponse.ReviewDTO findByReviewId(String role, Long coupleId, Long reviewId) {
         Review review = reviewJPARepository.findById(reviewId).orElseThrow(
                 () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
         );
@@ -80,7 +80,7 @@ public class ReviewService {
 
         String plannerName = (review.getMatch().getPlanner() != null ) ?
                               review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자";
-        return new ReviewResponse.FindByReviewIdDTO(review.getId(), plannerName, review.getContent());
+        return new ReviewResponse.ReviewDTO(review.getId(), plannerName, review.getContent());
     }
 
     @Transactional
