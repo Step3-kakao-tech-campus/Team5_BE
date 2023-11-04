@@ -146,19 +146,23 @@ public class ReviewRestControllerTest {
 
 
     // ============ 리뷰 조회 테스트 ============
-    // 1. chatId로 조회
-    @DisplayName("리뷰 chatId로 조회 성공 테스트")
+    // 1. planner로 조회
+    @DisplayName("플래너별 리뷰 조회 성공 테스트")
     @Test
-    @WithUserDetails("couple@gmail.com")
-    public void find_review_by_chatId_success_test() throws Exception {
+    public void find_review_by_planner_success_test() throws Exception {
         // given
-        Long chatId = 1L;
+        int page = 0;
+        ReviewRequest.FindAllByPlannerDTO request = new ReviewRequest.FindAllByPlannerDTO(2L);
+
+        String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
                         .get("/reviews")
-                        .param("chatId", String.valueOf(chatId))
+                        .param("page", String.valueOf(page))
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
         );
 
         logResult(result);
@@ -169,11 +173,11 @@ public class ReviewRestControllerTest {
     }
 
 
-    // 2. user별 조회
-    @DisplayName("리뷰 유저별로 조회 성공 테스트")
+    // 2. couple로 조회
+    @DisplayName("커플별로 리뷰 조회 성공 테스트")
     @Test
     @WithUserDetails("couple@gmail.com")
-    public void find_review_by_user_success_test() throws Exception {
+    public void find_review_by_couple_success_test() throws Exception {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
@@ -185,6 +189,64 @@ public class ReviewRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.reviews[0].id").value(1));
+    }
+
+    @DisplayName("커플별로 리뷰 조회 실패 테스트 1 - 플래너가 요청")
+    @Test
+    @WithUserDetails("planner@gmail.com")
+    public void find_review_by_couple_fail_test_planner_request() throws Exception {
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/reviews/collect")
+        );
+
+        logResult(result);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
+    }
+
+    // 3. reviewId로 조회
+    @DisplayName("리뷰 id로 조회 성공 테스트")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void find_review_by_id_success_test() throws Exception {
+        // given
+        Long reviewId = 1L;
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/reviews/{reviewId}", reviewId)
+        );
+
+        logResult(result);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(1));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.plannerName").value("planner"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.response.content").value("최고의 플래너!"));
+    }
+
+    @DisplayName("리뷰 id로 조회 실패 테스트 1 - 플래너가 요청")
+    @Test
+    @WithUserDetails("planner@gmail.com")
+    public void find_review_by_id_fail_test_planner_request() throws Exception {
+        // given
+        Long reviewId = 1L;
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get("/reviews/{reviewId}", reviewId)
+        );
+
+        logResult(result);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
     }
 
 
