@@ -3,12 +3,12 @@ package com.kakao.sunsuwedding.chat;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding.match.MatchService;
+import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +22,8 @@ public class ChatService {
     private final MatchService matchService;
 
     @Transactional
-    public ChatResponse.ChatDTO addChat(Pair<String, Long> user, ChatRequest.AddChatDTO requestDTO) {
-        Long coupleId = user.getSecond();
+    public ChatResponse.ChatDTO addChat(User user, ChatRequest.AddChatDTO requestDTO) {
+        Long coupleId = user.getId();
         Long plannerId = requestDTO.plannerId();
 
         Couple couple = coupleJPARepository.findById(coupleId).orElseThrow(

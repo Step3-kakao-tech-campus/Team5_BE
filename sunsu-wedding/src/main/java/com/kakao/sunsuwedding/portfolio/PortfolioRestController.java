@@ -73,7 +73,7 @@ public class PortfolioRestController {
 
     @DeleteMapping("")
     public ResponseEntity<?> deletePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        portfolioService.deletePortfolio(userDetails.getInfo());
+        portfolioService.deletePortfolio(userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 

@@ -23,21 +23,21 @@ public class FavoriteRestController {
     @PostMapping("/{portfolioId}")
     public ResponseEntity<?> like(@AuthenticationPrincipal CustomUserDetails userDetails,
                                   @PathVariable @Min(1) Long portfolioId){
-        favoriteService.likePortfolio(userDetails.getUser().getId(), portfolioId);
+        favoriteService.likePortfolio(userDetails.getUser(), portfolioId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @DeleteMapping("/{portfolioId}")
     public ResponseEntity<?> unlike(@AuthenticationPrincipal CustomUserDetails userDetails,
                                     @PathVariable @Min(1) Long portfolioId){
-        favoriteService.unlikePortfolio(userDetails.getUser().getId(), portfolioId);
+        favoriteService.unlikePortfolio(userDetails.getUser(), portfolioId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping("")
     public ResponseEntity<?> findFavorites(@AuthenticationPrincipal CustomUserDetails userDetails,
                                            @PageableDefault(size=10, page=0, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable){
-        List<FavoriteResponse.FindPortfolioDTO> favorites = favoriteService.getFavoritePortfolios(userDetails.getUser().getId(), pageable);
+        List<FavoriteResponse.FindPortfolioDTO> favorites = favoriteService.getFavoritePortfolios(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(ApiUtils.success(favorites));
     }
 

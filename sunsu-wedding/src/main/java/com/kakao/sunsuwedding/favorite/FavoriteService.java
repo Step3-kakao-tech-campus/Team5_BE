@@ -29,10 +29,10 @@ public class FavoriteService {
     private final FavoriteJPARepository favoriteJPARepository;
 
     @Transactional
-    public void likePortfolio(Long userId, Long portfolioId){
-        User user = findByUserId(userId);
+    public void likePortfolio(User user, Long portfolioId){
+        User user1 = findByUserId(user.getId());
         Portfolio portfolio = findByPortfolioId(portfolioId);
-        Optional<Favorite> favoriteOptional = favoriteJPARepository.findByUserAndPortfolio(user, portfolio);
+        Optional<Favorite> favoriteOptional = favoriteJPARepository.findByUserAndPortfolio(user1.getId(), portfolio.getId());
         // 이전에 좋아요 누른 적 있으면 에러 반환
         if (favoriteOptional.isPresent()){
             throw new BadRequestException(BaseException.FAVORITE_ALREADY_EXISTS);
@@ -41,7 +41,7 @@ public class FavoriteService {
             // 없을 경우 새로운 좋아요 저장
             favoriteJPARepository.save(
                     Favorite.builder()
-                            .user(user)
+                            .user(user1)
                             .portfolio(portfolio)
                             .build()
             );
@@ -49,19 +49,17 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void unlikePortfolio(Long userId, Long portfolioId){
-        User user = findByUserId(userId);
-        Portfolio portfolio = findByPortfolioId(portfolioId);
+    public void unlikePortfolio(User user, Long portfolioId){
         // 이전에 좋아요 누른 적 없으면 에러 반환
-        Favorite favorite = favoriteJPARepository.findByUserAndPortfolio(user, portfolio).orElseThrow(
+        Favorite favorite = favoriteJPARepository.findByUserAndPortfolio(user.getId(), portfolioId).orElseThrow(
                 () -> new NotFoundException(BaseException.FAVORITE_NOT_FOUND)
         );
         favoriteJPARepository.delete(favorite);
     }
 
-    public List<FavoriteResponse.FindPortfolioDTO> getFavoritePortfolios(Long userId, Pageable pageable){
+    public List<FavoriteResponse.FindPortfolioDTO> getFavoritePortfolios(User user, Pageable pageable){
         // userId와 일치하는 favorite의 포트폴리오 내용들 가져옴
-        List<Favorite> favoriteList = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
+        List<Favorite> favoriteList = favoriteJPARepository.findByUserIdFetchJoinPortfolio(user.getId(), pageable);
         List<Portfolio> portfolioList = favoriteList.stream().map(Favorite::getPortfolio).toList();
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolioList);
         List<String> encodedImages = ImageEncoder.encode(portfolioList, imageItems);
