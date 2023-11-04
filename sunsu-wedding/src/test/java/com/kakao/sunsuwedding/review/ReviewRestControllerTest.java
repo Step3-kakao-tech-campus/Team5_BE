@@ -149,6 +149,7 @@ public class ReviewRestControllerTest {
     // 1. planner로 조회
     @DisplayName("플래너별 리뷰 조회 성공 테스트")
     @Test
+    @WithUserDetails("couple@gmail.com")
     public void find_review_by_planner_success_test() throws Exception {
         // given
         int page = 0;
@@ -193,7 +194,7 @@ public class ReviewRestControllerTest {
 
     @DisplayName("커플별로 리뷰 조회 실패 테스트 1 - 플래너가 요청")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void find_review_by_couple_fail_test_planner_request() throws Exception {
         // when
         ResultActions result = mockMvc.perform(
@@ -232,7 +233,7 @@ public class ReviewRestControllerTest {
 
     @DisplayName("리뷰 id로 조회 실패 테스트 1 - 플래너가 요청")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     public void find_review_by_id_fail_test_planner_request() throws Exception {
         // given
         Long reviewId = 1L;

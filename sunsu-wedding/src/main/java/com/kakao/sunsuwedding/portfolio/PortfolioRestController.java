@@ -42,9 +42,11 @@ public class PortfolioRestController {
                                            @RequestParam @Nullable String name,
                                            @RequestParam @Nullable String location,
                                            @RequestParam @Nullable Long minPrice,
-                                           @RequestParam @Nullable Long maxPrice) {
+                                           @RequestParam @Nullable Long maxPrice,
+                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
         CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
-        PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest);
+        PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest, userId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
@@ -52,7 +54,8 @@ public class PortfolioRestController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
-        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userDetails.getUser().getId());
+        Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
+        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userId);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 

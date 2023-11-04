@@ -132,7 +132,7 @@ public class UserRestControllerTest {
     public void user_login_success_test() throws Exception {
         // given
         UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("planner@gmail.com");
+        requestDTO.setEmail("planner1@gmail.com");
         requestDTO.setPassword("planner1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
@@ -177,7 +177,7 @@ public class UserRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다 : ssar@nate.com"));
+        result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다."));
     }
 
     @DisplayName("로그인 실패 테스트 2 - 패스워드 잘못 입력")
@@ -185,7 +185,7 @@ public class UserRestControllerTest {
     public void user_login_fail_wrong_password_test() throws Exception {
         // given
         UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("planner@gmail.com");
+        requestDTO.setEmail("planner1@gmail.com");
         requestDTO.setPassword("meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
@@ -227,7 +227,7 @@ public class UserRestControllerTest {
     // ============ 유저 정보 조회 ============
     @DisplayName("유저 정보 조회 성공")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     void get_user_info_success_test() throws Exception {
         // when
         ResultActions resultActions = mvc.perform(
@@ -237,14 +237,14 @@ public class UserRestControllerTest {
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
         resultActions.andExpect(jsonPath("$.response.username").value("planner"));
-        resultActions.andExpect(jsonPath("$.response.email").value("planner@gmail.com"));
+        resultActions.andExpect(jsonPath("$.response.email").value("planner1@gmail.com"));
         resultActions.andExpect(jsonPath("$.response.role").value("planner"));
         resultActions.andExpect(jsonPath("$.response.grade").value("normal"));
     }
     // ============ 유저 토큰 갱신 ============
     @DisplayName("유저 토큰 refresh 성공")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     void user_token_refresh_success_test() throws Exception {
         // when
         ResultActions resultActions = mvc.perform(
