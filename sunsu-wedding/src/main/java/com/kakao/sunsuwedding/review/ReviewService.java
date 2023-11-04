@@ -37,10 +37,7 @@ public class ReviewService {
         matchConfirmedCheck(match); // 리뷰 작성 가능한 상태인지 확인
 
         // 첫 리뷰라면 리뷰 작성 여부 업데이트
-        if (match.getReviewStatus().equals(ReviewStatus.UNWRITTEN)) {
-            match.updateReviewStatus();
-            matchJPARepository.save(match);
-        }
+        updateReviewStatus(match);
 
         reviewJPARepository.save(
                 Review.builder()
@@ -101,11 +98,16 @@ public class ReviewService {
         Review review = reviewJPARepository.findById(reviewId).orElseThrow(
                 () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
         );
+        Match match = review.getMatch();
 
         roleCheck(info.getFirst());
         permissionCheck(info.getSecond(), review.getMatch());
 
         reviewJPARepository.delete(review);
+        // 삭제 후 리뷰가 1개도 없다면 ReviewStatus UNWRITTEN으로 변경
+        if (reviewJPARepository.findAllByMatch(match).isEmpty()) {
+            updateReviewStatus(match);
+        }
     }
 
     private void roleCheck(String role) {
@@ -123,6 +125,17 @@ public class ReviewService {
     private void matchConfirmedCheck(Match match) {
         if (!match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new BadRequestException(BaseException.MATCHING_NOT_CONFIRMED);
+        }
+    }
+
+    private void updateReviewStatus(Match match){
+        if (match.getReviewStatus().equals(ReviewStatus.UNWRITTEN)) {
+            match.updateReviewStatus(ReviewStatus.WRITTEN);
+            matchJPARepository.save(match);
+        }
+        else {
+            match.updateReviewStatus(ReviewStatus.UNWRITTEN);
+            matchJPARepository.save(match);
         }
     }
 }
