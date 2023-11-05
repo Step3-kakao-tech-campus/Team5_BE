@@ -72,7 +72,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios")
+                        .multipart("/api/portfolios")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
@@ -101,7 +101,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios")
+                        .multipart("/api/portfolios")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
@@ -132,7 +132,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios")
+                        .multipart("/api/portfolios")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
@@ -167,7 +167,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios")
+                        .multipart("/api/portfolios")
                         .file(images[0]).file(images[1]).file(images[2]).file(images[3]).file(images[4]).file(images[5])
                         .file(request)
         );
@@ -190,7 +190,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/portfolios?cursor=" + cursor)
+                        .get("/api/portfolios?cursor=" + cursor)
         );
 
         logResult(result);
@@ -211,7 +211,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/portfolios?cursor={nextCursor}", nextCursor)
+                        .get("/api/portfolios?cursor={nextCursor}", nextCursor)
         );
 
         logResult(result);
@@ -233,7 +233,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/portfolios/{id}", id)
+                        .get("/api/portfolios/{id}", id)
         );
 
         logResult(result);
@@ -257,7 +257,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/portfolios/{id}", id)
+                        .get("/api/portfolios/{id}", id)
         );
 
         logResult(result);
@@ -280,7 +280,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/portfolios/{id}", id)
+                        .get("/api/portfolios/{id}", id)
         );
 
         logResult(result);
@@ -300,7 +300,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/portfolios/{id}", id)
+                        .get("/api/portfolios/{id}", id)
         );
 
         logResult(result);
@@ -331,7 +331,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios/update")
+                        .multipart("/api/portfolios/update")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
@@ -360,7 +360,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios/update")
+                        .multipart("/api/portfolios/update")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
@@ -391,7 +391,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios/update")
+                        .multipart("/api/portfolios/update")
                         .file(images[0]).file(images[1])
                         .file(request)
         );
@@ -426,7 +426,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/portfolios/update")
+                        .multipart("/api/portfolios/update")
                         .file(images[0]).file(images[1]).file(images[2]).file(images[3]).file(images[4]).file(images[5])
                         .file(request)
         );
@@ -449,7 +449,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/portfolios")
+                        .delete("/api/portfolios")
         );
 
         logResult(result);
@@ -465,7 +465,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/portfolios")
+                        .delete("/api/portfolios")
         );
 
         logResult(result);
