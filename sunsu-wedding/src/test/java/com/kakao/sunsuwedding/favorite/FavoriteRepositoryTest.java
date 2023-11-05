@@ -61,7 +61,7 @@ public class FavoriteRepositoryTest extends DummyEntity {
     @Test
     void findFavoriteByUserAndPortfolio(){
         // when
-        Favorite favorite = favoriteJPARepository.findByUserAndPortfolio(planner, portfolio).orElseThrow(
+        Favorite favorite = favoriteJPARepository.findByUserAndPortfolio(planner.getId(), portfolio.getId()).orElseThrow(
                 () -> new RuntimeException("결제 정보를 찾을 수 없습니다.")
         );
 

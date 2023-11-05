@@ -21,7 +21,7 @@ public class QuotationRestController {
     public ResponseEntity<?> addQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @RequestParam @Min(1) Long chatId,
                                              @Valid @RequestBody QuotationRequest.Add request) {
-        quotationService.insertQuotation(userDetails.getInfo(), chatId, request);
+        quotationService.insertQuotation(userDetails.getUser(), chatId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -34,10 +34,7 @@ public class QuotationRestController {
     @GetMapping("/collect")
     public ResponseEntity<?> findByUser(@AuthenticationPrincipal CustomUserDetails userDetails,
                                         @RequestParam(defaultValue = "0") Integer page) {
-        QuotationResponse.FindByUserDTO response = quotationService.findQuotationsByUser(userDetails.getInfo().getFirst(),
-                userDetails.getInfo().getSecond(),
-                page);
-
+        QuotationResponse.FindByUserDTO response = quotationService.findQuotationsByUser(userDetails.getUser(), page);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
@@ -45,7 +42,7 @@ public class QuotationRestController {
     public ResponseEntity<?> confirm(@AuthenticationPrincipal CustomUserDetails userDetails,
                                      @PathVariable @Min(1) Long quotationId,
                                      @RequestParam @Min(1) Long chatId) {
-        quotationService.confirm(userDetails.getInfo(), chatId, quotationId);
+        quotationService.confirm(userDetails.getUser(), chatId, quotationId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -54,15 +51,14 @@ public class QuotationRestController {
                                              @PathVariable @Min(1) Long quotationId,
                                              @RequestParam @Min(1) Long chatId,
                                              @Valid @RequestBody QuotationRequest.Update request) {
-        quotationService.update(userDetails.getInfo(), chatId, quotationId, request);
+        quotationService.update(userDetails.getUser(), chatId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @DeleteMapping("/{quotationId}")
     public ResponseEntity<?> deleteQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @PathVariable @Min(1) Long quotationId) {
-        quotationService.deleteQuotation(userDetails.getInfo().getSecond(), quotationId);
-
+        quotationService.deleteQuotation(userDetails.getUser(), quotationId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

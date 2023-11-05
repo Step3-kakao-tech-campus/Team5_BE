@@ -12,11 +12,38 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class PortfolioDTOConverter {
-    public static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Planner planner,
-                                                            Portfolio portfolio,
+
+    public static Portfolio getPortfolioByAdd(Planner planner, Long totalPrice, PortfolioRequest.AddDTO request){
+        return Portfolio.builder()
+                .planner(planner)
+                .plannerName(request.plannerName())
+                .title(request.title())
+                .description(request.description())
+                .location(request.location())
+                .career(request.career())
+                .partnerCompany(request.partnerCompany())
+                .totalPrice(totalPrice) // 필요한 가격 전체 총합 계산
+                .contractCount(0L)
+                .avgPrice(0L)
+                .minPrice(0L)
+                .maxPrice(0L)
+                .build();
+    }
+
+    public static List<PriceItem> getPriceItem(List<PortfolioRequest.ItemDTO> items, Portfolio portfolio){
+        return items.stream()
+                .map(item -> PriceItem.builder()
+                        .portfolio(portfolio)
+                        .itemTitle(item.itemTitle())
+                        .itemPrice(item.itemPrice())
+                        .build())
+                .toList();
+    }
+
+    public static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Portfolio portfolio,
                                                             List<String> images, List<PriceItem> priceItems,
                                                             List<Match> matches, List<Quotation> quotations,
-                                                            Boolean isLiked) {
+                                                            Boolean isLiked, Boolean isPremium) {
         // 가격 항목 DTO 변환
         List<PortfolioResponse.PriceItemDTO> priceItemDTOS = PriceItemDTOConvertor(priceItems);
         Long totalPrice = PriceCalculator.calculatePortfolioPrice(priceItemDTOS);
@@ -26,8 +53,8 @@ public class PortfolioDTOConverter {
         // 일반 회원의 경우 거래내역으로 null 반환
         PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO = null;
 
-        // 프리미엄 회원일 경우 paymentHistory 반환
-        if (!matches.isEmpty() && !quotations.isEmpty()) {
+        // 프리미엄 회원일 경우 이전 거래 내역 History 반환
+        if (isPremium) {
             List<PortfolioResponse.PaymentDTO> paymentDTOS = PaymentDTOConvertor(matches, quotations);
             paymentHistoryDTO =
                     new PortfolioResponse.PaymentHistoryDTO(
@@ -38,20 +65,19 @@ public class PortfolioDTOConverter {
             );
         }
 
-
-        return FindByIdDTOConvertor(planner, portfolio, images, priceDTO, paymentHistoryDTO, isLiked);
+        return FindByIdDTOConvertor(portfolio, images, priceDTO, paymentHistoryDTO, isLiked);
     }
 
-    private static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Planner planner, Portfolio portfolio, List<String> images,
+    private static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Portfolio portfolio, List<String> images,
                                                              PortfolioResponse.PriceDTO priceDTO,
                                                              PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO,
                                                              Boolean isLiked) {
         return new PortfolioResponse.FindByIdDTO(
                 portfolio.getId(),
-                planner.getId(),
+                portfolio.getPlanner().getId(),
                 images,
                 portfolio.getTitle(),
-                portfolio.getPlanner().getUsername(),
+                portfolio.getPlannerName(),
                 portfolio.getContractCount(),
                 priceDTO,
                 portfolio.getLocation(),
@@ -72,7 +98,7 @@ public class PortfolioDTOConverter {
                             portfolio.getId(),
                             images.get(i),
                             portfolio.getTitle(),
-                            portfolio.getPlanner().getUsername(),
+                            portfolio.getPlannerName(),
                             portfolio.getTotalPrice(),
                             portfolio.getLocation(),
                             portfolio.getContractCount(),
@@ -92,18 +118,16 @@ public class PortfolioDTOConverter {
     public static PortfolioResponse.MyPortfolioDTO MyPortfolioDTOConvertor(Planner planner,
                                                                            Portfolio portfolio,
                                                                            List<String> images,
-                                                                           List<PriceItem> priceItems,
-                                                                           Boolean isLiked) {
+                                                                           List<PriceItem> priceItems) {
         return new PortfolioResponse.MyPortfolioDTO(
-                planner.getUsername(),
+                portfolio.getPlannerName(),
                 images,
                 PriceItemDTOConvertor(priceItems),
                 portfolio.getTitle(),
                 portfolio.getDescription(),
                 portfolio.getLocation(),
                 portfolio.getCareer(),
-                portfolio.getPartnerCompany(),
-                isLiked
+                portfolio.getPartnerCompany()
         );
     }
 

@@ -29,11 +29,8 @@ public class PortfolioRestController {
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
     public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.AddDTO request,
                                            @RequestPart MultipartFile[] images,
-                                           Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pair<Portfolio, Planner> info = portfolioService.addPortfolio(request, userDetails.getUser().getId());
-        imageItemService.uploadImage(images, info.getFirst(), info.getSecond());
-
+        portfolioService.addPortfolio(request, images, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -44,6 +41,7 @@ public class PortfolioRestController {
                                            @RequestParam @Nullable Long minPrice,
                                            @RequestParam @Nullable Long maxPrice,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
         CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest, userId);
@@ -54,6 +52,7 @@ public class PortfolioRestController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
+
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
         PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userId);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
@@ -62,18 +61,14 @@ public class PortfolioRestController {
     @PostMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
     public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.UpdateDTO request,
                                            @RequestPart MultipartFile[] images,
-                                           Error errors,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pair<Portfolio, Planner> info = portfolioService.updatePortfolio(request, userDetails.getUser().getId());
-
-        imageItemService.updateImage(images, info.getFirst(), info.getSecond());
-
+        portfolioService.updatePortfolio(request, images, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @DeleteMapping("")
     public ResponseEntity<?> deletePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        portfolioService.deletePortfolio(userDetails.getInfo());
+        portfolioService.deletePortfolio(userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 

@@ -1,25 +1,25 @@
 package com.kakao.sunsuwedding.portfolio;
 
-import com.kakao.sunsuwedding.favorite.Favorite;
-import com.kakao.sunsuwedding.favorite.FavoriteJPARepository;
-import com.kakao.sunsuwedding.quotation.Quotation;
-import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
+import com.kakao.sunsuwedding.favorite.Favorite;
+import com.kakao.sunsuwedding.favorite.FavoriteJPARepository;
 import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
-import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.ImageItem;
 import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
+import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJDBCRepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
+import com.kakao.sunsuwedding.quotation.Quotation;
+import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Grade;
@@ -31,11 +31,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,53 +54,38 @@ public class PortfolioService {
     private final UserJPARepository userJPARepository;
     private final FavoriteJPARepository favoriteJPARepository;
 
-    @Transactional
-    public Pair<Portfolio, Planner> addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
-        // 요청한 플래너 탐색
-        Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
+    private final ImageItemService imageItemService;
 
-        Portfolio existPortfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElse(new Portfolio());
+    @Transactional
+    public void addPortfolio(PortfolioRequest.AddDTO request, MultipartFile[] images, Long plannerId) {
+        // 요청한 플래너 탐색
+        Planner planner = findPlannerById(plannerId);
 
         // 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
-        if (existPortfolio.getId() != null)
+        Optional<Portfolio> portfolioOptional = portfolioJPARepository.findByPlannerId(plannerId);
+        if (portfolioOptional.isPresent())
             throw new BadRequestException(BaseException.PORTFOLIO_ALREADY_EXIST);
 
-        // 필요한 계산값 연산
+        // 포트폴리오 저장
         Long totalPrice = getTotalPrice(request.items());
-
-        // 포트폴리오 엔티티에 저장
-        Portfolio portfolio = Portfolio.builder()
-                .planner(planner)
-                .title(request.title())
-                .description(request.description())
-                .location(request.location())
-                .career(request.career())
-                .partnerCompany(request.partnerCompany())
-                .totalPrice(totalPrice)
-                .contractCount(0L)
-                .avgPrice(0L)
-                .minPrice(0L)
-                .maxPrice(0L)
-                .build();
+        Portfolio portfolio = PortfolioDTOConverter.getPortfolioByAdd(planner, totalPrice, request);
         portfolioJPARepository.save(portfolio);
 
-        // 가격 항목 엔티티에 저장
-        List<PriceItem> priceItems = getPriceItems(request.items(), portfolio);
-        priceItemJDBCRepository.batchInsertPriceItems(priceItems);
-
         // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
+        // todo: 재등록일 때도 이전 거래 내역을 초기화해야 하는 거 아닌가요?
         updateConfirmedPrices(planner);
 
-        // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
-        return Pair.of(portfolio, planner);
+        // 가격 내용 저장
+        List<PriceItem> priceItems = PortfolioDTOConverter.getPriceItem(request.items(), portfolio);
+        priceItemJDBCRepository.batchInsertPriceItems(priceItems);
+
+        // 이미지 내용 저장
+        imageItemService.uploadImage(images, portfolio, planner);
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request, Long userId) {
-        if (!request.hasKey()) {
+        if (!request.hasKey())
             return new PageCursor<>(null, null);
-        }
 
         Pageable pageable = PageRequest
                 .ofSize(request.size())
@@ -106,7 +93,8 @@ public class PortfolioService {
         List<Portfolio> portfolios = search(request, pageable);
 
         // 더이상 보여줄 포트폴리오가 없다면 커서 null 반환
-        if (portfolios.isEmpty()) return new PageCursor<>(null, null);
+        if (portfolios.isEmpty())
+            return new PageCursor<>(null, null);
 
         // 커서가 1이거나 NONE_KEY 일 경우 null 로 대체)
         Long nextKey = getNextKey(portfolios);
@@ -114,12 +102,113 @@ public class PortfolioService {
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
         List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
         List<Favorite> favorites = new ArrayList<>();
-        if (userId >= 0){
+
+        // 유저가 존재하는 경우 찜하기 누른 목록 받아옴
+        if (userId >= 0)
              favorites = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
-        }
 
         List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages, favorites);
         return new PageCursor<>(data, request.next(nextKey).key());
+    }
+
+    public PortfolioResponse.FindByIdDTO getPortfolioById(Long portfolioId, Long userId) {
+
+        Portfolio portfolio = portfolioJPARepository.findById(portfolioId).orElseThrow(
+                () -> new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND)
+        );
+        // 플래너 탈퇴 시 조회 X
+        if (portfolio.getPlanner() == null)
+            throw new NotFoundException(BaseException.PLANNER_NOT_FOUND);
+
+        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolioId);
+        List<String> images  = encodeImages(imageItems);
+        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolioId);
+
+        // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
+        List<Match> matches = new ArrayList<>();
+        List<Quotation> quotations = new ArrayList<>();
+        boolean isLiked = false, isPremium = false;
+
+        // 프리미엄 등급 유저일 경우 최근 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
+        Optional<User> userOptional = userJPARepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            isLiked = favoriteJPARepository.findByUserAndPortfolio(user.getId(), portfolio.getId()).isPresent();
+
+            if (user.getGrade() == Grade.PREMIUM) {
+                isPremium = true;
+                matches = matchJPARepository.findLatestTenByPlanner(portfolio.getPlanner());
+                List<Long> matchIds = matches.stream().map(Match::getId).toList();
+                quotations = quotationJPARepository.findAllByMatchIds(matchIds);
+            }
+        }
+
+        return PortfolioDTOConverter.FindByIdDTOConvertor(portfolio, images, priceItems, matches, quotations, isLiked, isPremium);
+    }
+
+    @Transactional
+    public void updatePortfolio(PortfolioRequest.UpdateDTO request, MultipartFile[] images, Long plannerId) {
+        Planner planner = findPlannerById(plannerId);
+        Portfolio portfolio = findPortfolioByUserId(plannerId);
+
+        portfolio.update(request.plannerName(), request.title(), request.description(),
+                request.location(), request.career(), request.partnerCompany(), getTotalPrice(request.items()));
+
+        // 기존의 포트폴리오 가격 항목 일괄 삭제, 특이사항: JPQL 안 쓰니까 DELETE Query N개씩 날아감
+        priceItemJPARepository.deleteAllByPortfolioId(portfolio.getId());
+
+        // 업데이트 가격 항목 새로 저장
+        List<PriceItem> updatedPriceItems = PortfolioDTOConverter.getPriceItem(request.items(), portfolio);
+        priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
+
+        // 이미지 저장
+        imageItemService.uploadImage(images, portfolio, planner);
+    }
+
+    @Transactional
+    public void deletePortfolio(User user) {
+        if (!user.getDtype().equals(Role.PLANNER.getRoleName())) {
+            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
+        }
+        priceItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
+        imageItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
+        portfolioJPARepository.deleteByPlanner(user);
+    }
+
+    public PortfolioResponse.MyPortfolioDTO myPortfolio(Long plannerId) {
+        // 요청한 플래너 탐색
+        Planner planner = plannerJPARepository.findById(plannerId)
+                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
+
+        // 플래너의 포트폴리오 탐색
+        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
+                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
+
+        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolio.getId());
+        if (imageItems.isEmpty()) {
+            throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
+        }
+
+        List<String> encodedImages = encodeImages(imageItems);
+        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
+
+        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
+    }
+
+    private Portfolio findPortfolioByUserId(Long plannerId) {
+        return portfolioJPARepository.findByPlannerId(plannerId)
+                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
+    }
+
+    private Planner findPlannerById(Long plannerId) {
+        return plannerJPARepository.findById(plannerId)
+                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
+    }
+
+    private static Long getTotalPrice(List<PortfolioRequest.ItemDTO> items) {
+        return items.stream()
+                .mapToLong(PortfolioRequest.ItemDTO::itemPrice)
+                .sum();
     }
 
     private static Long getNextKey(List<Portfolio> portfolios) {
@@ -138,100 +227,15 @@ public class PortfolioService {
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
-    public PortfolioResponse.FindByIdDTO getPortfolioById(Long portfolioId, Long userId) {
-        Optional<User> user = userJPARepository.findById(userId);
-
-        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolioId);
-        if (imageItems.isEmpty()) {
-            throw new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND);
-        }
-
-        Portfolio portfolio = imageItems.get(0).getPortfolio();
-        Planner planner = imageItems.get(0).getPortfolio().getPlanner();
-
-
-        // 플래너 탈퇴 시 조회 X
-        if (planner == null) { throw new NotFoundException(BaseException.PLANNER_NOT_FOUND); }
-
-        List<String> images  = encodeImages(imageItems);
-
-        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolioId);
-
-        // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
-        List<Match> matches = new ArrayList<>();
-        List<Quotation> quotations = new ArrayList<>();
-        boolean isLiked = false;
-
-        // 프리미엄 등급 유저일 경우 최근 거래 내역 조회를 위한 매칭 내역, 견적서 가져오기
-        if (user.isPresent()) {
-            User user1 = user.get();
-            isLiked = favoriteJPARepository.findByUserAndPortfolio(user1, portfolio).isPresent();
-            if (user1.getGrade() == Grade.PREMIUM) {
-                matches = matchJPARepository.findLatestTenByPlanner(planner);
-                List<Long> matchIds = matches.stream().map(Match::getId).toList();
-                quotations = quotationJPARepository.findAllByMatchIds(matchIds);
-            }
-        }
-
-        return PortfolioDTOConverter.FindByIdDTOConvertor(planner, portfolio, images, priceItems, matches, quotations, isLiked);
-    }
-
-    @Transactional
-    public Pair<Portfolio,Planner> updatePortfolio(PortfolioRequest.UpdateDTO request, Long plannerId) {
-        // 요청한 플래너 탐색
-        Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
-
-        // 플래너의 포트폴리오 탐색
-        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
-
-        // 필요한 계산값 연산
-        Long totalPrice =  getTotalPrice(request.items());
-
-        // 포트폴리오 변경사항 업데이트 객체 생성 (업데이트 쿼리가 마지막 함수 종료될 때 날아가긴 함)
-        Portfolio updatedPortfolio = Portfolio.builder()
-                .id(portfolio.getId())
-                .planner(planner)
-                .title(request.title())
-                .description(request.description())
-                .location(request.location())
-                .career(request.career())
-                .partnerCompany(request.partnerCompany())
-                .totalPrice(totalPrice)
-                .contractCount(portfolio.getContractCount())
-                .avgPrice(portfolio.getAvgPrice())
-                .minPrice(portfolio.getMinPrice())
-                .maxPrice(portfolio.getMaxPrice())
-                .build();
-        portfolioJPARepository.save(updatedPortfolio);
-
-        // 기존의 포트폴리오 가격 항목 일괄 삭제
-        // 특이사항: JPQL 안 쓰니까 DELETE Query N개씩 날아감
-        priceItemJPARepository.deleteAllByPortfolioId(portfolio.getId());
-
-        // 업데이트 가격 항목 새로 저장
-        List<PriceItem> updatedPriceItems = getPriceItems(request.items(), portfolio);
-
-        priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
-
-        // 삭제 후 삽입 로직으로 변경 ㅠㅠ 열심히 만든건데 못쓰게 되버림 엉엉
-        // priceItemJDBCRepository.batchUpdatePriceItems(updatedPriceItems);
-
-        // 이미지 처리 로직에 활용하기 위해 포트폴리오 객체 리턴
-        return Pair.of(updatedPortfolio, planner);
-    }
-
     public void updateConfirmedPrices(Planner planner) {
         List<Match> matches = matchJPARepository.findAllByPlanner(planner);
-        Optional<Portfolio> portfolioPS = portfolioJPARepository.findByPlanner(planner);
+        Optional<Portfolio> portfolioOptional = portfolioJPARepository.findByPlanner(planner);
         // 포트폴리오, 매칭내역이 존재할 때만 가격 update
-        if (portfolioPS.isPresent() && !matches.isEmpty()) {
-            Portfolio portfolio = portfolioPS.get();
+        if (portfolioOptional.isPresent() && !matches.isEmpty()) {
+            Portfolio portfolio = portfolioOptional.get();
+
             // 건수, 평균, 최소, 최대 가격 구하기
-            Long contractCount = matches.stream()
-                    .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
-                    .count();
+            Long contractCount = PriceCalculator.getContractCount(matches);
             Long avgPrice = PriceCalculator.calculateAvgPrice(matches, contractCount);
             Long minPrice = PriceCalculator.calculateMinPrice(matches);
             Long maxPrice = PriceCalculator.calculateMaxPrice(matches);
@@ -242,64 +246,10 @@ public class PortfolioService {
         }
     }
 
-    @Transactional
-    public void deletePortfolio(Pair<String, Long> info) {
-        if (!info.getFirst().equals(Role.PLANNER.getRoleName())) {
-            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
-        }
-
-        Planner planner = Planner.builder().id(info.getSecond()).build();
-        priceItemJPARepository.deleteAllByPortfolioPlannerId(planner.getId());
-        imageItemJPARepository.deleteAllByPortfolioPlannerId(planner.getId());
-        portfolioJPARepository.deleteByPlanner(planner);
-    }
-
-
-    public PortfolioResponse.MyPortfolioDTO myPortfolio(Long plannerId) {
-        // 요청한 플래너 탐색
-        Planner planner = plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
-
-        // 플래너의 포트폴리오 탐색
-        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
-
-        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolio.getId());
-        if (imageItems.isEmpty()) {
-            throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
-        }
-
-        List<String> encodedImages = encodeImages(imageItems);
-
-        List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
-        boolean isLiked = favoriteJPARepository.findByUserAndPortfolio(planner, portfolio).isPresent();
-
-        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems, isLiked);
-    }
-
     private List<String> encodeImages(List<ImageItem> imageItems) {
         return imageItems
                 .stream()
                 .map(ImageEncoder::encode)
                 .toList();
-    }
-
-    private Long getTotalPrice(List<PortfolioRequest.ItemDTO> items) {
-        return items.stream()
-                .mapToLong(PortfolioRequest.ItemDTO::itemPrice)
-                .sum();
-    }
-
-    private List<PriceItem> getPriceItems(List<PortfolioRequest.ItemDTO> items, Portfolio portfolio) {
-        List<PriceItem> priceItems = new ArrayList<>();
-        for (PortfolioRequest.ItemDTO item : items) {
-            PriceItem priceItem = PriceItem.builder()
-                    .portfolio(portfolio)
-                    .itemTitle(item.itemTitle())
-                    .itemPrice(item.itemPrice())
-                    .build();
-            priceItems.add(priceItem);
-        }
-        return priceItems;
     }
 }

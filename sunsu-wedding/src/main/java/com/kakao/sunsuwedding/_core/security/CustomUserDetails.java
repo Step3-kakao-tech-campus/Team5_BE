@@ -3,7 +3,6 @@ package com.kakao.sunsuwedding._core.security;
 import com.kakao.sunsuwedding.user.base_user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,9 +20,6 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(user.getDtype()));
-    }
-    public Pair<String, Long> getInfo() {
-        return Pair.of(user.getDtype(), user.getId());
     }
 
     @Override

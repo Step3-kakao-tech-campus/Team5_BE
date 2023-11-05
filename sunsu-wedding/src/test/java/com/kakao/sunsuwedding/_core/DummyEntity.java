@@ -61,6 +61,7 @@ public class DummyEntity {
     protected Portfolio newPortfolio(Planner planner){
         return Portfolio.builder()
                 .planner(planner)
+                .plannerName("plannerName")
                 .title("newTitle")
                 .description("newDescription")
                 .location("newLocation")

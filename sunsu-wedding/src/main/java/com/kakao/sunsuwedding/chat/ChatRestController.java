@@ -18,8 +18,7 @@ public class ChatRestController {
     @PostMapping("")
     public ResponseEntity<?> addChat(@AuthenticationPrincipal CustomUserDetails userDetails,
                                      @Valid @RequestBody ChatRequest.AddChatDTO request) {
-        ChatResponse.ChatDTO response = chatService.addChat(userDetails.getInfo(), request);
-
+        ChatResponse.ChatDTO response = chatService.addChat(userDetails.getUser(), request);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 }

@@ -19,15 +19,13 @@ public class MatchRestController {
     @PostMapping("/confirmAll")
     public ResponseEntity<?> confirmAll(@AuthenticationPrincipal CustomUserDetails userDetails,
                                         @RequestParam @Min(1) Long chatId) {
-        matchService.confirmAll(userDetails.getInfo(), chatId);
-
+        matchService.confirmAll(userDetails.getUser(), chatId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping("/reviews")
     public ResponseEntity<?> findAllWithNoReview(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        MatchResponse.FindAllWithNoReviewDTO response = matchService.findAllWithNoReview(userDetails.getInfo());
-
+        MatchResponse.FindAllWithNoReviewDTO response = matchService.findAllWithNoReview(userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 

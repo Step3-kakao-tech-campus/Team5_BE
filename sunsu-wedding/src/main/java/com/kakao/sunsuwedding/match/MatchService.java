@@ -10,6 +10,7 @@ import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
 import com.kakao.sunsuwedding.quotation.QuotationStatus;
 import com.kakao.sunsuwedding.review.ReviewResponse;
+import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
@@ -28,33 +29,32 @@ import java.util.List;
 public class MatchService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
-    private final PortfolioService portfolioService;
     private final CoupleJPARepository coupleJPARepository;
+
+    private final PortfolioService portfolioService;
 
     @Transactional
     public void addMatch(Couple couple, Planner planner, Chat chat) {
         List<Match> matches = matchJPARepository.findByCoupleAndPlanner(couple, planner);
-
         // 플래너, 유저 매칭은 최대 한 개까지만 생성 가능
         if (!matches.isEmpty()){
             throw new BadRequestException(BaseException.MATCHING_ALREADY_EXIST);
         }
-
-        Match match = matchJPARepository.save(
-                Match.builder()
-                        .couple(couple)
-                        .planner(planner)
-                        .chat(chat)
-                        .price(0L)
-                        .build()
+        matchJPARepository.save(
+            Match.builder()
+                    .couple(couple)
+                    .planner(planner)
+                    .chat(chat)
+                    .price(0L)
+                    .build()
         );
     }
 
-    public MatchResponse.FindAllWithNoReviewDTO findAllWithNoReview(Pair<String, Long> info) {
-        if (info.getFirst().equals(Role.PLANNER.getRoleName())) {
+    public MatchResponse.FindAllWithNoReviewDTO findAllWithNoReview(User user) {
+        if (user.getDtype().equals(Role.PLANNER.getRoleName())) {
             throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
-        Couple couple = coupleJPARepository.findById(info.getSecond()).orElseThrow(
+        Couple couple = coupleJPARepository.findById(user.getId()).orElseThrow(
                 () -> new NotFoundException(BaseException.USER_NOT_FOUND)
         );
 
@@ -69,26 +69,26 @@ public class MatchService {
 
     // Match Update : 확정 상태, 가격, 확정 날짜
     @Transactional
-    public void confirmAll(Pair<String, Long> info, Long chatId) {
+    public void confirmAll(User user, Long chatId) {
         Match match = matchJPARepository.findByChatId(chatId).orElseThrow(
                 () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
         // 유저 본인의 채팅방이 맞는지 확인
-        permissionCheck(info, match);
+        permissionCheck(user.getDtype(), user.getId(), match);
+
         // 플래너가 1개씩 전부 확정한 후에 예비 부부가 전체 확정 가능
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
-        Boolean isAllConfirmed = isAllConfirmed(quotations);
 
         // 모든 견적서 확정 완료 시
-        if (isAllConfirmed) {
+        if (isAllConfirmed(quotations)) {
             match.updateStatusConfirmed();
             match.updateConfirmedPrice(match.getPrice());
             matchJPARepository.save(match);
             // 견적서 전체 확정 후 플래너 포트폴리오의 avg, min, max price 업데이트 하기
             portfolioService.updateConfirmedPrices(match.getPlanner());
         }
-        // 확정되지 않은 견적서가 있을 때
         else {
+            // 확정되지 않은 견적서가 있을 때 에러 반환
             throw new BadRequestException(BaseException.QUOTATIONS_NOT_ALL_CONFIRMED);
         }
     }
@@ -104,16 +104,13 @@ public class MatchService {
         }
     }
 
-    private void permissionCheck(Pair<String, Long> info, Match match) {
-        String role = info.getFirst();
-        Long id = info.getSecond();
-        if (role.equals(Role.PLANNER.getRoleName())) {
-            if (!match.getPlanner().getId().equals(id))
-                throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
-        }
-        else {
-            if (!match.getCouple().getId().equals(id))
-                throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
+    private void permissionCheck(String role, Long userId, Match match) {
+        Boolean isPlanner = role.equals(Role.PLANNER.getRoleName());
+        Boolean isInvalidUser = isPlanner ? !match.getPlanner().getId().equals(userId)
+                : !match.getCouple().getId().equals(userId);
+
+        if (isInvalidUser){
+            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
     }
 

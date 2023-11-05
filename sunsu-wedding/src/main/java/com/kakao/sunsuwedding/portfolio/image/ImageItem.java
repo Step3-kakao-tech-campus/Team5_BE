@@ -41,10 +41,10 @@ public class ImageItem {
     private Long fileSize;
 
     @Column(nullable = false)
-    private boolean thumbnail;
+    private Boolean thumbnail;
 
     @Builder
-    public ImageItem(Long id, Portfolio portfolio, String originFileName, String filePath, Long fileSize, boolean thumbnail) {
+    public ImageItem(Long id, Portfolio portfolio, String originFileName, String filePath, Long fileSize, Boolean thumbnail) {
         this.id = id;
         this.portfolio = portfolio;
         this.originFileName = originFileName;
