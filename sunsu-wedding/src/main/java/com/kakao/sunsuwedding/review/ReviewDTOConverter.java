@@ -8,6 +8,7 @@ public class ReviewDTOConverter {
                 .map(review -> new ReviewResponse.FindByPlannerDTO(
                         review.id,
                         (review.getMatch().getCouple() != null) ? review.getMatch().getCouple().getUsername() : "탈퇴한 사용자" ,
+                        review.stars,
                         review.content)
                 )
                 .toList();
@@ -18,6 +19,7 @@ public class ReviewDTOConverter {
                 .map(review -> new ReviewResponse.ReviewDTO(
                         review.id,
                         (review.getMatch().getPlanner() != null) ? review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자" ,
+                        review.stars,
                         review.content)
                 )
                 .toList();

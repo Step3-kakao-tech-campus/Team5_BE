@@ -8,6 +8,7 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.match.ReviewStatus;
+import com.kakao.sunsuwedding.portfolio.PortfolioService;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.List;
 public class ReviewService {
     private final ReviewJPARepository reviewJPARepository;
     private final MatchJPARepository matchJPARepository;
+    private final PortfolioService portfolioService;
 
     @Transactional
     public void addReview(User user, Long chatId, ReviewRequest.AddDTO request) {
@@ -37,15 +39,18 @@ public class ReviewService {
         permissionCheck(user.getId(), match); //본인의 매칭이 맞는지 확인
         matchConfirmedCheck(match); // 리뷰 작성 가능한 상태인지 확인
 
-        // 첫 리뷰라면 리뷰 작성 여부 업데이트
-        updateReviewStatus(match);
-
         reviewJPARepository.save(
                 Review.builder()
                     .match(match)
+                    .stars(request.stars())
                     .content(request.content())
                     .build()
         );
+
+        // 첫 리뷰라면 리뷰 작성 여부 업데이트
+        updateReviewStatus(match);
+        // 평균 평점 수정
+        portfolioService.updateAvgStars(match.getPlanner());
     }
 
     public ReviewResponse.FindAllByPlannerDTO findAllByPlanner(int page, Long plannerId) {
@@ -78,7 +83,7 @@ public class ReviewService {
 
         String plannerName = (review.getMatch().getPlanner() != null ) ?
                               review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자";
-        return new ReviewResponse.ReviewDTO(review.getId(), plannerName, review.getContent());
+        return new ReviewResponse.ReviewDTO(review.getId(), plannerName, review.stars, review.getContent());
     }
 
     @Transactional
@@ -90,7 +95,11 @@ public class ReviewService {
         roleCheck(user.getDtype());
         permissionCheck(user.getId(), review.getMatch());
 
-        review.updateContent(request.content());
+        review.updateReview(request);
+
+        // 평균 평점 수정
+        portfolioService.updateAvgStars(review.getMatch().getPlanner());
+
         reviewJPARepository.save(review);
     }
 
@@ -105,6 +114,9 @@ public class ReviewService {
         permissionCheck(user.getId(), review.getMatch());
 
         reviewJPARepository.delete(review);
+
+        // 평균 평점 수정
+        portfolioService.updateAvgStars(review.getMatch().getPlanner());
         // 삭제 후 리뷰가 1개도 없다면 ReviewStatus UNWRITTEN으로 변경
         if (reviewJPARepository.findAllByMatch(match).isEmpty()) {
             updateReviewStatus(match);

@@ -26,6 +26,9 @@ public class Review {
     Match match;
 
     @Column(nullable = false)
+    Integer stars;
+
+    @Column(nullable = false)
     String content;
 
     @Column(name = "created_at", nullable = false)
@@ -38,16 +41,18 @@ public class Review {
     Boolean isActive;
 
     @Builder
-    public Review (Long id, Match match, String content, LocalDateTime createdAt) {
+    public Review (Long id, Match match, Integer stars, String content, LocalDateTime createdAt) {
         this.id = id;
         this.match = match;
+        this.stars = stars;
         this.content = content;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
         this.isActive = true;
     }
 
-    public void updateContent(String content) {
-        this.content = content;
+    public void updateReview(ReviewRequest.UpdateDTO request) {
+        this.content = request.content();
+        this.stars = request.stars();
         this.modifiedAt = LocalDateTime.now();
     }
 }
