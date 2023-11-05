@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/portfolios")
+@RequestMapping("/api/portfolios")
 public class PortfolioRestController {
     private final PortfolioService portfolioService;
     private final ImageItemService imageItemService;
