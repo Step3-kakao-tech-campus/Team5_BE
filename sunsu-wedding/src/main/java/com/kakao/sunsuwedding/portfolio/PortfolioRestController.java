@@ -4,12 +4,9 @@ import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
-import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
-import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +20,7 @@ import java.util.List;
 @RequestMapping("/portfolios")
 public class PortfolioRestController {
     private final PortfolioService portfolioService;
-    private final ImageItemService imageItemService;
+
     private static final int PAGE_SIZE = 10;
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
