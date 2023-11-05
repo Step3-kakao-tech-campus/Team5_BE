@@ -31,6 +31,13 @@ public enum BaseException {
     TOKEN_NOT_VALID("로그인 토큰이 유효하지 않습니다. 다시 로그인 해주세요.", 2104, 401),
     TOKEN_REFRESH_FORBIDDEN("토큰을 갱신할 수 없습니다.", 2105, 401),
 
+    // 이메일 2200
+    CODE_GENERATE_ERROR("인증코드 생성 과정에서 오류가 발생했습니다.", 2200, 500),
+    EMAIL_GENERATE_ERROR("이메일 생성 과정에서 오류가 발생했습니다.", 2201, 500),
+    CODE_NOT_FOUND("인증코드 전송 내역이 없습니다. 인증코드를 요청 후 진행해주세요.", 2202, 404),
+    CODE_EXPIRED("인증코드가 만료되었습니다. 다시 요청해주세요.", 2203, 400),
+    CODE_NOT_MATCHED("인증코드가 일치하지 않습니다.", 2204, 400),
+
     // 결제 3000
     PAYMENT_WRONG_INFORMATION("잘못된 결제 정보입니다.", 3000, 400),
     PAYMENT_NOT_FOUND("결제 내용이 존재하지 않습니다.", 3001, 404),

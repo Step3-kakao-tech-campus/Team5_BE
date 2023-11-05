@@ -9,6 +9,8 @@ env:
   JWT_ACCESS_SECRET: ${{secrets.JWT_ACCESS_SECRET}}
   JWT_REFRESH_SECRET: ${{secrets.JWT_REFRESH_SECRET}}
   TOSS_PAYMENT_SECRET: ${{secrets.TOSS_PAYMENT_SECRET}}
+  SENDER: ${{secrets.SENDER}}
+  GMAIL_PASSWORD: ${{secrets.GMAIL_PASSWORD}}
 
 jobs:
   build:
