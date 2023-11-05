@@ -62,12 +62,12 @@ public class Match {
     private Boolean isActive;
 
     @Builder
-    public Match(Long id, Planner planner, Couple couple, Chat chat, Long price, Long confirmedPrice) {
+    public Match(Long id, Planner planner, Couple couple, Chat chat, MatchStatus status, Long price, Long confirmedPrice) {
         this.id = id;
         this.planner = planner;
         this.couple = couple;
         this.chat = chat;
-        this.status = MatchStatus.UNCONFIRMED;
+        this.status = (status == null ? MatchStatus.UNCONFIRMED : status);
         this.price = price;
         this.confirmedPrice = (confirmedPrice == null? 0 : confirmedPrice);
         this.reviewStatus = ReviewStatus.UNWRITTEN;
