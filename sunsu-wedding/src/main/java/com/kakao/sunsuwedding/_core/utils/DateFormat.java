@@ -10,4 +10,10 @@ public class DateFormat {
         else return time.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
     }
 
+    public static String dateFormatToMinuteKorean(LocalDateTime time){
+        if (time == null) return "";
+        else return time.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+    }
+
+
 }

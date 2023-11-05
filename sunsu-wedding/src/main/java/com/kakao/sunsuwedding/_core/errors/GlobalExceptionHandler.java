@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> databaseException(){
         BaseException e = BaseException.DATABASE_ERROR;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return response(ApiUtils.error(e.getMessage(), status), status);
+        return response(ApiUtils.error(e), status);
     }
 
     @ExceptionHandler(BadRequestException.class)

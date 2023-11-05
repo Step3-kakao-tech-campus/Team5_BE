@@ -1,7 +1,11 @@
-package com.kakao.sunsuwedding._core.security;
+package com.kakao.sunsuwedding._core.config;
 
+import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
+import com.kakao.sunsuwedding._core.security.JWTProvider;
+import com.kakao.sunsuwedding._core.security.JwtAuthenticationFilter;
+import com.kakao.sunsuwedding._core.security.JwtExceptionFilter;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
 import com.kakao.sunsuwedding.user.token.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +23,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@RequiredArgsConstructor
+
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
@@ -69,23 +74,18 @@ public class SecurityConfig {
         // 8. 인증 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.authenticationEntryPoint((request, response, authException) -> {
-                    filterResponseUtils.unAuthorized(response, new UnauthorizedException("인증되지 않았습니다"));
+                    filterResponseUtils.writeResponse(response, new UnauthorizedException(BaseException.USER_UNAUTHORIZED));
                 })
         );
 
         // 9. 권한 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    filterResponseUtils.forbidden(response, new ForbiddenException("권한이 없습니다"));
+                    filterResponseUtils.writeResponse(response, new ForbiddenException(BaseException.USER_PERMISSION_DENIED));
                 })
         );
 
         // 11. 인증, 권한 필터 설정
-        /**
-         *  로그인 필요 X - 회원가입, 로그인, 포트폴리오 조회
-         *  웨딩 플래너만 - 게시글 등록 수정 삭제, 견적서 등록, 수정, 견적서 1개 확정
-         *  예비 부부만 - 채팅방 생성, 견적서 전체 확정, 견적서 전체 확정, 결제
-         */
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(
@@ -97,10 +97,12 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/user/**"),
                                 new AntPathRequestMatcher("/portfolios/**"),
                                 new AntPathRequestMatcher("/chat/**"),
+                                new AntPathRequestMatcher("/match/**"),
                                 new AntPathRequestMatcher("/quotations/**"),
-                                new AntPathRequestMatcher("/payments/**")
+                                new AntPathRequestMatcher("/payments/**"),
+                                new AntPathRequestMatcher("/reviews/**"),
+                                new AntPathRequestMatcher("/favorites/**")
                                 ).authenticated()
-                        // 검증 필요
                         .requestMatchers(
                                 new AntPathRequestMatcher("/chat", "POST"),
                                 new AntPathRequestMatcher("/quotations/confirmAll/**", "POST")
@@ -122,10 +124,10 @@ public class SecurityConfig {
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE (Javascript 요청 허용)
-        configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트 앤드 IP만 허용 react)
-        configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
-        configuration.addExposedHeader("Authorization"); // 옛날에는 디폴트 였다. 지금은 아닙니다.
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedOriginPattern("*");
+        configuration.setAllowCredentials(true);
+        configuration.addExposedHeader("Authorization");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

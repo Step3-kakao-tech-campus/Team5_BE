@@ -2,7 +2,6 @@ package com.kakao.sunsuwedding._core.security;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
@@ -21,14 +20,10 @@ import java.io.IOException;
 
 @Component
 public class JwtExceptionFilter extends OncePerRequestFilter {
-
-    private final ObjectMapper om;
-
     private final FilterResponseUtils filterResponseUtils;
 
     @Autowired
-    public JwtExceptionFilter(ObjectMapper om, FilterResponseUtils filterResponseUtils) {
-        this.om = om;
+    public JwtExceptionFilter(FilterResponseUtils filterResponseUtils) {
         this.filterResponseUtils = filterResponseUtils;
     }
 
@@ -37,20 +32,11 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             chain.doFilter(request, response);
         }
-        catch (TokenException tokenException) {
-            filterResponseUtils.tokenError(response, tokenException);
-        }
-        catch (UnauthorizedException unauthorizedException) {
-            filterResponseUtils.unAuthorized(response, unauthorizedException);
-        }
-        catch (ForbiddenException forbiddenException) {
-            filterResponseUtils.forbidden(response, forbiddenException);
-        }
-        catch (NotFoundException notFoundException) {
-            filterResponseUtils.notFound(response, notFoundException);
+        catch (TokenException | UnauthorizedException | ForbiddenException | NotFoundException exception) {
+            filterResponseUtils.writeResponse(response, exception);
         }
         catch (JWTCreationException | JWTVerificationException e) {
-            filterResponseUtils.unAuthorized(response, new UnauthorizedException(BaseException.TOKEN_NOT_FOUND));
+            filterResponseUtils.writeResponse(response, new UnauthorizedException(BaseException.TOKEN_NOT_FOUND));
         }
     }
 }

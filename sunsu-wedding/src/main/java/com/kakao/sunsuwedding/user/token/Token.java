@@ -8,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 @Table(name = "token_tb")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
