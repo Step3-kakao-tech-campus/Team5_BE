@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kakao.sunsuwedding._core.constants.Constants.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,42 +31,31 @@ public class ImageItemService {
     private final ImageItemJDBCRepository imageItemJDBCRepository;
 
     public void uploadImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
-        // 요청받은 이미지가 5개를 넘으면 예외처리
-        if (images.length > 5) throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
-
-        // 저장 경로 설정 (root -> gallery -> {userId}_{username} 폴더)
-        String uploadDirectory = setDirectoryPath(planner.getId(), planner.getUsername());
-        makeDirectory(uploadDirectory);
-
-        // 이미지 생성 및 DB 저장
-        saveImage(images, portfolio, uploadDirectory);
+        validateImages(images);
+        String path = generateDirectoryPath(planner.getId(), planner.getUsername());
+        makeDirectory(path);
+        storeImagesInServerAndDatabase(images, portfolio, path);
     }
 
     public void updateImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
-        // 요청받은 이미지가 5개를 넘으면 예외처리
-        if (images.length > 5)
-            throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
-
-        // 저장 경로 설정 (root -> gallery -> {userId}_{username} 폴더)
-        String uploadDirectory = setDirectoryPath(planner.getId(), planner.getUsername());
-        File directory = makeDirectory(uploadDirectory);
-
-        // 기존의 서버 이미지 파일 및 DB 메타데이터 삭제
+        validateImages(images);
+        String path = generateDirectoryPath(planner.getId(), planner.getUsername());
+        File directory = makeDirectory(path);
         cleanExistedImage(directory, portfolio.getId());
-
-        // 이미지 생성 및 DB 저장
-        saveImage(images, portfolio, uploadDirectory);
+        storeImagesInServerAndDatabase(images, portfolio, path);
     }
 
-    private String setDirectoryPath(Long id, String username) {
-        String separator = System.getProperty("file.separator");
-        String baseDirectory = System.getProperty("user.dir") + separator + "gallery" + separator;
-
-        return baseDirectory + id + "_" + username + separator;
+    private void validateImages(MultipartFile[] images) {
+        if (images.length > 5) throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
     }
 
-    private File makeDirectory(String uploadDirectory) {
-        File directory = new File(uploadDirectory);
+    private String generateDirectoryPath(Long plannerId, String username) {
+        // ex) ../kakao/sunsuwedding/gallery/1_meta/
+        return SYSTEM_DIRECTORY + SYSTEM_SEPARATOR + "gallery" + SYSTEM_SEPARATOR + plannerId + "_" + username + SYSTEM_SEPARATOR;
+    }
+
+    private File makeDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
         if (!directory.exists()) {
             // 디렉토리가 존재하지 않으면 생성
             boolean isCreated = directory.mkdirs();
@@ -75,26 +66,30 @@ public class ImageItemService {
         }
         return directory;
     }
-    private void cleanExistedImage(File directory, Long portfolioId) {
-        // 이미지 파일을 Base64로 인코딩하고 나니까 확장자가 사라져서
-        // 일단 그대로 디렉토리 내 파일 일괄 삭제하는 로직
-        try {
-            FileUtils.cleanDirectory(directory);
+
+    private void storeImagesInServerAndDatabase(MultipartFile[] images, Portfolio portfolio, String directoryPath) {
+        List<ImageItem> imageItems = new ArrayList<>();
+        for (MultipartFile image : images) {
+            String uploadImagePath = makeImageFile(directoryPath, image);
+            ImageItem imageItem = ImageItem.builder()
+                    .portfolio(portfolio)
+                    .originFileName(image.getOriginalFilename())
+                    .filePath(uploadImagePath)
+                    .fileSize(image.getSize())
+                    .thumbnail(image == images[0])
+                    .build();
+            imageItems.add(imageItem);
         }
-        catch (Exception e) {
-            throw new ServerException(BaseException.PORTFOLIO_CLEAN_DIRECTORY_ERROR);
-        }
-        // TODO: 삭제할 이미지 데이터가 존재하지 않는 경우 예외처리
-        imageItemJPARepository.deleteAllByPortfolioId(portfolioId);
+        imageItemJDBCRepository.batchInsertImageItems(imageItems);
     }
 
-    private String makeImageFile(String uploadDirectory, MultipartFile image) {
+    private String makeImageFile(String directoryPath, MultipartFile image) {
         try {
             // 이미지 파일 생성
             String originalImageName = image.getOriginalFilename();
             String NameWithoutExtension = originalImageName.split("\\.")[0];
             String uploadImageName = UUID.randomUUID() + "(" + NameWithoutExtension + ")";
-            String uploadImagePath = uploadDirectory + uploadImageName;
+            String uploadImagePath = directoryPath + uploadImageName;
             image.transferTo(new File(uploadImagePath));
             logger.debug("Trying to process image: {}", image.getOriginalFilename());
 
@@ -106,19 +101,15 @@ public class ImageItemService {
         }
     }
 
-    private void saveImage(MultipartFile[] images, Portfolio portfolio, String uploadDirectory) {
-        List<ImageItem> imageItems = new ArrayList<>();
-        for (MultipartFile image : images) {
-            String uploadImagePath = makeImageFile(uploadDirectory, image);
-            ImageItem imageItem = ImageItem.builder()
-                    .portfolio(portfolio)
-                    .originFileName(image.getOriginalFilename())
-                    .filePath(uploadImagePath)
-                    .fileSize(image.getSize())
-                    .thumbnail(image == images[0])
-                    .build();
-            imageItems.add(imageItem);
+    private void cleanExistedImage(File directory, Long portfolioId) {
+        // 이미지 파일을 Base64로 인코딩하고 나니까 확장자가 사라져서
+        // 일단 그대로 디렉토리 내 파일 일괄 삭제하는 로직
+        try {
+            FileUtils.cleanDirectory(directory);
         }
-        imageItemJDBCRepository.batchInsertImageItems(imageItems);
+        catch (Exception e) {throw new ServerException(BaseException.PORTFOLIO_CLEAN_DIRECTORY_ERROR);}
+
+        // TODO: 삭제할 이미지 데이터가 존재하지 않는 경우 예외처리
+        imageItemJPARepository.deleteAllByPortfolioId(portfolioId);
     }
 }
