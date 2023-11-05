@@ -1,6 +1,8 @@
 package com.kakao.sunsuwedding.user.mail;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
+import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
+import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import com.kakao.sunsuwedding._core.utils.UserDataChecker;
 import jakarta.mail.MessagingException;
@@ -13,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -21,9 +26,10 @@ import java.util.stream.IntStream;
 public class MailService {
     private final UserDataChecker userDataChecker;
     private final JavaMailSenderImpl javaMailSender;
-    private final MailJPARepository mailJPARepository;
+    private final MailCodeJPARepository mailCodeJPARepository;
 
     private final static int CODE_LENGTH = 6;
+    private final static int CODE_EXP = 60 * 30;
 
     @Value("${email.username}")
     private String sender;
@@ -36,16 +42,31 @@ public class MailService {
         MimeMessage email = createMail(request.email(), code);
         javaMailSender.send(email);
 
-        mailJPARepository.save(
-                Mail.builder()
-                        .code(code)
-                        .eamil(request.email())
-                        .build()
-        );
+        MailCode mailCode = mailCodeJPARepository.findByEmail(request.email())
+                        .orElse(MailCode.builder().build());
+
+        mailCode.setCode(code);
+        mailCode.setEmail(request.email());
+        mailCode.setCreatedAt(LocalDateTime.now());
+
+        mailCodeJPARepository.save(mailCode);
     }
 
-    public void verify(String code) {
+    public void verify(MailRequest.CheckCode request) {
+        MailCode mailCode = mailCodeJPARepository.findByEmail(request.email())
+                .orElseThrow(() -> new NotFoundException(BaseException.CODE_NOT_FOUND));
 
+        Duration duration = Duration.between(mailCode.getCreatedAt(), LocalDateTime.now());
+        if (duration.getSeconds() > CODE_EXP) {
+            mailCodeJPARepository.delete(mailCode);
+            throw new BadRequestException(BaseException.CODE_EXPIRED);
+        }
+
+        if (!Objects.equals(mailCode.getCode(), request.code())) {
+            throw new BadRequestException(BaseException.CODE_NOT_MATCHED);
+        }
+
+        mailCodeJPARepository.delete(mailCode);
     }
 
     private String generateCode() {

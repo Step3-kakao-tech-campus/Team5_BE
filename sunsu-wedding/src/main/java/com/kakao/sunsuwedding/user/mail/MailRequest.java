@@ -6,6 +6,7 @@ public class MailRequest {
     ) {}
 
     public record CheckCode(
+            String email,
             String code
     ) {}
 }

@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Where(clause = "is_active = true")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Mail {
+public class MailCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column(name = "email", nullable = false)
-    String eamil;
+    String email;
 
     @Column(name = "code", nullable = false)
     String code;
@@ -34,11 +34,23 @@ public class Mail {
     Boolean isActive;
 
     @Builder
-    public Mail(Long id, String eamil, String code, LocalDateTime createdAt) {
+    public MailCode(Long id, String email, String code, LocalDateTime createdAt) {
         this.id = id;
-        this.eamil = eamil;
+        this.email = email;
         this.code = code;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
         this.isActive = true;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
