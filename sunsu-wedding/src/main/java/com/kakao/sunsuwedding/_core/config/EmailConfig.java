@@ -22,7 +22,7 @@ public class EmailConfig {
         javaMailSender.setHost("smtp.gmail.com");
         javaMailSender.setUsername(username);
         javaMailSender.setPassword(password);
-        javaMailSender.setPort(465);
+        javaMailSender.setPort(587);
         javaMailSender.setJavaMailProperties(getEmailProperties());
 
         return javaMailSender;
@@ -35,7 +35,7 @@ public class EmailConfig {
         properties.setProperty("mail.transport.protocol", "smtp");
         properties.setProperty("mail.debug", "true");
         properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.timeout", "5000");
+        properties.setProperty("mail.smtp.timeout", "10000");
         properties.setProperty("mail.smtp.starttls.enable", "true");
 
         return properties;

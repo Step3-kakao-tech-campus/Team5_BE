@@ -70,12 +70,19 @@ public class MailService {
             email.setRecipients(MimeMessage.RecipientType.TO, receiver);
             email.setSubject("순수웨딩 회원가입 이메일 인증 코드");
 
-            String body =
-                    "<h3>" + "요청하신 인증코드 입니다." + "</h3>" +
-                    "<h1>" + code + "</h1>" +
-                    "<h3>" + "감사합니다." + "</h3>";
+            String body = String.format("""
+                            <div style="text-align: center; font-size: 1.2rem;">
+                                <h1 style="padding-top: 50px;">순수웨딩</h1>
+                                <hr color="#EOEOEO"/>
+                                <p style="margin: 50px 0 0 0">순수웨딩 회원가입 이메일 인증코드입니다.</p>
+                                <h2 style="margin-bottom: 50px;">인증코드: <span style="color: #4299EC;">%s</span></h2>
+                                <p>해당 인증코드는 30분 이내 1회만 사용 가능합니다.<br/>이후에는 인증코드를 다시 요청하셔야 합니다.</p>
+                                <p>감사합니다.</p>
+                                <p><b>- 순수웨딩 -</b></p>
+                            </div>
+                            """, code);
 
-            email.setText(body);
+            email.setText(body, "UTF-8", "html");
         } catch (MessagingException e) {
             throw new ServerException(BaseException.EMAIL_GENERATE_ERROR);
         }
