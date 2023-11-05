@@ -149,7 +149,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/match/api/reviews")
+                        .get("/api/match/reviews")
         );
 
         logResult(result);
