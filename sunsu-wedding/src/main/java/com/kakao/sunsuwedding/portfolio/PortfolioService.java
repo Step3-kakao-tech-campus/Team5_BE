@@ -162,7 +162,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 이미지 저장
-        imageItemService.uploadImage(images, portfolio, planner);
+        imageItemService.updateImage(request.imagePaths(), images, portfolio, planner);
     }
 
     @Transactional

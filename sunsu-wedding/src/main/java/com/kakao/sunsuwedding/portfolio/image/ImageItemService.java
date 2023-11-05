@@ -4,6 +4,7 @@ import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
+import com.kakao.sunsuwedding.portfolio.PortfolioRequest;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -30,23 +31,29 @@ public class ImageItemService {
     private final ImageItemJPARepository imageItemJPARepository;
     private final ImageItemJDBCRepository imageItemJDBCRepository;
 
+    @Transactional
     public void uploadImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
-        validateImages(images);
+        if (images.length > 5) throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
+
         String path = generateDirectoryPath(planner.getId(), planner.getUsername());
         makeDirectory(path);
         storeImagesInServerAndDatabase(images, portfolio, path);
     }
 
-    public void updateImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
-        validateImages(images);
+    @Transactional
+    public void updateImage(List<PortfolioRequest.ImagePathDTO> imagePathDTOS, MultipartFile[] images, Portfolio portfolio, Planner planner) {
         String path = generateDirectoryPath(planner.getId(), planner.getUsername());
         File directory = makeDirectory(path);
-        cleanExistedImage(directory, portfolio.getId());
-        storeImagesInServerAndDatabase(images, portfolio, path);
-    }
 
-    private void validateImages(MultipartFile[] images) {
-        if (images.length > 5) throw new BadRequestException(BaseException.PORTFOLIO_IMAGE_COUNT_EXCEED);
+        for (PortfolioRequest.ImagePathDTO dto : imagePathDTOS) {
+            if (!dto.isValid()) {
+                imageItemJPARepository.deleteByPath(dto.path());
+                File existedImage = new File(dto.path());
+                if (existedImage.exists()) existedImage.delete();
+                else throw new ServerException(BaseException.PORTFOLIO_IMAGE_DELETE_ERROR);
+            }
+        }
+        storeImagesInServerAndDatabase(images, portfolio, path);
     }
 
     private String generateDirectoryPath(Long plannerId, String username) {

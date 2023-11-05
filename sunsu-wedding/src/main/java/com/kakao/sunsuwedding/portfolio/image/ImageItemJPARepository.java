@@ -22,4 +22,8 @@ public interface ImageItemJPARepository extends JpaRepository<ImageItem, Long> {
     void deleteAllByPortfolioId(@Param("portfolioId") Long portfolioId);
 
     void deleteAllByPortfolioPlannerId(Long id);
+
+    @Modifying
+    @Query("delete from ImageItem i where i.filePath = :path")
+    void deleteByPath(@Param("path") String path);
 }
