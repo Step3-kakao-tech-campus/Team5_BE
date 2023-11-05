@@ -100,14 +100,14 @@ public class PortfolioService {
         Long nextKey = getNextKey(portfolios);
 
         List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
-        List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
+        List<String> imagePaths = imageItems.stream().map(ImageItem::getFilePath).toList();
         List<Favorite> favorites = new ArrayList<>();
 
         // 유저가 존재하는 경우 찜하기 누른 목록 받아옴
         if (userId >= 0)
              favorites = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
 
-        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages, favorites);
+        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, imagePaths, favorites);
         return new PageCursor<>(data, request.next(nextKey).key());
     }
 
@@ -121,7 +121,7 @@ public class PortfolioService {
             throw new NotFoundException(BaseException.PLANNER_NOT_FOUND);
 
         List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolioId);
-        List<String> images  = encodeImages(imageItems);
+        List<String> imagePaths  = imageItems.stream().map(ImageItem::getFilePath).toList();
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolioId);
 
         // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
@@ -143,7 +143,7 @@ public class PortfolioService {
             }
         }
 
-        return PortfolioDTOConverter.FindByIdDTOConvertor(portfolio, images, priceItems, matches, quotations, isLiked, isPremium);
+        return PortfolioDTOConverter.FindByIdDTOConvertor(portfolio, imagePaths, priceItems, matches, quotations, isLiked, isPremium);
     }
 
     @Transactional

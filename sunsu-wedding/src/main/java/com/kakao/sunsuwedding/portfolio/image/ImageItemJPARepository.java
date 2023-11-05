@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 public interface ImageItemJPARepository extends JpaRepository<ImageItem, Long> {
+
     List<ImageItem> findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(Boolean thumbnail, List<Portfolio> portfolios);
 
     @EntityGraph("ImageItemWithPortfolioAndPlanner")
