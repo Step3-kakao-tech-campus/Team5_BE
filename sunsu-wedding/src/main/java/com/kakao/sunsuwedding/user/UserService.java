@@ -3,9 +3,8 @@ package com.kakao.sunsuwedding.user;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
-import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
-import com.kakao.sunsuwedding._core.utils.DateFormat;
+import com.kakao.sunsuwedding._core.utils.UserDataChecker;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Role;
@@ -21,9 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-import java.util.Optional;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -35,11 +31,12 @@ public class UserService {
     private final PlannerJPARepository plannerJPARepository;
     private final TokenJPARepository tokenJPARepository;
     private final JWTProvider jwtProvider;
+    private final UserDataChecker userDataChecker;
 
     @Transactional
     public UserResponse.FindUserId signup(UserRequest.SignUpDTO requestDTO) {
-        sameCheckEmail(requestDTO.email());
-        sameCheckPassword(requestDTO.password(), requestDTO.password2());
+        userDataChecker.sameCheckEmail(requestDTO.email());
+        userDataChecker.sameCheckPassword(requestDTO.password(), requestDTO.password2());
         Role role = Role.valueOfRole(requestDTO.role());
         String encodedPassword = passwordEncoder.encode(requestDTO.password());
         User user;
@@ -84,20 +81,6 @@ public class UserService {
     public void withdraw(User user) {
         findUserById(user.getId());
         userJPARepository.deleteById(user.getId());
-    }
-
-    private void sameCheckPassword(String password, String password2) {
-        Boolean isEqual = Objects.equals(password, password2);
-        if (!isEqual){
-            throw new BadRequestException(BaseException.USER_PASSWORD_NOT_SAME);
-        }
-    }
-
-    private void sameCheckEmail(String email) {
-        Optional<User> userOptional = userJPARepository.findByEmailNative(email);
-        if (userOptional.isPresent()){
-            throw new BadRequestException(BaseException.USER_EMAIL_EXIST);
-        }
     }
 
     private User findUserById(Long userId){
