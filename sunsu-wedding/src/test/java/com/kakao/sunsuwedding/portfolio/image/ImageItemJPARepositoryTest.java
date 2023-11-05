@@ -32,10 +32,13 @@ public class ImageItemJPARepositoryTest extends DummyEntity {
     @Autowired
     private EntityManager entityManager;
 
+    Long plannerId;
+
     @BeforeEach
     void setUp(){
 
         Planner planner = plannerJPARepository.save(newPlanner("imagePlanner"));
+        plannerId = planner.getId();
         Portfolio portfolio = portfolioJPARepository.save(newPortfolio(planner));
 
         Planner planner2 = plannerJPARepository.save(newPlanner("imagePlanner2"));
@@ -107,11 +110,11 @@ public class ImageItemJPARepositoryTest extends DummyEntity {
         // then
         assertThat(previousCount-2).isEqualTo(imageItemJPARepository.count());
     }
+
     @DisplayName("플래너 ID로 이미지 삭제하기 - deleteAllByPortfolioPlannerId()")
     @Test
     void deleteAllByPortfolioPlannerIdTest(){
         // when
-        Long plannerId = 1L;
         Long previousCount = imageItemJPARepository.count();
 
         // given
