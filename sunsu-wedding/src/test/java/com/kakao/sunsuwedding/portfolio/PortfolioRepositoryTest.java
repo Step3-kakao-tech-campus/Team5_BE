@@ -91,7 +91,7 @@ public class PortfolioRepositoryTest {
 
         // then
         assertThat(portfolioJPARepository.count()).isEqualTo(previous_count + 1);
-        assertThat(portfolioPS.getId()).isEqualTo(3);
+        assertThat(portfolioPS.getId()).isEqualTo(3L);
     }
 
     @DisplayName("Portfolio Repository Test : read")
