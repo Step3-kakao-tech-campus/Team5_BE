@@ -5,9 +5,9 @@ import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding.portfolio.PortfolioJPARepository;
-import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
-import com.kakao.sunsuwedding.portfolio.image.ImageItem;
-import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageEncoder;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItem;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemJPARepository;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class FavoriteService {
 
     private final UserJPARepository userJPARepository;
     private final PortfolioJPARepository portfolioJPARepository;
-    private final ImageItemJPARepository imageItemJPARepository;
+    private final PortfolioImageItemJPARepository portfolioImageItemJPARepository;
     private final FavoriteJPARepository favoriteJPARepository;
 
     @Transactional
@@ -61,8 +61,8 @@ public class FavoriteService {
         // userId와 일치하는 favorite의 포트폴리오 내용들 가져옴
         List<Favorite> favoriteList = favoriteJPARepository.findByUserIdFetchJoinPortfolio(user.getId(), pageable);
         List<Portfolio> portfolioList = favoriteList.stream().map(Favorite::getPortfolio).toList();
-        List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolioList);
-        List<String> encodedImages = ImageEncoder.encode(portfolioList, imageItems);
+        List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolioList);
+        List<String> encodedImages = PortfolioImageEncoder.encode(portfolioList, portfolioImageItems);
         return FavoriteDTOConverter.findAllFavoritePortfolio(favoriteList, encodedImages);
     }
 

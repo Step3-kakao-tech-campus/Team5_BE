@@ -25,11 +25,11 @@ import static com.kakao.sunsuwedding._core.constants.Constants.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ImageItemService {
-    private static final Logger logger = LoggerFactory.getLogger(ImageItemService.class);
+public class PortfolioImageItemService {
+    private static final Logger logger = LoggerFactory.getLogger(PortfolioImageItemService.class);
 
-    private final ImageItemJPARepository imageItemJPARepository;
-    private final ImageItemJDBCRepository imageItemJDBCRepository;
+    private final PortfolioImageItemJPARepository portfolioImageItemJPARepository;
+    private final PortfolioImageItemJDBCRepository portfolioImageItemJDBCRepository;
 
     @Transactional
     public void uploadImage(MultipartFile[] images, Portfolio portfolio, Planner planner) {
@@ -47,7 +47,7 @@ public class ImageItemService {
 
         for (PortfolioRequest.ImagePathDTO dto : imagePathDTOS) {
             if (!dto.isValid()) {
-                imageItemJPARepository.deleteByPath(dto.path());
+                portfolioImageItemJPARepository.deleteByPath(dto.path());
                 File existedImage = new File(dto.path());
                 if (existedImage.exists()) existedImage.delete();
                 else throw new ServerException(BaseException.PORTFOLIO_IMAGE_DELETE_ERROR);
@@ -75,19 +75,19 @@ public class ImageItemService {
     }
 
     private void storeImagesInServerAndDatabase(MultipartFile[] images, Portfolio portfolio, String directoryPath) {
-        List<ImageItem> imageItems = new ArrayList<>();
+        List<PortfolioImageItem> portfolioImageItems = new ArrayList<>();
         for (MultipartFile image : images) {
             String uploadImagePath = makeImageFile(directoryPath, image);
-            ImageItem imageItem = ImageItem.builder()
+            PortfolioImageItem portfolioImageItem = PortfolioImageItem.builder()
                     .portfolio(portfolio)
                     .originFileName(image.getOriginalFilename())
                     .filePath(uploadImagePath)
                     .fileSize(image.getSize())
                     .thumbnail(image == images[0])
                     .build();
-            imageItems.add(imageItem);
+            portfolioImageItems.add(portfolioImageItem);
         }
-        imageItemJDBCRepository.batchInsertImageItems(imageItems);
+        portfolioImageItemJDBCRepository.batchInsertImageItems(portfolioImageItems);
     }
 
     private String makeImageFile(String directoryPath, MultipartFile image) {
@@ -117,6 +117,6 @@ public class ImageItemService {
         catch (Exception e) {throw new ServerException(BaseException.PORTFOLIO_CLEAN_DIRECTORY_ERROR);}
 
         // TODO: 삭제할 이미지 데이터가 존재하지 않는 경우 예외처리
-        imageItemJPARepository.deleteAllByPortfolioId(portfolioId);
+        portfolioImageItemJPARepository.deleteAllByPortfolioId(portfolioId);
     }
 }

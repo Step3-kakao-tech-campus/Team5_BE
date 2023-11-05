@@ -1,34 +1,35 @@
-package com.kakao.sunsuwedding.review.image;
+package com.kakao.sunsuwedding.portfolio.image;
 
-import com.kakao.sunsuwedding.review.Review;
+import com.kakao.sunsuwedding.portfolio.Portfolio;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Entity
-@Table(name = "imageitem_tb")
+@Table(name = "portfolioimageitem_tb")
 @NamedEntityGraphs({
         @NamedEntityGraph(
-                name = "ImageItemWithReview",
-                attributeNodes = @NamedAttributeNode("review")
+                name = "ImageItemWithPortfolio",
+                attributeNodes = @NamedAttributeNode("portfolio")
         ),
         @NamedEntityGraph(
-                name = "ImageItemWithReviewAndPlanner",
-                attributeNodes = @NamedAttributeNode(value = "review", subgraph = "reviewSubgraph"),
-                subgraphs = @NamedSubgraph(name = "reviewSubgraph", attributeNodes = @NamedAttributeNode("planner"))
+                name = "ImageItemWithPortfolioAndPlanner",
+                attributeNodes = @NamedAttributeNode(value = "portfolio", subgraph = "portfolioSubgraph"),
+                subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ImageItem {
+public class PortfolioImageItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Review review;
+    private Portfolio portfolio;
 
     @Column(name = "origin_file_name", nullable = false)
     private String originFileName;
@@ -40,16 +41,15 @@ public class ImageItem {
     private Long fileSize;
 
     @Column(nullable = false)
-    private boolean thumbnail;
+    private Boolean thumbnail;
 
     @Builder
-    public ImageItem(Long id, Review review, String originFileName, String filePath, Long fileSize, boolean thumbnail) {
+    public PortfolioImageItem(Long id, Portfolio portfolio, String originFileName, String filePath, Long fileSize, Boolean thumbnail) {
         this.id = id;
-        this.review = review;
+        this.portfolio = portfolio;
         this.originFileName = originFileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.thumbnail = thumbnail;
     }
 }
-

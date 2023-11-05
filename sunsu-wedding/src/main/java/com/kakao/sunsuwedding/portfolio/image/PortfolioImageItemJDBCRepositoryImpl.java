@@ -7,19 +7,19 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ImageItemJDBCRepositoryImpl implements ImageItemJDBCRepository {
+public class PortfolioImageItemJDBCRepositoryImpl implements PortfolioImageItemJDBCRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ImageItemJDBCRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public PortfolioImageItemJDBCRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void batchInsertImageItems(List<ImageItem> imageItems) {
-        String sql = "INSERT INTO imageitem_tb (portfolio_id, origin_file_name, file_path, file_size, thumbnail) VALUES (?, ?, ?, ?, ?)";
+    public void batchInsertImageItems(List<PortfolioImageItem> portfolioImageItems) {
+        String sql = "INSERT INTO portfolioimageitem_tb (portfolio_id, origin_file_name, file_path, file_size, thumbnail) VALUES (?, ?, ?, ?, ?)";
 
-        jdbcTemplate.batchUpdate(sql, imageItems, imageItems.size(),
+        jdbcTemplate.batchUpdate(sql, portfolioImageItems, portfolioImageItems.size(),
                 (ps, imageItem) -> {
                     ps.setLong(1, imageItem.getPortfolio().getId());
                     ps.setString(2, imageItem.getOriginFileName());
