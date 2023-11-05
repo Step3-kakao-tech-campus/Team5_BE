@@ -1,20 +1,16 @@
 package com.kakao.sunsuwedding.match;
 
-import com.kakao.sunsuwedding.user.couple.Couple;
-import com.kakao.sunsuwedding.user.planner.Planner;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
 public class MatchResponse {
+    public record FindAllWithNoReviewDTO(
+            List<MatchDTO> matches
+    ) {}
 
-    @Getter @Setter
-    public static class ChatByIdDTO {
-        Long chatId;
-
-        public ChatByIdDTO(Match match){
-            this.chatId = match.getId();
-        }
-    }
+    public record MatchDTO(
+            Long chatId,
+            Long plannerId,
+            String plannerName,
+            String confirmedAt
+    ) {}
 }

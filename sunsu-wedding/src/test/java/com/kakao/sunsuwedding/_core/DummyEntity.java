@@ -1,6 +1,14 @@
 package com.kakao.sunsuwedding._core;
 
+import com.kakao.sunsuwedding.favorite.Favorite;
 import com.kakao.sunsuwedding.match.Match;
+import com.kakao.sunsuwedding.match.MatchStatus;
+import com.kakao.sunsuwedding.payment.Payment;
+import com.kakao.sunsuwedding.portfolio.Portfolio;
+import com.kakao.sunsuwedding.portfolio.image.ImageItem;
+import com.kakao.sunsuwedding.portfolio.price.PriceItem;
+import com.kakao.sunsuwedding.quotation.Quotation;
+import com.kakao.sunsuwedding.quotation.QuotationStatus;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
@@ -31,11 +39,13 @@ public class DummyEntity {
                 .isActive(false)
                 .build();
     }
-    protected Match newMatch(Couple couple, Planner planner, Long price){
+    protected Match newMatch(Couple couple, Planner planner, MatchStatus status, Long price, Long confirmedPrice){
         return Match.builder()
                 .couple(couple)
                 .planner(planner)
                 .price(price)
+                .confirmedPrice(confirmedPrice)
+                .status(status)
                 .build();
     }
     protected Token newToken(User user){
@@ -46,4 +56,65 @@ public class DummyEntity {
                 .build();
     }
 
+    protected Payment newPayment(User user, String orderId, String paymentKey, Long payedAmount){
+        return Payment.builder()
+                .user(user)
+                .orderId(orderId)
+                .paymentKey(paymentKey)
+                .payedAmount(payedAmount)
+                .build();
+    }
+
+    protected Portfolio newPortfolio(Planner planner){
+        return Portfolio.builder()
+                .planner(planner)
+                .plannerName("plannerName")
+                .title("newTitle")
+                .description("newDescription")
+                .location("newLocation")
+                .career("newCareer")
+                .partnerCompany("newPartnerCompany")
+                .totalPrice(10000L)
+                .contractCount(20000L)
+                .avgPrice(30000L)
+                .minPrice(40000L)
+                .maxPrice(60000L)
+                .build();
+    }
+
+    protected ImageItem newImageItem(Portfolio portfolio,String fileName, String filePath, Boolean isThumbnail){
+        return ImageItem.builder()
+                .portfolio(portfolio)
+                .originFileName(fileName)
+                .filePath(filePath)
+                .fileSize(522499L)
+                .thumbnail(isThumbnail)
+                .build();
+    }
+
+    protected PriceItem newPriceItem(Portfolio portfolio, String title, Long price){
+        return PriceItem.builder()
+                .portfolio(portfolio)
+                .itemTitle(title)
+                .itemPrice(price)
+                .build();
+    }
+
+    protected Quotation newQuotation(Match match, Long price, QuotationStatus status){
+        return Quotation.builder()
+                .match(match)
+                .title("title")
+                .price(price)
+                .company("company")
+                .description("description")
+                .status(status)
+                .build();
+    }
+
+    protected Favorite newFavorite(User user, Portfolio portfolio) {
+        return Favorite.builder()
+                .user(user)
+                .portfolio(portfolio)
+                .build();
+    }
 }

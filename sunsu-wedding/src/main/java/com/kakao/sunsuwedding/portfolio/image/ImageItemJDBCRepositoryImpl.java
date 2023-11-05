@@ -25,7 +25,7 @@ public class ImageItemJDBCRepositoryImpl implements ImageItemJDBCRepository {
                     ps.setString(2, imageItem.getOriginFileName());
                     ps.setString(3, imageItem.getFilePath());
                     ps.setLong(4, imageItem.getFileSize());
-                    ps.setBoolean(5, imageItem.isThumbnail());
+                    ps.setBoolean(5, imageItem.getThumbnail());
                 });
 
     }

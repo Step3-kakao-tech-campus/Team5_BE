@@ -2,19 +2,21 @@ package com.kakao.sunsuwedding.payment;
 
 import com.kakao.sunsuwedding.user.base_user.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
+@Table(name="payment_tb")
 @SQLDelete(sql = "UPDATE payment_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
-@Table(name="payment_tb")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,7 @@ public class Payment {
     @Column(name = "order_id", nullable = false)
     private String orderId;
 
-    @Column(name = "payment_key", nullable = false)
+    @Column(name = "payment_key")
     private String paymentKey;
 
     @Column(name = "payed_amount", nullable = false)
@@ -52,10 +54,12 @@ public class Payment {
         this.isActive = true;
     }
 
-    public void updatePaymentInfo(String orderId, String paymentKey, Long amount){
+    public void updatePaymentInfo(String orderId, Long amount){
         this.orderId = orderId;
-        this.paymentKey = paymentKey;
         this.payedAmount = amount;
+    }
+    public void updatePaymentKey(String paymentKey){
+        this.paymentKey = paymentKey;
     }
 
     public void updatePayedAt() {

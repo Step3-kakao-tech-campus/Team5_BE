@@ -1,9 +1,8 @@
 package com.kakao.sunsuwedding.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.security.CustomUserDetailsService;
 import com.kakao.sunsuwedding._core.security.JWTProvider;
-import com.kakao.sunsuwedding._core.security.SecurityConfig;
+import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -15,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -29,6 +29,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+        "security.jwt-config.secret.access=your-test-access-secret",
+        "security.jwt-config.secret.refresh=your-test-refresh-secret",
+        "payment.toss.secret=your-test-toss-payment-secret"
+})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class UserRestControllerTest {
 
@@ -48,12 +53,7 @@ public class UserRestControllerTest {
     @Test
     public void user_join_success_test() throws Exception {
         // given
-        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
-        requestDTO.setEmail("ssarmango@nate.com");
-        requestDTO.setRole("couple");
-        requestDTO.setPassword("meta1234!");
-        requestDTO.setPassword2("meta1234!");
-        requestDTO.setUsername("qwer");
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO("couple", "qwer", "ssarmango@nate.com", "meta1234!", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -64,8 +64,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -76,12 +75,7 @@ public class UserRestControllerTest {
     @Test
     public void user_join_fail_wrong_email_test() throws Exception {
         // given
-        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
-        requestDTO.setEmail("asdfqwer");
-        requestDTO.setRole("couple");
-        requestDTO.setPassword("meta1234!");
-        requestDTO.setPassword2("meta1234!");
-        requestDTO.setUsername("qwe");
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO("couple", "qwe", "asdfqwer", "meta1234!", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -92,8 +86,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -104,12 +97,7 @@ public class UserRestControllerTest {
     @Test
     public void user_join_fail_wrong_role_test() throws Exception {
         // given
-        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO();
-        requestDTO.setEmail("asdf@naver.com");
-        requestDTO.setRole("asdf");
-        requestDTO.setPassword("meta1234!");
-        requestDTO.setPassword2("meta1234!");
-        requestDTO.setUsername("asdf");
+        UserRequest.SignUpDTO requestDTO = new UserRequest.SignUpDTO("asdf", "asdf", "asdf@naver.com", "meta1234!", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -120,8 +108,7 @@ public class UserRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
@@ -134,9 +121,7 @@ public class UserRestControllerTest {
     @Test
     public void user_login_success_test() throws Exception {
         // given
-        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("planner@gmail.com");
-        requestDTO.setPassword("planner1234!");
+        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO("planner1@gmail.com", "planner1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -162,9 +147,7 @@ public class UserRestControllerTest {
     @Test
     public void user_login_fail_email_not_found_test() throws Exception {
         // given
-        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("ssar@nate.com");
-        requestDTO.setPassword("meta1234!");
+        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO("ssar@nate.com", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -174,22 +157,20 @@ public class UserRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-        result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다 : ssar@nate.com"));
+        result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다."));
     }
 
     @DisplayName("로그인 실패 테스트 2 - 패스워드 잘못 입력")
     @Test
     public void user_login_fail_wrong_password_test() throws Exception {
         // given
-        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO();
-        requestDTO.setEmail("planner@gmail.com");
-        requestDTO.setPassword("meta1234!");
+        UserRequest.LoginDTO requestDTO = new UserRequest.LoginDTO("planner1@gmail.com", "meta1234!");
         String requestBody = om.writeValueAsString(requestDTO);
 
         // when
@@ -199,13 +180,13 @@ public class UserRestControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+
+        logResult(result);
 
         // then
         result.andExpect(jsonPath("$.success").value("false"));
         result.andExpect(jsonPath("$.error.status").value(400));
-        result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다"));
+        result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다."));
     }
 
     // ============ 회원 탈퇴 테스트 ============
@@ -220,8 +201,8 @@ public class UserRestControllerTest {
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders.delete("/user")
         );
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
+
+        logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
@@ -230,7 +211,7 @@ public class UserRestControllerTest {
     // ============ 유저 정보 조회 ============
     @DisplayName("유저 정보 조회 성공")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     void get_user_info_success_test() throws Exception {
         // when
         ResultActions resultActions = mvc.perform(
@@ -240,21 +221,26 @@ public class UserRestControllerTest {
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
         resultActions.andExpect(jsonPath("$.response.username").value("planner"));
-        resultActions.andExpect(jsonPath("$.response.email").value("planner@gmail.com"));
+        resultActions.andExpect(jsonPath("$.response.email").value("planner1@gmail.com"));
         resultActions.andExpect(jsonPath("$.response.role").value("planner"));
         resultActions.andExpect(jsonPath("$.response.grade").value("normal"));
     }
     // ============ 유저 토큰 갱신 ============
     @DisplayName("유저 토큰 refresh 성공")
     @Test
-    @WithUserDetails("planner@gmail.com")
+    @WithUserDetails("planner1@gmail.com")
     void user_token_refresh_success_test() throws Exception {
         // when
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
-                        .put("/user/token")
+                        .post("/user/token")
         );
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
+    }
+
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
     }
 }
