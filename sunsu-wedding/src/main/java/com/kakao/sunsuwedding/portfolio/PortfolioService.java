@@ -20,6 +20,8 @@ import com.kakao.sunsuwedding.portfolio.price.PriceItemJDBCRepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
 import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.quotation.QuotationJPARepository;
+import com.kakao.sunsuwedding.review.Review;
+import com.kakao.sunsuwedding.review.ReviewJPARepository;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Grade;
@@ -55,6 +57,7 @@ public class PortfolioService {
     private final FavoriteJPARepository favoriteJPARepository;
 
     private final ImageItemService imageItemService;
+    private final ReviewJPARepository reviewJPARepository;
 
     @Transactional
     public void addPortfolio(PortfolioRequest.AddDTO request, MultipartFile[] images, Long plannerId) {
@@ -71,9 +74,10 @@ public class PortfolioService {
         Portfolio portfolio = PortfolioDTOConverter.getPortfolioByAdd(planner, totalPrice, request);
         portfolioJPARepository.save(portfolio);
 
-        // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
-        // todo: 재등록일 때도 이전 거래 내역을 초기화해야 하는 거 아닌가요?
+        // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max),
         updateConfirmedPrices(planner);
+        // 평균 평점 불러오기
+        updateAvgStars(planner);
 
         // 가격 내용 저장
         List<PriceItem> priceItems = PortfolioDTOConverter.getPriceItem(request.items(), portfolio);
@@ -195,6 +199,41 @@ public class PortfolioService {
         return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
     }
 
+
+    public void updateConfirmedPrices(Planner planner) {
+        List<Match> matches = matchJPARepository.findAllByPlanner(planner);
+        Optional<Portfolio> portfolioOptional = portfolioJPARepository.findByPlanner(planner);
+        // 포트폴리오, 매칭내역이 존재할 때만 가격 update
+        if (portfolioOptional.isPresent() && !matches.isEmpty()) {
+            Portfolio portfolio = portfolioOptional.get();
+
+            // 건수, 평균, 최소, 최대 가격 구하기
+            Long contractCount = PriceCalculator.getContractCount(matches);
+            Long avgPrice = PriceCalculator.calculateAvgPrice(matches, contractCount);
+            Long minPrice = PriceCalculator.calculateMinPrice(matches);
+            Long maxPrice = PriceCalculator.calculateMaxPrice(matches);
+
+            // portfolio avg,min,max 값 업데이트
+            portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
+            portfolioJPARepository.save(portfolio);
+        }
+    }
+
+    public void updateAvgStars(Planner planner) {
+        List<Review> reviews = reviewJPARepository.findAllByMatchPlanner(planner);
+        Optional<Portfolio> portfolioOptional = portfolioJPARepository.findByPlanner(planner);
+        // 포트폴리오, 리뷰가 존재할 때만 평균 평점 update
+        if (portfolioOptional.isPresent() && !reviews.isEmpty()) {
+            Portfolio portfolio = portfolioOptional.get();
+            Long totalStars = reviews.stream().mapToLong(review -> review.getStars()).sum();
+            Long totalCount = reviews.stream().count();
+            Double avgStars = totalCount.equals(0L) ? 0.0 : Double.valueOf(totalStars) / totalCount;
+
+            portfolio.updateAvgStars(Double.valueOf(String.format("%.2f", avgStars)));
+            portfolioJPARepository.save(portfolio);
+        }
+    }
+
     private Portfolio findPortfolioByUserId(Long plannerId) {
         return portfolioJPARepository.findByPlannerId(plannerId)
                 .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
@@ -225,25 +264,6 @@ public class PortfolioService {
     private List<Portfolio> search(CursorRequest request, Pageable pageable) {
         Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request);
         return portfolioJPARepository.findAll(specification, pageable).getContent();
-    }
-
-    public void updateConfirmedPrices(Planner planner) {
-        List<Match> matches = matchJPARepository.findAllByPlanner(planner);
-        Optional<Portfolio> portfolioOptional = portfolioJPARepository.findByPlanner(planner);
-        // 포트폴리오, 매칭내역이 존재할 때만 가격 update
-        if (portfolioOptional.isPresent() && !matches.isEmpty()) {
-            Portfolio portfolio = portfolioOptional.get();
-
-            // 건수, 평균, 최소, 최대 가격 구하기
-            Long contractCount = PriceCalculator.getContractCount(matches);
-            Long avgPrice = PriceCalculator.calculateAvgPrice(matches, contractCount);
-            Long minPrice = PriceCalculator.calculateMinPrice(matches);
-            Long maxPrice = PriceCalculator.calculateMaxPrice(matches);
-
-            // portfolio avg,min,max 값 업데이트
-            portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
-            portfolioJPARepository.save(portfolio);
-        }
     }
 
     private List<String> encodeImages(List<ImageItem> imageItems) {

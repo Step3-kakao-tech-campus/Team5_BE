@@ -10,7 +10,7 @@ public class ReviewResponse {
     public record FindByPlannerDTO(
             Long id,
             String coupleName,
-            // String? Long? stars, 추후 구현
+            Integer stars,
             String content
             // List<String> images 추후 구현
     ) {}
@@ -22,7 +22,7 @@ public class ReviewResponse {
     public record ReviewDTO(
             Long id,
             String plannerName,
-            // String? Long? stars, 추후 구현
+            Integer stars,
             String content
             // List<String> images 추후 구현
     ) {}

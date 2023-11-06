@@ -84,6 +84,7 @@ public class PortfolioDTOConverter {
                 portfolio.getDescription(),
                 portfolio.getCareer(),
                 portfolio.getPartnerCompany(),
+                portfolio.getAvgStars(),
                 paymentHistoryDTO,
                 isLiked
         );
@@ -102,6 +103,7 @@ public class PortfolioDTOConverter {
                             portfolio.getTotalPrice(),
                             portfolio.getLocation(),
                             portfolio.getContractCount(),
+                            portfolio.getAvgStars(),
                             favorites.stream().anyMatch(favorite -> Objects.equals(favorite.getPortfolio().getId(), portfolio.getId()))
                     );
                 })

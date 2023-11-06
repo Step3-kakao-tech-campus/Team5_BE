@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/quotations")
+@RequestMapping("/api/quotations")
 public class QuotationRestController {
     private final QuotationService quotationService;
     private final MatchService matchService;

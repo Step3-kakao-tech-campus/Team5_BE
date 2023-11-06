@@ -49,14 +49,14 @@ public class ReviewRestControllerTest {
     public void add_review_success_test() throws Exception {
         // given
         Long chatId = 1L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO("최고의 플래너!");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
 
         String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/reviews")
+                        .post("/api/reviews")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -74,14 +74,14 @@ public class ReviewRestControllerTest {
     public void add_review_fail_test_match_not_found() throws Exception {
         // given
         Long chatId = 80L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO("최고의 플래너!");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
 
         String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/reviews")
+                        .post("/api/reviews")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -101,14 +101,14 @@ public class ReviewRestControllerTest {
     public void add_review_fail_test_not_my_match() throws Exception {
         // given
         Long chatId = 3L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO("최고의 플래너!");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
 
         String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/reviews")
+                        .post("/api/reviews")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -128,14 +128,14 @@ public class ReviewRestControllerTest {
     public void add_review_fail_test_match_not_confirmed() throws Exception {
         // given
         Long chatId = 2L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO("최고의 플래너!");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
 
         String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/reviews")
+                        .post("/api/reviews")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -166,7 +166,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/reviews")
+                        .get("/api/reviews")
                         .param("page", String.valueOf(page))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -188,7 +188,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/reviews/collect")
+                        .get("/api/reviews/collect")
         );
 
         logResult(result);
@@ -205,7 +205,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/reviews/collect")
+                        .get("/api/reviews/collect")
         );
 
         logResult(result);
@@ -225,7 +225,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/reviews/{reviewId}", reviewId)
+                        .get("/api/reviews/{reviewId}", reviewId)
         );
 
         logResult(result);
@@ -246,7 +246,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/reviews/{reviewId}", reviewId)
+                        .get("/api/reviews/{reviewId}", reviewId)
         );
 
         logResult(result);
@@ -265,14 +265,14 @@ public class ReviewRestControllerTest {
     public void update_review_success_test() throws Exception {
         // given
         Long reviewId = 1L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO("최고의 플래너!");
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!");
 
         String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/reviews/" + reviewId)
+                        .post("/api/reviews/update/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -289,14 +289,14 @@ public class ReviewRestControllerTest {
     public void update_review_fail_test_review_not_found() throws Exception {
         // given
         Long reviewId = 10L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO("최고의 플래너!");
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!");
 
         String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/reviews/" + reviewId)
+                        .post("/api/reviews/update/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -316,14 +316,14 @@ public class ReviewRestControllerTest {
     public void update_review_fail_test_not_my_review() throws Exception {
         // given
         Long reviewId = 1L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO("최고의 플래너!");
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!");
 
         String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/reviews/" + reviewId)
+                        .post("/api/reviews/update/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -351,7 +351,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/reviews/" + reviewId)
+                        .delete("/api/reviews/" + reviewId)
         );
 
         logResult(result);
@@ -360,28 +360,16 @@ public class ReviewRestControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
 
-
-    private void logResult(ResultActions result) throws Exception {
-        String responseBody = result.andReturn().getResponse().getContentAsString();
-        logger.debug("테스트 : " + responseBody);
-    }
-
     @DisplayName("리뷰 삭제 실패 테스트 1 - 존재하지 않는 리뷰")
     @Test
     @WithUserDetails("couple@gmail.com")
     public void delete_review_fail_test_review_not_found() throws Exception {
         // given
         Long reviewId = 10L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO("최고의 플래너!");
-
-        String requestBody = om.writeValueAsString(request);
-
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/reviews/" + reviewId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .delete("/api/reviews/" + reviewId)
         );
 
         logResult(result);
@@ -399,16 +387,11 @@ public class ReviewRestControllerTest {
     public void delete_review_fail_test_not_my_review() throws Exception {
         // given
         Long reviewId = 1L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO("최고의 플래너!");
-
-        String requestBody = om.writeValueAsString(request);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/reviews/" + reviewId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .delete("/api/reviews/" + reviewId)
         );
 
         logResult(result);
@@ -417,6 +400,10 @@ public class ReviewRestControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
+    }
 
+    private void logResult(ResultActions result) throws Exception {
+        String responseBody = result.andReturn().getResponse().getContentAsString();
+        logger.debug("테스트 : " + responseBody);
     }
 }

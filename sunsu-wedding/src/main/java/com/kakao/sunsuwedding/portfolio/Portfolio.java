@@ -58,6 +58,9 @@ public class Portfolio {
     @Column(name = "max_price")
     private Long maxPrice;
 
+    @Column(name = "avg_stars")
+    private Double avgStars;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -79,6 +82,7 @@ public class Portfolio {
         this.avgPrice = avgPrice;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
+        this.avgStars = 0.0;
         this.createdAt = LocalDateTime.now();
         this.isActive = true;
     }
@@ -99,5 +103,9 @@ public class Portfolio {
         this.avgPrice = avgPrice;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
+    }
+
+    public void updateAvgStars(Double avgStars) {
+        this.avgStars = avgStars;
     }
 }
