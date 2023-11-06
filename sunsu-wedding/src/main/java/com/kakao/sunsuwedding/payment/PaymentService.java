@@ -87,7 +87,7 @@ public class PaymentService {
         TossPaymentResponse.TosspayDTO result =
                 webClient
                         .post()
-                        .uri("/v1/api/payments/confirm")
+                        .uri("/v1/payments/confirm")
                         .headers(headers -> {
                             headers.add(HttpHeaders.AUTHORIZATION, basicToken);
                             headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
