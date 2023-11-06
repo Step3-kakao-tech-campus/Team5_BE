@@ -3,7 +3,7 @@ truncate table user_tb;
 truncate table token_tb;
 truncate table payment_tb;
 truncate table portfolio_tb;
-truncate table imageitem_tb;
+truncate table portfolioimageitem_tb;
 truncate table priceitem_tb;
 truncate table match_tb;
 truncate table quotation_tb;
@@ -72,17 +72,17 @@ INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALU
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('5', '2', '드레스2', '300000');
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('6', '2', '메이크업2', '200000');
 
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', './images/image1.jpg', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', './images/image2.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', './images/image3.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', './images/image4.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', './images/image5.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '2', '2-1.jpg', './images/image1.jpg', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '2', '2-2.jpg', './images/image2.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '2', '2-3.jpg', './images/image3.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '2', '2-4.jpg', './images/image4.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '2', '2-5.jpg', './images/image5.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('11', '15', '2-5.jpg', './images/image5.jpg', '522499', 'true');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('1', '1', '/wAA', 'true');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('2', '1', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('3', '1', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('4', '1', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('5', '1', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('6', '2', '/wAA', 'true');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('7', '2', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('8', '2', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('9', '2', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('10', '2', '/wAA', 'false');
+INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('11', '15', '/wAA', 'true');
 
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (1, '2023-10-08 08:30:12.00', true);
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (2, '2023-10-08 08:30:12.00', true);

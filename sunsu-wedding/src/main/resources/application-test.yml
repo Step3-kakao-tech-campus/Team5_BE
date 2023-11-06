@@ -23,6 +23,18 @@ spring:
       default_batch_fetch_size: 100
     open-in-view: false
 
+security:
+  jwt-config:
+    secret:
+      access: u27FgcaJRrgWu0LP9g1Kih17jwckJ_uiMTo9Lp18KjCVt3W4g_96c9RhkcLIel0rTXa1dVTydfWNYVa_xFbLMf5-xDNG4cI9PLWwK90Gv20
+      refresh: d9ckUMWIeedW9Zkbn6EsX1brqlz6ekLx5qjNz1EVETv6tZODKZ4pww6-QzpmHVGV5ovF4nsdCvoigeaCICuRuzd1oMSG9SHRazF4_7xpFR8
+payment:
+  toss:
+    secret: test_sk_GePWvyJnrKb2NW2jwE6VgLzN97Eo
+email:
+  username: moona0915@gmail.com
+  password: tzbt qnqt ahya ehxs
+
 logging:
   level:
     '[com.kakao.sunsuwedding]': DEBUG
