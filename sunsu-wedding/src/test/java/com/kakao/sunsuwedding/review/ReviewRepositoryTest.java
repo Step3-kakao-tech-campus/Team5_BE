@@ -26,8 +26,8 @@ public class ReviewRepositoryTest {
     @BeforeEach
     public void beforeEach() {
         List<Review> reviews = List.of(
-            Review.builder().id(1L).content("review1").build(),
-            Review.builder().id(2L).content("review2").build()
+            Review.builder().id(1L).stars(5).content("review1").build(),
+            Review.builder().id(2L).stars(5).content("review2").build()
         );
         reviewJPARepository.saveAll(reviews);
     }
@@ -44,6 +44,7 @@ public class ReviewRepositoryTest {
     public void create_review_test() {
         // given
         Review review = Review.builder()
+                        .stars(5)
                         .content("review3")
                         .build();
 
@@ -80,10 +81,10 @@ public class ReviewRepositoryTest {
         Review review = reviewJPARepository.findById(reviewId).orElseThrow(
                 () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
         );
-        String newContent = "review1 updated";
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "review1 updated");
 
         // when
-        review.updateContent(newContent);
+        review.updateReview(request);
         Review reviewPS = reviewJPARepository.save(review);
 
         // then
