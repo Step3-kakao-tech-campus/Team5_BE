@@ -481,16 +481,15 @@ public class PortfolioControllerTest {
     private PortfolioRequest.AddDTO getAddDTO() {
         PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("헤어", 300000L);
         List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
-
-        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS);
+        List<String> imageItems = List.of("/wAA", "/wAA");
+        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS, imageItems);
     }
 
     private PortfolioRequest.UpdateDTO getUpdateDTO() {
         PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("드레스", 400000L);
         List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
-        PortfolioRequest.ImagePathDTO imagePathDTO = new PortfolioRequest.ImagePathDTO("sunsu-wedding/gallery/1_qwer/335677c8-1705-49cc-bb05-c53437771d4b(김정도_개발자)", true);
-        List<PortfolioRequest.ImagePathDTO> imagePathDTOS = List.of(imagePathDTO);
-        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS, imagePathDTOS);
+        List<String> imageItems = List.of("/wAA", "/wAA");
+        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS, imageItems);
     }
 
     private MockMultipartFile createMockMultipartFileImage(String filePath, String contentType) throws IOException {

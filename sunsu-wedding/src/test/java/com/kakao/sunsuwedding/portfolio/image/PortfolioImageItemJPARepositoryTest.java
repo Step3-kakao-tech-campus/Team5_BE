@@ -18,7 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class PortfolioPortfolioImageItemJPARepositoryTest extends DummyEntity {
+public class PortfolioImageItemJPARepositoryTest extends DummyEntity {
 
     @Autowired
     private PortfolioImageItemJPARepository portfolioImageItemJPARepository;
@@ -57,7 +57,7 @@ public class PortfolioPortfolioImageItemJPARepositoryTest extends DummyEntity {
 
     @AfterEach
     void afterEach() {
-        entityManager.createNativeQuery("ALTER TABLE imageitem_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE portfolioimageitem_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE portfolio_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
     }
@@ -74,9 +74,6 @@ public class PortfolioPortfolioImageItemJPARepositoryTest extends DummyEntity {
         assertThat(portfolioImageItemList.size()).isEqualTo(2);
 
         assertThat(portfolioImageItemList.get(0).getId()).isEqualTo(3);
-        assertThat(portfolioImageItemList.get(0).getFilePath()).isEqualTo("./images/image1.jpg");
-        assertThat(portfolioImageItemList.get(0).getOriginFileName()).isEqualTo("1-1.jpg");
-
         assertThat(portfolioImageItemList.get(1).getId()).isEqualTo(1);
     }
 
@@ -92,8 +89,6 @@ public class PortfolioPortfolioImageItemJPARepositoryTest extends DummyEntity {
         // then
         assertThat(portfolioImageItemList.size()).isEqualTo(2);
         assertThat(portfolioImageItemList.get(0).getId()).isEqualTo(1);
-        assertThat(portfolioImageItemList.get(0).getFilePath()).isEqualTo("./images/image1.jpg");
-        assertThat(portfolioImageItemList.get(0).getOriginFileName()).isEqualTo("1-1.jpg");
         assertThat(portfolioImageItemList.get(1).getId()).isEqualTo(2);
     }
 
