@@ -11,8 +11,8 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="mail_tb")
-@SQLDelete(sql = "UPDATE mail_tb SET is_active = false WHERE id = ?")
+@Table(name="mail_code_tb")
+@SQLDelete(sql = "UPDATE mail_code_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
