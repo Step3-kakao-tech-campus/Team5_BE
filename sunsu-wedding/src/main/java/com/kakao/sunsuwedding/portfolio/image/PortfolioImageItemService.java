@@ -93,10 +93,7 @@ public class PortfolioImageItemService {
     private String makeImageFile(String directoryPath, MultipartFile image) {
         try {
             // 이미지 파일 생성
-            String originalImageName = image.getOriginalFilename();
-            String NameWithoutExtension = originalImageName.split("\\.")[0];
-            String uploadImageName = UUID.randomUUID() + "(" + NameWithoutExtension + ")";
-            String uploadImagePath = directoryPath + uploadImageName;
+            String uploadImagePath = directoryPath + generateImageFilePath(image.getOriginalFilename());
             image.transferTo(new File(uploadImagePath));
             logger.debug("Trying to process image: {}", image.getOriginalFilename());
 
@@ -106,6 +103,14 @@ public class PortfolioImageItemService {
             logger.error("Failed to process image", e);
             throw new ServerException(BaseException.PORTFOLIO_IMAGE_CREATE_ERROR);
         }
+    }
+
+    private String generateImageFilePath(String originalFilename) {
+        if (originalFilename == null)
+            throw new ServerException(BaseException.PORTFOLIO_IMAGE_CREATE_ERROR);
+
+        // ex) 7423db03-2deb-411d-a26e-8caad9793077(original_image_1).jpg
+        return UUID.randomUUID() + "(" + originalFilename.split("\\.")[0] + ")." + originalFilename.split("\\.")[1];
     }
 
     private void cleanExistedImage(File directory, Long portfolioId) {
