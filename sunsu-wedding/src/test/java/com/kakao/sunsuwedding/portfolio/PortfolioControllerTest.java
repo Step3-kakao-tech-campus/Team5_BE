@@ -53,7 +53,6 @@ public class PortfolioControllerTest {
         this.om = om;
     }
 }
-
     /*
     // ============ 포트폴리오 등록 테스트 ============
     @DisplayName("포트폴리오 등록 성공 테스트")
@@ -63,13 +62,15 @@ public class PortfolioControllerTest {
         // given
         String requestBody = om.writeValueAsString(getAddDTO());
 
-            // JSON request part
+
+        // JSON request part
         MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-            // images part
+        // images part
         MockMultipartFile[] images = new MockMultipartFile[]{
                 createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
                 createMockMultipartFileImage("images/image2.jpg","image/jpeg")
         };
+
 
         // when
         ResultActions result = mockMvc.perform(
