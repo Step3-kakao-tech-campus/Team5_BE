@@ -146,7 +146,6 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("요청한 이미지의 수가 5개를 초과합니다."));
     }
 
-    /*
     // ============ 포트폴리오 리스트 조회 테스트 ============
     @DisplayName("포트폴리오 리스트 조회 성공 테스트 1 - 다음 페이지 존재")
     @Test
@@ -169,7 +168,6 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.data[0].location").value("부산"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.cursor").value(3));
     }
-*/
 
     @DisplayName("포트폴리오 리스트 조회 성공 테스트 2 - 마지막 페이지")
     @Test
@@ -191,7 +189,6 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.cursor").value(IsNull.nullValue()));
     }
 
-    /*
     // ============ 포트폴리오 상세 조회 테스트 ============
     @DisplayName("포트폴리오 상세 조회 성공 테스트 - 예비부부 (PREMIUM 등급)")
     @Test
@@ -216,7 +213,6 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory.avgPrice").value(1000000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory.payments[0].confirmedAt").value("2023-10"));
     }
-*/
 
     @DisplayName("포트폴리오 상세 조회 성공 테스트 - 플래너 (NORMAL 등급)")
     @Test
