@@ -73,6 +73,7 @@ public class MailService {
         matchCode(request, mailCode);
 
         mailCode.setConfirmed(true);
+        mailCodeJPARepository.save(mailCode);
     }
 
     private static void matchCode(MailRequest.CheckCode request, MailCode mailCode) {
