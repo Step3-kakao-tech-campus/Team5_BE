@@ -24,7 +24,9 @@ public class PortfolioRequest {
         @NotNull(message = "partnerCompany는 비어있으면 안됩니다.")
         String partnerCompany,
 
-        List<ItemDTO> items
+        List<ItemDTO> items,
+
+        List<String> imageItems
     ) {}
 
     public record UpdateDTO(
