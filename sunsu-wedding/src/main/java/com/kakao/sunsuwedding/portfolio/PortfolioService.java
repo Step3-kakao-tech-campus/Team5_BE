@@ -82,7 +82,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 이미지 내용 저장
-        portfolioImageItemService.uploadImage(request.imageItems(), portfolio);
+        portfolioImageItemService.uploadImage(request.images(), portfolio);
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request, Long userId) {
@@ -164,7 +164,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 이미지 저장
-        portfolioImageItemService.updateImage(request.imageItems(), portfolio);
+        portfolioImageItemService.updateImage(request.images(), portfolio);
     }
 
     @Transactional

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "reviewimageitem_tb")
+@Table(name = "review_imageitem_tb")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewImageItem {
@@ -19,25 +19,17 @@ public class ReviewImageItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
 
-    @Column(name = "origin_file_name", nullable = false)
-    private String originFileName;
-
-    @Column(name = "file_path", nullable = false)
-    private String filePath;
-
-    @Column(name = "file_size", nullable = false)
-    private Long fileSize;
+    @Lob
+    private String image;
 
     @Column(nullable = false)
-    private boolean thumbnail;
+    private Boolean thumbnail;
 
     @Builder
-    public ReviewImageItem(Long id, Review review, String originFileName, String filePath, Long fileSize, boolean thumbnail) {
+    public ReviewImageItem(Long id, Review review, String image, Boolean thumbnail) {
         this.id = id;
         this.review = review;
-        this.originFileName = originFileName;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
+        this.image = image;
         this.thumbnail = thumbnail;
     }
 }

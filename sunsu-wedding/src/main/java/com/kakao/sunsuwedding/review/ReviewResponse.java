@@ -11,8 +11,8 @@ public class ReviewResponse {
             Long id,
             String coupleName,
             Integer stars,
-            String content
-            // List<String> images 추후 구현
+            String content,
+            List<String> images
     ) {}
 
     public record FindAllByCoupleDTO(
@@ -23,7 +23,7 @@ public class ReviewResponse {
             Long id,
             String plannerName,
             Integer stars,
-            String content
-            // List<String> images 추후 구현
+            String content,
+            List<String> images
     ) {}
 }

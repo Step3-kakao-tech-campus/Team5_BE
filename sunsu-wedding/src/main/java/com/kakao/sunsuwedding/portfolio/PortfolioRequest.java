@@ -26,7 +26,7 @@ public class PortfolioRequest {
 
         List<ItemDTO> items,
 
-        List<String> imageItems
+        List<String> images
     ) {}
 
     public record UpdateDTO(
@@ -50,7 +50,7 @@ public class PortfolioRequest {
 
         List<ItemDTO> items,
 
-        List<String> imageItems
+        List<String> images
     ) {}
 
     public record ItemDTO(
