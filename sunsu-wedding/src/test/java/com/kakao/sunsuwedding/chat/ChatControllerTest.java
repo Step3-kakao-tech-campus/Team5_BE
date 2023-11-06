@@ -57,7 +57,7 @@ public class ChatControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/chat")
+                        .post("/api/chat")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -80,7 +80,7 @@ public class ChatControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/chat")
+                        .post("/api/chat")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -104,7 +104,7 @@ public class ChatControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/chat")
+                        .post("/api/chat")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );

@@ -55,7 +55,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/favorites/" + portfolioId)
+                        .post("/api/favorites/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -73,7 +73,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/favorites/" + portfolioId)
+                        .post("/api/favorites/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -94,7 +94,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/favorites/" + portfolioId)
+                        .delete("/api/favorites/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -112,7 +112,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/favorites/" + portfolioId)
+                        .delete("/api/favorites/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -130,7 +130,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/favorites")
+                        .get("/api/favorites")
                         .contentType(MediaType.APPLICATION_JSON)
         );
 

@@ -61,7 +61,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/signup")
+                        .post("/api/user/signup")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -83,7 +83,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/signup")
+                        .post("/api/user/signup")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -105,7 +105,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/signup")
+                        .post("/api/user/signup")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -129,7 +129,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/login")
+                        .post("/api/user/login")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -155,7 +155,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/login")
+                        .post("/api/user/login")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -178,7 +178,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/login")
+                        .post("/api/user/login")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -201,7 +201,7 @@ public class UserRestControllerTest {
 
         // when
         ResultActions result = mvc.perform(
-                MockMvcRequestBuilders.delete("/user")
+                MockMvcRequestBuilders.delete("/api/user")
         );
 
         logResult(result);
@@ -218,7 +218,7 @@ public class UserRestControllerTest {
         // when
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/user/info")
+                        .get("/api/user/info")
         );
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
@@ -235,7 +235,7 @@ public class UserRestControllerTest {
         // when
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/token")
+                        .post("/api/user/token")
         );
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));

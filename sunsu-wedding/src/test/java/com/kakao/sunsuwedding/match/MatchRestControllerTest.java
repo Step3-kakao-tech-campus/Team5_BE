@@ -50,7 +50,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirmAll?chatId=" + chatId)
         );
 
         logResult(result);
@@ -69,7 +69,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirmAll?chatId=" + chatId)
         );
 
         logResult(result);
@@ -90,7 +90,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirmAll?chatId=" + chatId)
         );
 
         logResult(result);
@@ -111,7 +111,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirmAll?chatId=" + chatId)
         );
 
         logResult(result);
@@ -132,7 +132,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirmAll?chatId=" + chatId)
         );
 
         logResult(result);
@@ -151,7 +151,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/match/reviews")
+                        .get("/api/match/reviews")
         );
 
         logResult(result);

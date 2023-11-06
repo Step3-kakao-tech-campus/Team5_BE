@@ -39,8 +39,8 @@ public class MatchRepositoryTest extends DummyEntity {
         planner = plannerJPARepository.save(newPlanner("newplanner"));
         planner2 =  plannerJPARepository.save(newPlanner("newplanner2"));
 
-        Match m1 = newMatch(couple, planner,0L);
-        Match m2 = newMatch(couple, planner2,0L);
+        Match m1 = newMatch(couple, planner, MatchStatus.UNCONFIRMED,0L, 0L);
+        Match m2 = newMatch(couple, planner2,MatchStatus.UNCONFIRMED,0L, 0L);
 
         id1 = matchJPARepository.save(m1).getId();
         id2 = matchJPARepository.save(m2).getId();
@@ -110,7 +110,7 @@ public class MatchRepositoryTest extends DummyEntity {
         // when
         Couple couple = coupleJPARepository.save(newCouple("test1"));
         Planner planner = plannerJPARepository.save(newPlanner("test2"));
-        Match match = matchJPARepository.save(newMatch(couple, planner, 100L));
+        Match match = matchJPARepository.save(newMatch(couple, planner, MatchStatus.UNCONFIRMED,100L, 0L));
 
         // then
         assertThat(match.getPlanner().getEmail()).isEqualTo("test2@nate.com");
