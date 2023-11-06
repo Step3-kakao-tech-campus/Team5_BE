@@ -45,10 +45,10 @@ public class PortfolioImageItemJPARepositoryTest extends DummyEntity {
         Portfolio portfolio2 = portfolioJPARepository.save(newPortfolio(planner2));
 
         List<PortfolioImageItem> portfolioImageItemList = List.of(
-                newImageItem(portfolio, "1-1.jpg", "./images/image1.jpg", true),
-                newImageItem(portfolio, "1-2.jpg", "./images/image2.jpg", false),
-                newImageItem(portfolio2, "1-1.jpg", "./images/image1.jpg", true),
-                newImageItem(portfolio2, "1-2.jpg", "./images/image2.jpg", false)
+                newImageItem(portfolio,"/wAA",true),
+                newImageItem(portfolio,"/wAA",false),
+                newImageItem(portfolio2,"/wAA",true),
+                newImageItem(portfolio2,"/wAA",false)
         );
         portfolioImageItemJPARepository.saveAll(portfolioImageItemList);
         entityManager.flush();

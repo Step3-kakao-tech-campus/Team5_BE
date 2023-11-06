@@ -82,10 +82,10 @@ public class DummyEntity {
                 .build();
     }
 
-    protected PortfolioImageItem newImageItem(Portfolio portfolio, String fileName, String filePath, Boolean isThumbnail){
+    protected PortfolioImageItem newImageItem(Portfolio portfolio, String image, Boolean isThumbnail){
         return PortfolioImageItem.builder()
                 .portfolio(portfolio)
-                .image("/wAA")
+                .image(image)
                 .thumbnail(isThumbnail)
                 .build();
     }
