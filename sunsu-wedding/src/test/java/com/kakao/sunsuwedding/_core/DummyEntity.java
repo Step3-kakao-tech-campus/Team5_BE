@@ -85,9 +85,7 @@ public class DummyEntity {
     protected PortfolioImageItem newImageItem(Portfolio portfolio, String fileName, String filePath, Boolean isThumbnail){
         return PortfolioImageItem.builder()
                 .portfolio(portfolio)
-                .originFileName(fileName)
-                .filePath(filePath)
-                .fileSize(522499L)
+                .image("/wAA")
                 .thumbnail(isThumbnail)
                 .build();
     }

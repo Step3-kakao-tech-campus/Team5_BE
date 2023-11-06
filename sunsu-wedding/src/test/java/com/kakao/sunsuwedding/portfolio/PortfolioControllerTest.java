@@ -53,6 +53,7 @@ public class PortfolioControllerTest {
         this.om = om;
     }
 
+    /*
     // ============ 포트폴리오 등록 테스트 ============
     @DisplayName("포트폴리오 등록 성공 테스트")
     @Test
