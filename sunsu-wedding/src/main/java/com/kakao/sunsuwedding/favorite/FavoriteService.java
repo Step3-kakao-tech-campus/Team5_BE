@@ -5,7 +5,6 @@ import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding.portfolio.PortfolioJPARepository;
-import com.kakao.sunsuwedding.portfolio.image.PortfolioImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItem;
 import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemJPARepository;
 import com.kakao.sunsuwedding.user.base_user.User;
@@ -62,8 +61,18 @@ public class FavoriteService {
         List<Favorite> favoriteList = favoriteJPARepository.findByUserIdFetchJoinPortfolio(user.getId(), pageable);
         List<Portfolio> portfolioList = favoriteList.stream().map(Favorite::getPortfolio).toList();
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolioList);
-        List<String> encodedImages = PortfolioImageEncoder.encode(portfolioList, portfolioImageItems);
-        return FavoriteDTOConverter.findAllFavoritePortfolio(favoriteList, encodedImages);
+        // 이 부분 정상작동하는지 확인 필요
+        List<String> imageItems = portfolioList
+                .stream()
+                .map(item -> portfolioImageItems
+                        .stream()
+                        .filter(imageItem -> imageItem.getPortfolio().getId().equals(item.getId()))
+                        .findFirst()
+                        .map(PortfolioImageItem::getImage)
+                        .orElseGet(String::new))
+                .toList();
+
+        return FavoriteDTOConverter.findAllFavoritePortfolio(favoriteList, imageItems);
     }
 
     private Portfolio findByPortfolioId(Long portfolioId) {

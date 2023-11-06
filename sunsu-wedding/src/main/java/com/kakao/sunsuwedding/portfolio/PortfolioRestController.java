@@ -7,11 +7,9 @@ import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,11 +21,10 @@ public class PortfolioRestController {
 
     private static final int PAGE_SIZE = 10;
 
-    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.AddDTO request,
-                                           @RequestPart MultipartFile[] images,
+    @PostMapping(value = "")
+    public ResponseEntity<?> addPortfolios(@RequestBody PortfolioRequest.AddDTO request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        portfolioService.addPortfolio(request, images, userDetails.getUser().getId());
+        portfolioService.addPortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -55,11 +52,10 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PostMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.UpdateDTO request,
-                                           @RequestPart MultipartFile[] images,
+    @PostMapping(value = "/update")
+    public ResponseEntity<?> updatePortfolios(@RequestBody PortfolioRequest.UpdateDTO request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        portfolioService.updatePortfolio(request, images, userDetails.getUser().getId());
+        portfolioService.updatePortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 

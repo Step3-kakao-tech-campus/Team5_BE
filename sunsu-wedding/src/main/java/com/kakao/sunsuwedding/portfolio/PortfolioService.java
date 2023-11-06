@@ -11,7 +11,6 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
-import com.kakao.sunsuwedding.portfolio.image.PortfolioImageEncoder;
 import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItem;
 import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemJPARepository;
 import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemService;
@@ -33,7 +32,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +55,7 @@ public class PortfolioService {
     private final PortfolioImageItemService portfolioImageItemService;
 
     @Transactional
-    public void addPortfolio(PortfolioRequest.AddDTO request, MultipartFile[] images, Long plannerId) {
+    public void addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = findPlannerById(plannerId);
 
@@ -72,7 +70,6 @@ public class PortfolioService {
         portfolioJPARepository.save(portfolio);
 
         // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
-        // todo: 재등록일 때도 이전 거래 내역을 초기화해야 하는 거 아닌가요?
         updateConfirmedPrices(planner);
 
         // 가격 내용 저장
@@ -80,7 +77,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 이미지 내용 저장
-        portfolioImageItemService.uploadImage(images, portfolio, planner);
+        portfolioImageItemService.uploadImage(request.imageItems(), portfolio);
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request, Long userId) {
@@ -100,14 +97,14 @@ public class PortfolioService {
         Long nextKey = getNextKey(portfolios);
 
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
-        List<String> imagePaths = portfolioImageItems.stream().map(PortfolioImageItem::getFilePath).toList();
+        List<String> imageItems = portfolioImageItems.stream().map(PortfolioImageItem::getImage).toList();
         List<Favorite> favorites = new ArrayList<>();
 
         // 유저가 존재하는 경우 찜하기 누른 목록 받아옴
         if (userId >= 0)
              favorites = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
 
-        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, imagePaths, favorites);
+        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, imageItems, favorites);
         return new PageCursor<>(data, request.next(nextKey).key());
     }
 
@@ -121,7 +118,7 @@ public class PortfolioService {
             throw new NotFoundException(BaseException.PLANNER_NOT_FOUND);
 
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolioId);
-        List<String> imagePaths  = portfolioImageItems.stream().map(PortfolioImageItem::getFilePath).toList();
+        List<String> imageItems  = portfolioImageItems.stream().map(PortfolioImageItem::getImage).toList();
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolioId);
 
         // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
@@ -143,11 +140,11 @@ public class PortfolioService {
             }
         }
 
-        return PortfolioDTOConverter.FindByIdDTOConvertor(portfolio, imagePaths, priceItems, matches, quotations, isLiked, isPremium);
+        return PortfolioDTOConverter.FindByIdDTOConvertor(portfolio, imageItems, priceItems, matches, quotations, isLiked, isPremium);
     }
 
     @Transactional
-    public void updatePortfolio(PortfolioRequest.UpdateDTO request, MultipartFile[] images, Long plannerId) {
+    public void updatePortfolio(PortfolioRequest.UpdateDTO request, Long plannerId) {
         Planner planner = findPlannerById(plannerId);
         Portfolio portfolio = findPortfolioByUserId(plannerId);
 
@@ -162,7 +159,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 이미지 저장
-        portfolioImageItemService.updateImage(request.imagePaths(), images, portfolio, planner);
+        portfolioImageItemService.updateImage(request.imageItems(), portfolio);
     }
 
     @Transactional
@@ -184,15 +181,13 @@ public class PortfolioService {
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
                 .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
 
-        List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolio.getId());
-        if (portfolioImageItems.isEmpty()) {
-            throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
-        }
-
-        List<String> encodedImages = encodeImages(portfolioImageItems);
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
 
-        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
+        List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolio.getId());
+        if (portfolioImageItems.isEmpty()) throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
+        List<String> imageItems = portfolioImageItems.stream().map(PortfolioImageItem::getImage).toList();
+
+        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, imageItems, priceItems);
     }
 
     private Portfolio findPortfolioByUserId(Long plannerId) {
@@ -244,12 +239,5 @@ public class PortfolioService {
             portfolio.updateConfirmedPrices(contractCount, avgPrice, minPrice, maxPrice);
             portfolioJPARepository.save(portfolio);
         }
-    }
-
-    private List<String> encodeImages(List<PortfolioImageItem> portfolioImageItems) {
-        return portfolioImageItems
-                .stream()
-                .map(PortfolioImageEncoder::encode)
-                .toList();
     }
 }

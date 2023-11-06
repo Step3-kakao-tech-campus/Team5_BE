@@ -17,15 +17,13 @@ public class PortfolioImageItemJDBCRepositoryImpl implements PortfolioImageItemJ
     }
 
     public void batchInsertImageItems(List<PortfolioImageItem> portfolioImageItems) {
-        String sql = "INSERT INTO portfolioimageitem_tb (portfolio_id, origin_file_name, file_path, file_size, thumbnail) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO portfolioimageitem_tb (portfolio_id, image, thumbnail) VALUES (?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql, portfolioImageItems, portfolioImageItems.size(),
                 (ps, imageItem) -> {
                     ps.setLong(1, imageItem.getPortfolio().getId());
-                    ps.setString(2, imageItem.getOriginFileName());
-                    ps.setString(3, imageItem.getFilePath());
-                    ps.setLong(4, imageItem.getFileSize());
-                    ps.setBoolean(5, imageItem.getThumbnail());
+                    ps.setString(2, imageItem.getImage());
+                    ps.setBoolean(3, imageItem.getThumbnail());
                 });
 
     }

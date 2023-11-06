@@ -41,7 +41,7 @@ public class PortfolioDTOConverter {
     }
 
     public static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Portfolio portfolio,
-                                                            List<String> images, List<PriceItem> priceItems,
+                                                            List<String> imageItems, List<PriceItem> priceItems,
                                                             List<Match> matches, List<Quotation> quotations,
                                                             Boolean isLiked, Boolean isPremium) {
         // 가격 항목 DTO 변환
@@ -65,17 +65,17 @@ public class PortfolioDTOConverter {
             );
         }
 
-        return FindByIdDTOConvertor(portfolio, images, priceDTO, paymentHistoryDTO, isLiked);
+        return FindByIdDTOConvertor(portfolio, imageItems, priceDTO, paymentHistoryDTO, isLiked);
     }
 
-    private static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Portfolio portfolio, List<String> imagePaths,
+    private static PortfolioResponse.FindByIdDTO FindByIdDTOConvertor(Portfolio portfolio, List<String> imageItems,
                                                              PortfolioResponse.PriceDTO priceDTO,
                                                              PortfolioResponse.PaymentHistoryDTO paymentHistoryDTO,
                                                              Boolean isLiked) {
         return new PortfolioResponse.FindByIdDTO(
                 portfolio.getId(),
                 portfolio.getPlanner().getId(),
-                imagePaths,
+                imageItems,
                 portfolio.getTitle(),
                 portfolio.getPlannerName(),
                 portfolio.getContractCount(),
@@ -89,14 +89,14 @@ public class PortfolioDTOConverter {
         );
     }
 
-    public static List<PortfolioResponse.FindAllDTO> FindAllDTOConvertor(List<Portfolio> portfolios, List<String> imagePaths, List<Favorite> favorites) {
+    public static List<PortfolioResponse.FindAllDTO> FindAllDTOConvertor(List<Portfolio> portfolios, List<String> imageItems, List<Favorite> favorites) {
         return IntStream
                 .range(0, portfolios.size())
                 .mapToObj(i -> {
                     Portfolio portfolio = portfolios.get(i);
                     return new PortfolioResponse.FindAllDTO(
                             portfolio.getId(),
-                            imagePaths.get(i),
+                            imageItems.get(i),
                             portfolio.getTitle(),
                             portfolio.getPlannerName(),
                             portfolio.getTotalPrice(),
@@ -117,12 +117,12 @@ public class PortfolioDTOConverter {
 
     public static PortfolioResponse.MyPortfolioDTO MyPortfolioDTOConvertor(Planner planner,
                                                                            Portfolio portfolio,
-                                                                           List<String> images,
+                                                                           List<String> imageItems,
                                                                            List<PriceItem> priceItems) {
         return new PortfolioResponse.MyPortfolioDTO(
                 portfolio.getPlannerName(),
-                images,
                 PriceItemDTOConvertor(priceItems),
+                imageItems,
                 portfolio.getTitle(),
                 portfolio.getDescription(),
                 portfolio.getLocation(),

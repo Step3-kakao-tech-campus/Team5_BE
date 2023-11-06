@@ -50,7 +50,7 @@ public class PortfolioRequest {
 
         List<ItemDTO> items,
 
-        List<ImagePathDTO> imagePaths
+        List<String> imageItems
     ) {}
 
     public record ItemDTO(
@@ -61,11 +61,4 @@ public class PortfolioRequest {
         Long itemPrice
     ) {}
 
-    public record ImagePathDTO(
-        @NotNull(message = "path는 비어있으면 안됩니다.")
-        String path,
-
-        @NotNull(message = "isValid는 비어있으면 안됩니다.")
-        boolean isValid
-    ) {}
 }
