@@ -27,9 +27,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @Sql("classpath:db/teardown.sql")
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {
-                "security.jwt-config.secret.access=your-test-access-secret",
-                "security.jwt-config.secret.refresh=your-test-refresh-secret",
-                "payment.toss.secret=your-test-toss-payment-secret"
+        "security.jwt-config.secret.access=your-test-access-secret",
+        "security.jwt-config.secret.refresh=your-test-refresh-secret",
+        "payment.toss.secret=your-test-toss-payment-secret",
+        "email.username=test@email.com",
+        "email.password=qweasdzxc"
 })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ReviewRestControllerTest {
