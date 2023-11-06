@@ -52,7 +52,7 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PostMapping(value = "/update")
+    @PutMapping(value = "")
     public ResponseEntity<?> updatePortfolios(@RequestBody PortfolioRequest.UpdateDTO request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         portfolioService.updatePortfolio(request, userDetails.getUser().getId());

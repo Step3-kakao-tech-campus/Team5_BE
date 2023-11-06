@@ -45,7 +45,7 @@ public class ReviewRestController {
     }
 
 
-    @PostMapping("/update/{reviewId}")
+    @PutMapping("/{reviewId}")
     public ResponseEntity<?> updateReview(@AuthenticationPrincipal CustomUserDetails userDetails,
                                           @PathVariable @Min(1) Long reviewId,
                                           @Valid @RequestBody ReviewRequest.UpdateDTO request) {
