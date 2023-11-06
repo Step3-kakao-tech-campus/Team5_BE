@@ -52,6 +52,7 @@ public class PortfolioControllerTest {
         this.mockMvc = mockMvc;
         this.om = om;
     }
+}
 
     /*
     // ============ 포트폴리오 등록 테스트 ============
@@ -505,3 +506,4 @@ public class PortfolioControllerTest {
         logger.debug("테스트 : " + responseBody);
     }
 }
+*/
