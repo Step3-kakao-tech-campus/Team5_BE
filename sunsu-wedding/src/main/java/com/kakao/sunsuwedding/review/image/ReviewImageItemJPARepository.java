@@ -1,7 +1,5 @@
 package com.kakao.sunsuwedding.review.image;
 
-import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItem;
-import com.kakao.sunsuwedding.review.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +13,6 @@ public interface ReviewImageItemJPARepository extends JpaRepository<ReviewImageI
     @Query("delete from ReviewImageItem r where r.review.id = :reviewId")
     void deleteAllByReviewId(@Param("reviewId") Long reviewId);
 
-    void deleteAllByReviewPlannerId(Long id);
-
     @Query("select r.image from ReviewImageItem r where r.review.match.planner.id = :plannerId")
     List<String> findByPlannerId(@Param("plannerId") Long plannerId);
 
@@ -24,5 +20,5 @@ public interface ReviewImageItemJPARepository extends JpaRepository<ReviewImageI
     List<String> findByCoupleId(@Param("coupleId") Long coupleId);
 
     @Query("select r.image from ReviewImageItem r where r.review.id = :reviewId")
-    List<String> findByReviewId(@Param("reveiwId") Long reviewId);
+    List<String> findByReviewId(@Param("reviewId") Long reviewId);
 }
