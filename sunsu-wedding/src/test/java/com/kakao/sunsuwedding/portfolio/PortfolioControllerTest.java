@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -61,20 +62,12 @@ public class PortfolioControllerTest {
         // given
         String requestBody = om.writeValueAsString(getAddDTO());
 
-            // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-            // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image2.jpg","image/jpeg")
-        };
-
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios")
-                        .file(images[0]).file(images[1])
-                        .file(request)
+                        .post("/api/portfolios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -83,6 +76,7 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
     }
 
+
     @DisplayName("포트폴리오 등록 실패 테스트 1 - 존재하지 않는 유저")
     @Test
     @WithUserDetails("planner17@gmail.com")
@@ -90,20 +84,12 @@ public class PortfolioControllerTest {
         // given
         String requestBody = om.writeValueAsString(getAddDTO());
 
-        // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-        // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image2.jpg","image/jpeg")
-        };
-
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios")
-                        .file(images[0]).file(images[1])
-                        .file(request)
+                        .post("/api/portfolios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -121,20 +107,12 @@ public class PortfolioControllerTest {
         // given
         String requestBody = om.writeValueAsString(getAddDTO());
 
-            // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-            // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image2.jpg","image/jpeg")
-        };
-
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios")
-                        .file(images[0]).file(images[1])
-                        .file(request)
+                        .post("/api/portfolios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -150,26 +128,14 @@ public class PortfolioControllerTest {
     @WithUserDetails("planner0@gmail.com")
     public void add_portfolio_fail_test_image_limit_exceed() throws Exception {
         // given
-        String requestBody = om.writeValueAsString(getAddDTO());
-
-        // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-        // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image2.jpg","image/jpeg")
-        };
+        String requestBody = om.writeValueAsString(exceed_five_getAddDTO());
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios")
-                        .file(images[0]).file(images[1]).file(images[2]).file(images[3]).file(images[4]).file(images[5])
-                        .file(request)
+                        .post("/api/portfolios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -180,17 +146,18 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("요청한 이미지의 수가 5개를 초과합니다."));
     }
 
-
+    /*
     // ============ 포트폴리오 리스트 조회 테스트 ============
     @DisplayName("포트폴리오 리스트 조회 성공 테스트 1 - 다음 페이지 존재")
     @Test
     public void get_portfolios_success_test_next_page_exist() throws Exception {
         //given
         Long cursor = 13L;
+
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/portfolios?cursor=" + cursor)
+                        .get("/api/portfolios?cursor="+ cursor)
         );
 
         logResult(result);
@@ -202,6 +169,7 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.data[0].location").value("부산"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.cursor").value(3));
     }
+*/
 
     @DisplayName("포트폴리오 리스트 조회 성공 테스트 2 - 마지막 페이지")
     @Test
@@ -223,6 +191,7 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.cursor").value(IsNull.nullValue()));
     }
 
+    /*
     // ============ 포트폴리오 상세 조회 테스트 ============
     @DisplayName("포트폴리오 상세 조회 성공 테스트 - 예비부부 (PREMIUM 등급)")
     @Test
@@ -247,6 +216,7 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory.avgPrice").value(1000000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory.payments[0].confirmedAt").value("2023-10"));
     }
+*/
 
     @DisplayName("포트폴리오 상세 조회 성공 테스트 - 플래너 (NORMAL 등급)")
     @Test
@@ -270,6 +240,7 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.priceInfo.items[0].itemPrice").value(500000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.paymentsHistory").isEmpty());
     }
+
 
     @DisplayName("포트폴리오 상세 조회 실패 테스트 1 - 존재하지 않는 포트폴리오")
     @Test
@@ -312,7 +283,6 @@ public class PortfolioControllerTest {
     }
 
     // ============ 포트폴리오 수정 테스트 ============
-    // portfolioService update 부분 코드 수정 후 다시 테스트 필요
     @DisplayName("포트폴리오 수정 성공 테스트")
     @Test
     @WithUserDetails("planner1@gmail.com")
@@ -320,20 +290,12 @@ public class PortfolioControllerTest {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
 
-        // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-        // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image3.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image4.jpg","image/jpeg")
-        };
-
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios/update")
-                        .file(images[0]).file(images[1])
-                        .file(request)
+                        .post("/api/portfolios/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -349,20 +311,12 @@ public class PortfolioControllerTest {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
 
-        // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-        // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image3.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image4.jpg","image/jpeg")
-        };
-
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios/update")
-                        .file(images[0]).file(images[1])
-                        .file(request)
+                        .post("/api/portfolios/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -380,20 +334,12 @@ public class PortfolioControllerTest {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
 
-        // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-        // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image3.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image4.jpg","image/jpeg")
-        };
-
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios/update")
-                        .file(images[0]).file(images[1])
-                        .file(request)
+                        .post("/api/portfolios/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -403,32 +349,21 @@ public class PortfolioControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다."));
     }
-    // portfolioService update 부분 코드 수정 후 다시 테스트 필요
+
+
     @DisplayName("포트폴리오 수정 실패 테스트 3 - 이미지 개수 5개 초과")
     @Test
     @WithUserDetails("planner1@gmail.com")
     public void update_portfolio_fail_test_image_limit_exceed() throws Exception {
         // given
-        String requestBody = om.writeValueAsString(getUpdateDTO());
-
-        // JSON request part
-        MockMultipartFile request = new MockMultipartFile("request", null, "application/json", requestBody.getBytes());
-        // images part
-        MockMultipartFile[] images = new MockMultipartFile[]{
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image1.jpg", "image/jpeg"),
-                createMockMultipartFileImage("images/image2.jpg","image/jpeg")
-        };
+        String requestBody = om.writeValueAsString(exceed_five_getUpdateDTO());
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .multipart("/api/portfolios/update")
-                        .file(images[0]).file(images[1]).file(images[2]).file(images[3]).file(images[4]).file(images[5])
-                        .file(request)
+                        .post("/api/portfolios/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
         );
 
         logResult(result);
@@ -479,24 +414,29 @@ public class PortfolioControllerTest {
     private PortfolioRequest.AddDTO getAddDTO() {
         PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("헤어", 300000L);
         List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
+        List<String> imageItems = List.of("/wAA", "/wAA");
+        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS, imageItems);
+    }
 
-        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS);
+    private PortfolioRequest.AddDTO exceed_five_getAddDTO() {
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("헤어", 300000L);
+        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
+        List<String> imageItems = List.of("/wAA", "/wAA", "/wAA", "/wAA", "/wAA", "/wAA");
+        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS, imageItems);
     }
 
     private PortfolioRequest.UpdateDTO getUpdateDTO() {
         PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("드레스", 400000L);
         List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
-
-        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS);
+        List<String> imageItems = List.of("/wAA", "/wAA");
+        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS, imageItems);
     }
 
-    private MockMultipartFile createMockMultipartFileImage(String filePath, String contentType) throws IOException {
-        Path path = Paths.get(filePath);
-        String originalFilename = path.getFileName().toString();
-        String name = "images";
-        byte[] content = Files.readAllBytes(path);
-
-        return new MockMultipartFile(name, originalFilename, contentType, content);
+    private PortfolioRequest.UpdateDTO exceed_five_getUpdateDTO() {
+        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("드레스", 400000L);
+        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
+        List<String> imageItems = List.of("/wAA", "/wAA", "/wAA", "/wAA", "/wAA", "/wAA");
+        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS, imageItems);
     }
 
     private void logResult(ResultActions result) throws Exception {

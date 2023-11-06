@@ -18,10 +18,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class ImageItemJPARepositoryTest extends DummyEntity {
+public class PortfolioImageItemJPARepositoryTest extends DummyEntity {
 
     @Autowired
-    private ImageItemJPARepository imageItemJPARepository;
+    private PortfolioImageItemJPARepository portfolioImageItemJPARepository;
 
     @Autowired
     private PortfolioJPARepository portfolioJPARepository;
@@ -44,20 +44,20 @@ public class ImageItemJPARepositoryTest extends DummyEntity {
         Planner planner2 = plannerJPARepository.save(newPlanner("imagePlanner2"));
         Portfolio portfolio2 = portfolioJPARepository.save(newPortfolio(planner2));
 
-        List<ImageItem> imageItemList = List.of(
-                newImageItem(portfolio, "1-1.jpg", "./images/image1.jpg", true),
-                newImageItem(portfolio, "1-2.jpg", "./images/image2.jpg", false),
-                newImageItem(portfolio2, "1-1.jpg", "./images/image1.jpg", true),
-                newImageItem(portfolio2, "1-2.jpg", "./images/image2.jpg", false)
+        List<PortfolioImageItem> portfolioImageItemList = List.of(
+                newImageItem(portfolio,"/wAA",true),
+                newImageItem(portfolio,"/wAA",false),
+                newImageItem(portfolio2,"/wAA",true),
+                newImageItem(portfolio2,"/wAA",false)
         );
-        imageItemJPARepository.saveAll(imageItemList);
+        portfolioImageItemJPARepository.saveAll(portfolioImageItemList);
         entityManager.flush();
         entityManager.clear();
     }
 
     @AfterEach
     void afterEach() {
-        entityManager.createNativeQuery("ALTER TABLE imageitem_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE portfolioimageitem_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE portfolio_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
     }
@@ -68,16 +68,13 @@ public class ImageItemJPARepositoryTest extends DummyEntity {
 
         // when
         List<Portfolio> portfolios = portfolioJPARepository.findAll();
-        List<ImageItem> imageItemList = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
+        List<PortfolioImageItem> portfolioImageItemList = portfolioImageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
 
         // then
-        assertThat(imageItemList.size()).isEqualTo(2);
+        assertThat(portfolioImageItemList.size()).isEqualTo(2);
 
-        assertThat(imageItemList.get(0).getId()).isEqualTo(3);
-        assertThat(imageItemList.get(0).getFilePath()).isEqualTo("./images/image1.jpg");
-        assertThat(imageItemList.get(0).getOriginFileName()).isEqualTo("1-1.jpg");
-
-        assertThat(imageItemList.get(1).getId()).isEqualTo(1);
+        assertThat(portfolioImageItemList.get(0).getId()).isEqualTo(3);
+        assertThat(portfolioImageItemList.get(1).getId()).isEqualTo(1);
     }
 
     @DisplayName("포트폴리오 ID로 이미지 조회하기 - findByPortfolioId()")
@@ -87,14 +84,12 @@ public class ImageItemJPARepositoryTest extends DummyEntity {
         Long portfolioId = 1L;
 
         // given
-        List<ImageItem> imageItemList = imageItemJPARepository.findByPortfolioId(portfolioId);
+        List<PortfolioImageItem> portfolioImageItemList = portfolioImageItemJPARepository.findByPortfolioId(portfolioId);
 
         // then
-        assertThat(imageItemList.size()).isEqualTo(2);
-        assertThat(imageItemList.get(0).getId()).isEqualTo(1);
-        assertThat(imageItemList.get(0).getFilePath()).isEqualTo("./images/image1.jpg");
-        assertThat(imageItemList.get(0).getOriginFileName()).isEqualTo("1-1.jpg");
-        assertThat(imageItemList.get(1).getId()).isEqualTo(2);
+        assertThat(portfolioImageItemList.size()).isEqualTo(2);
+        assertThat(portfolioImageItemList.get(0).getId()).isEqualTo(1);
+        assertThat(portfolioImageItemList.get(1).getId()).isEqualTo(2);
     }
 
     @DisplayName("포트폴리오 ID로 이미지 삭제하기 - deleteAllByPortfolioId()")
@@ -102,25 +97,25 @@ public class ImageItemJPARepositoryTest extends DummyEntity {
     void deleteAllByPortfolioIdTest(){
         // when
         Long portfolioId = 1L;
-        Long previousCount = imageItemJPARepository.count();
+        Long previousCount = portfolioImageItemJPARepository.count();
 
         // given
-        imageItemJPARepository.deleteAllByPortfolioId(portfolioId);
+        portfolioImageItemJPARepository.deleteAllByPortfolioId(portfolioId);
 
         // then
-        assertThat(previousCount-2).isEqualTo(imageItemJPARepository.count());
+        assertThat(previousCount-2).isEqualTo(portfolioImageItemJPARepository.count());
     }
 
     @DisplayName("플래너 ID로 이미지 삭제하기 - deleteAllByPortfolioPlannerId()")
     @Test
     void deleteAllByPortfolioPlannerIdTest(){
         // when
-        Long previousCount = imageItemJPARepository.count();
+        Long previousCount = portfolioImageItemJPARepository.count();
 
         // given
-        imageItemJPARepository.deleteAllByPortfolioPlannerId(plannerId);
+        portfolioImageItemJPARepository.deleteAllByPortfolioPlannerId(plannerId);
 
         // then
-        assertThat(previousCount-2).isEqualTo(imageItemJPARepository.count());
+        assertThat(previousCount-2).isEqualTo(portfolioImageItemJPARepository.count());
     }
 }

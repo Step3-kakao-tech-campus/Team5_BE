@@ -5,7 +5,7 @@ import java.util.List;
 public class PortfolioResponse {
     public record FindAllDTO(
             Long id,
-            String image,
+            String imageItem,
             String title,
             String plannerName,
             Long price,
@@ -19,7 +19,7 @@ public class PortfolioResponse {
     public record FindByIdDTO(
             Long id,
             Long userId,
-            List<String> images,
+            List<String> imageItems,
             String title,
             String plannerName,
             Long contractCount,
@@ -70,8 +70,8 @@ public class PortfolioResponse {
 
     public record MyPortfolioDTO(
             String plannerName,
+            List<PriceItemDTO> items,
             List<String> imageItems,
-            List<PriceItemDTO> priceItems,
             String title,
             String description,
             String location,

@@ -51,6 +51,8 @@ public enum BaseException {
     PORTFOLIO_IMAGE_ENCODING_ERROR("이미지 인코딩 과정에서 오류가 발생했습니다.", 4005, 500),
     PORTFOLIO_CREATE_DIRECTORY_ERROR("포트폴리오 폴더 생성 과정에서 오류가 발생했습니다.", 4006, 500),
     PORTFOLIO_CLEAN_DIRECTORY_ERROR("포트폴리오 폴더를 비우는 과정에서 오류가 발생했습니다.", 4007, 500),
+    PORTFOLIO_IMAGE_DELETE_ERROR("포트폴리오 이미지 삭제 과정에서 오류가 발생했습니다.", 4008, 500),
+    PORTFOLIO_IMAGE_PATH_ERROR("포트폴리오 이미지 경로를 구하는 과정에서 오류가 발생했습니다.", 4009, 500),
 
     // 매칭 관련 5000
     MATCHING_ALREADY_CONFIRMED("전체 확정되어 견적서를 추가할 수 없습니다.", 5000, 400),
