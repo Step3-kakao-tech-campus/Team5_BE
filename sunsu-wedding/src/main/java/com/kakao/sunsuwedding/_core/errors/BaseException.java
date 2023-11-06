@@ -37,6 +37,8 @@ public enum BaseException {
     CODE_NOT_FOUND("인증코드 전송 내역이 없습니다. 인증코드를 요청 후 진행해주세요.", 2202, 404),
     CODE_EXPIRED("인증코드가 만료되었습니다. 다시 요청해주세요.", 2203, 400),
     CODE_NOT_MATCHED("인증코드가 일치하지 않습니다.", 2204, 400),
+    UNAUTHENTICATED_EMAIL("인증되지 않은 이메일입니다.", 2205, 400),
+
 
     // 결제 3000
     PAYMENT_WRONG_INFORMATION("잘못된 결제 정보입니다.", 3000, 400),

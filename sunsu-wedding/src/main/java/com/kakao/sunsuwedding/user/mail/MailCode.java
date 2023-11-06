@@ -27,6 +27,9 @@ public class MailCode {
     @Column(name = "code", nullable = false)
     String code;
 
+    @Column(name = "confirmed", nullable = false)
+    Boolean confirmed;
+
     @Column(name = "created_at", nullable = false)
     LocalDateTime createdAt;
 
@@ -34,10 +37,11 @@ public class MailCode {
     Boolean isActive;
 
     @Builder
-    public MailCode(Long id, String email, String code, LocalDateTime createdAt) {
+    public MailCode(Long id, String email, String code, Boolean confirmed, LocalDateTime createdAt) {
         this.id = id;
         this.email = email;
         this.code = code;
+        this.confirmed = confirmed;
         this.createdAt = (createdAt == null? LocalDateTime.now() : createdAt);
         this.isActive = true;
     }
@@ -48,6 +52,10 @@ public class MailCode {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public void setConfirmed(Boolean confirmed) {
+        this.confirmed = confirmed;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

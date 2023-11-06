@@ -9,6 +9,8 @@ import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
+import com.kakao.sunsuwedding.user.mail.MailCode;
+import com.kakao.sunsuwedding.user.mail.MailCodeJPARepository;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import com.kakao.sunsuwedding.user.token.Token;
 import com.kakao.sunsuwedding.user.token.TokenDTO;
@@ -30,6 +32,7 @@ public class UserService {
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;
     private final TokenJPARepository tokenJPARepository;
+    private final MailCodeJPARepository mailCodeJPARepository;
     private final JWTProvider jwtProvider;
     private final UserDataChecker userDataChecker;
 
@@ -37,6 +40,9 @@ public class UserService {
     public UserResponse.FindUserId signup(UserRequest.SignUpDTO requestDTO) {
         userDataChecker.sameCheckEmail(requestDTO.email());
         userDataChecker.sameCheckPassword(requestDTO.password(), requestDTO.password2());
+
+        checkEmailAuthenticated(requestDTO);
+
         Role role = Role.valueOfRole(requestDTO.role());
         String encodedPassword = passwordEncoder.encode(requestDTO.password());
         User user;
@@ -47,6 +53,15 @@ public class UserService {
             user = plannerJPARepository.save(requestDTO.toPlannerEntity(encodedPassword));
         }
         return new UserResponse.FindUserId(user.getId());
+    }
+
+    private void checkEmailAuthenticated(UserRequest.SignUpDTO requestDTO) {
+        MailCode mailCode = mailCodeJPARepository.findByEmail(requestDTO.email())
+                .orElseThrow(() -> new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL));
+
+        if (mailCode.getConfirmed().equals(false)) {
+            throw new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL);
+        }
     }
 
     @Transactional

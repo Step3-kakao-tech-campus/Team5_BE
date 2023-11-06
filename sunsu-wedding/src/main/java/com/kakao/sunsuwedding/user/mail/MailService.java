@@ -43,10 +43,11 @@ public class MailService {
         javaMailSender.send(email);
 
         MailCode mailCode = mailCodeJPARepository.findByEmail(request.email())
-                        .orElse(MailCode.builder().build());
+                        .orElseGet(() -> MailCode.builder().build());
 
         mailCode.setCode(code);
         mailCode.setEmail(request.email());
+        mailCode.setConfirmed(false);
         mailCode.setCreatedAt(LocalDateTime.now());
 
         mailCodeJPARepository.save(mailCode);
@@ -56,17 +57,25 @@ public class MailService {
         MailCode mailCode = mailCodeJPARepository.findByEmail(request.email())
                 .orElseThrow(() -> new NotFoundException(BaseException.CODE_NOT_FOUND));
 
+        checkCodeExpiration(mailCode);
+        matchCode(request, mailCode);
+
+        mailCode.setConfirmed(true);
+//        mailCodeJPARepository.delete(mailCode);
+    }
+
+    private static void matchCode(MailRequest.CheckCode request, MailCode mailCode) {
+        if (!Objects.equals(mailCode.getCode(), request.code())) {
+            throw new BadRequestException(BaseException.CODE_NOT_MATCHED);
+        }
+    }
+
+    private void checkCodeExpiration(MailCode mailCode) {
         Duration duration = Duration.between(mailCode.getCreatedAt(), LocalDateTime.now());
         if (duration.getSeconds() > CODE_EXP) {
             mailCodeJPARepository.delete(mailCode);
             throw new BadRequestException(BaseException.CODE_EXPIRED);
         }
-
-        if (!Objects.equals(mailCode.getCode(), request.code())) {
-            throw new BadRequestException(BaseException.CODE_NOT_MATCHED);
-        }
-
-        mailCodeJPARepository.delete(mailCode);
     }
 
     private String generateCode() {
