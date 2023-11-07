@@ -1,8 +1,5 @@
 package com.kakao.sunsuwedding.quotation;
 
-import com.kakao.sunsuwedding.Quotation.Quotation;
-import com.kakao.sunsuwedding.Quotation.QuotationJPARepository;
-import com.kakao.sunsuwedding.Quotation.QuotationStatus;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +13,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoConfigureDataJpa
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DataJpaTest
+@AutoConfigureDataJpa
 public class QuotationRepositoryTest {
     private final QuotationJPARepository quotationJPARepository;
     private final EntityManager entityManager;

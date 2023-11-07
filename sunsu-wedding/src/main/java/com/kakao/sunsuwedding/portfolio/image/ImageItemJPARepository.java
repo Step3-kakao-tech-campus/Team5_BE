@@ -10,9 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface ImageItemJPARepository extends JpaRepository<ImageItem, Long> {
-    List<ImageItem> findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(boolean thumbnail, List<Portfolio> portfolios);
+    List<ImageItem> findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(Boolean thumbnail, List<Portfolio> portfolios);
 
     @EntityGraph("ImageItemWithPortfolioAndPlanner")
     List<ImageItem> findByPortfolioId(Long id);

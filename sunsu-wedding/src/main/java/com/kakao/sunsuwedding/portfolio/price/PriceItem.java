@@ -2,13 +2,14 @@ package com.kakao.sunsuwedding.portfolio.price;
 
 import com.kakao.sunsuwedding.portfolio.Portfolio;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
+
 @Entity
+@Table(name = "priceitem_tb")
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "PriceItemWithPortfolio",
@@ -20,7 +21,8 @@ import lombok.NoArgsConstructor;
                 subgraphs = @NamedSubgraph(name = "portfolioSubgraph", attributeNodes = @NamedAttributeNode("planner"))
         )
 })
-@Table(name = "priceitem_tb")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PriceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
