@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
 public class ChatRestController {
-    private final ChatService chatService;
+    private final ChatServiceImpl chatServiceImpl;
 
     // 채팅방 생성
     @PostMapping("")
     public ResponseEntity<?> addChat(@AuthenticationPrincipal CustomUserDetails userDetails,
                                      @Valid @RequestBody ChatRequest.AddChatDTO request) {
-        ChatResponse.ChatDTO response = chatService.addChat(userDetails.getUser(), request);
+        ChatResponse.ChatDTO response = chatServiceImpl.addChat(userDetails.getUser(), request);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 }

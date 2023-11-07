@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews")
 public class ReviewRestController {
-    private final ReviewService reviewService;
+    private final ReviewServiceImpl reviewServiceImpl;
     @PostMapping("")
     public ResponseEntity<?> addReview(@AuthenticationPrincipal CustomUserDetails userDetails,
                                        @RequestParam @Min(1) Long chatId,
                                        @Valid @RequestBody ReviewRequest.AddDTO request) {
-        reviewService.addReview(userDetails.getUser(), chatId, request);
+        reviewServiceImpl.addReview(userDetails.getUser(), chatId, request);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
@@ -26,21 +26,21 @@ public class ReviewRestController {
     @GetMapping("")
     public ResponseEntity<?> findReviewsByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                               @Valid @RequestBody ReviewRequest.FindAllByPlannerDTO request) {
-        ReviewResponse.FindAllByPlannerDTO response = reviewService.findReviewsByPlanner(page, request.plannerId());
+        ReviewResponse.FindAllByPlannerDTO response = reviewServiceImpl.findReviewsByPlanner(page, request.plannerId());
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/collect")
     public  ResponseEntity<?> findReviewsByCouple(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        ReviewResponse.FindAllByCoupleDTO response = reviewService.findReviewsByCouple(userDetails.getUser());
+        ReviewResponse.FindAllByCoupleDTO response = reviewServiceImpl.findReviewsByCouple(userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<?> findReviewById(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @PathVariable Long reviewId) {
-        ReviewResponse.ReviewDTO response = reviewService.findReviewById(userDetails.getUser(), reviewId);
+        ReviewResponse.ReviewDTO response = reviewServiceImpl.findReviewById(userDetails.getUser(), reviewId);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
@@ -49,7 +49,7 @@ public class ReviewRestController {
     public ResponseEntity<?> updateReview(@AuthenticationPrincipal CustomUserDetails userDetails,
                                           @PathVariable @Min(1) Long reviewId,
                                           @Valid @RequestBody ReviewRequest.UpdateDTO request) {
-        reviewService.updateReview(userDetails.getUser(), reviewId, request);
+        reviewServiceImpl.updateReview(userDetails.getUser(), reviewId, request);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
@@ -57,7 +57,7 @@ public class ReviewRestController {
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReview(@AuthenticationPrincipal CustomUserDetails userDetails,
                                           @PathVariable @Min(1) Long reviewId) {
-        reviewService.deleteReview(userDetails.getUser(), reviewId);
+        reviewServiceImpl.deleteReview(userDetails.getUser(), reviewId);
 
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }

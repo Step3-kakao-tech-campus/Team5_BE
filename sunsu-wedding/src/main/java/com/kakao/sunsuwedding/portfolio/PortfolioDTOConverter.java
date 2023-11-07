@@ -3,10 +3,10 @@ package com.kakao.sunsuwedding.portfolio;
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.favorite.Favorite;
 import com.kakao.sunsuwedding.match.Match;
-import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
+import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.user.planner.Planner;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,9 +14,12 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Component
-@RequiredArgsConstructor
 public class PortfolioDTOConverter {
     private final PriceCalculator priceCalculator;
+
+    public PortfolioDTOConverter(@Autowired PriceCalculator priceCalculator) {
+        this.priceCalculator = priceCalculator;
+    }
 
     public Portfolio toPortfolioByAdd(Planner planner, Long totalPrice, PortfolioRequest.AddDTO request){
         return Portfolio.builder()
