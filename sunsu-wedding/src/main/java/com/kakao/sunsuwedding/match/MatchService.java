@@ -50,7 +50,7 @@ public class MatchService {
         );
     }
 
-    public MatchResponse.FindAllWithNoReviewDTO findAllWithNoReview(User user) {
+    public MatchResponse.FindAllWithNoReviewDTO findMatchesWithNoReview(User user) {
         if (user.getDtype().equals(Role.PLANNER.getRoleName())) {
             throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
