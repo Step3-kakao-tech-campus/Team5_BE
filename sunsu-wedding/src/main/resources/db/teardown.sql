@@ -9,6 +9,7 @@ truncate table match_tb;
 truncate table quotation_tb;
 truncate table chat_tb;
 truncate table review_tb;
+truncate table review_imageitem_tb;
 truncate table favorite_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
@@ -112,6 +113,11 @@ INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `descri
 
 INSERT INTO review_tb (`id`, `match_id`, `stars`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (1, 1, 5, '최고의 플래너!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);
 
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('1', '1', '/wAA', 'true');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('2', '1', '/wAA', 'false');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('3', '1', '/wAA', 'false');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('4', '1', '/wAA', 'false');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('5', '1', '/wAA', 'false');
 
 INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(1, 1, 1, '2023-10-08 08:30:12.00');
 INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(2, 1, 2, '2023-10-08 08:30:13.00');
