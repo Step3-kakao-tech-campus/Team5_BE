@@ -85,7 +85,7 @@ public class PortfolioService {
         portfolioImageItemService.uploadImage(request.imageItems(), portfolio);
     }
 
-    public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request, Long userId) {
+    public PageCursor<List<PortfolioResponse.FindAllDTO>> findPortfolios(CursorRequest request, Long userId) {
         if (!request.hasKey())
             return new PageCursor<>(null, null);
 
@@ -113,7 +113,7 @@ public class PortfolioService {
         return new PageCursor<>(data, request.next(nextKey).key());
     }
 
-    public PortfolioResponse.FindByIdDTO getPortfolioById(Long portfolioId, Long userId) {
+    public PortfolioResponse.FindByIdDTO findPortfolioById(Long portfolioId, Long userId) {
 
         Portfolio portfolio = portfolioJPARepository.findById(portfolioId).orElseThrow(
                 () -> new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND)
