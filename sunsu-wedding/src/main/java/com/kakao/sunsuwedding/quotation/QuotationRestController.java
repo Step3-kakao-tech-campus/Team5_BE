@@ -21,18 +21,18 @@ public class QuotationRestController {
     public ResponseEntity<?> addQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
                                              @RequestParam @Min(1) Long chatId,
                                              @Valid @RequestBody QuotationRequest.Add request) {
-        quotationService.insertQuotation(userDetails.getUser(), chatId, request);
+        quotationService.addQuotation(userDetails.getUser(), chatId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping("")
-    public ResponseEntity<?> findQuotations(@RequestParam @Min(1) Long chatId) {
+    public ResponseEntity<?> findQuotationsByChatId(@RequestParam @Min(1) Long chatId) {
         QuotationResponse.FindAllByMatchId response = quotationService.findQuotationsByChatId(chatId);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/collect")
-    public ResponseEntity<?> findByUser(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ResponseEntity<?> findQuotationsByUser(@AuthenticationPrincipal CustomUserDetails userDetails,
                                         @RequestParam(defaultValue = "0") Integer page) {
         QuotationResponse.FindByUserDTO response = quotationService.findQuotationsByUser(userDetails.getUser(), page);
         return ResponseEntity.ok().body(ApiUtils.success(response));
@@ -51,7 +51,7 @@ public class QuotationRestController {
                                              @PathVariable @Min(1) Long quotationId,
                                              @RequestParam @Min(1) Long chatId,
                                              @Valid @RequestBody QuotationRequest.Update request) {
-        quotationService.update(userDetails.getUser(), chatId, quotationId, request);
+        quotationService.updateQuotation(userDetails.getUser(), chatId, quotationId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
