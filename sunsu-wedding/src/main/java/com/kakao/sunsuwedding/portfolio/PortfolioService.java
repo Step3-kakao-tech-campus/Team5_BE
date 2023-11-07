@@ -183,9 +183,13 @@ public class PortfolioService {
                 .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
 
         // 플래너의 포트폴리오 탐색
-        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
+        Optional<Portfolio> portfolioOptional  = portfolioJPARepository.findByPlannerId(plannerId);
 
+        // 작성한 포트폴리오가 없으면 null DTO 리턴 - 프론트 요청 사항
+        if (portfolioOptional.isEmpty())
+            return PortfolioDTOConverter.MyPortfolioDTOConvertor();
+
+        Portfolio portfolio = portfolioOptional.get();
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
 
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolio.getId());
