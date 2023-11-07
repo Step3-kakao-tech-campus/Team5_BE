@@ -11,9 +11,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface PortfolioJPARepository extends JpaRepository<Portfolio, Long>, JpaSpecificationExecutor<Portfolio> {
     Page<Portfolio> findAll(@NotNull Specification specification, @Nullable Pageable pageable);
 

@@ -1,5 +1,8 @@
 package com.kakao.sunsuwedding.portfolio.cursor;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 public record CursorRequest(
         Long key,
         int size,
@@ -17,5 +20,11 @@ public record CursorRequest(
 
     public CursorRequest next(Long nextKey) {
         return new CursorRequest(nextKey, size, name, location, minPrice, maxPrice);
+    }
+
+    public PageRequest get() {
+        return PageRequest
+                .ofSize(size)
+                .withSort(Sort.by("id").descending());
     }
 }

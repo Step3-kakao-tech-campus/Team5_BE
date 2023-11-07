@@ -64,6 +64,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
         else {
             try {
+                if (request.getRequestURI().equals("/api/user/token")) {
+                    throw new TokenException(BaseException.REFRESH_TOKEN_REQUIRED);
+                }
                 DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessToken);
                 Long userId = decodedJWT.getClaim("id").asLong();
                 createAuthentication(decodedJWT, userId);
@@ -75,8 +78,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 throw new TokenException(BaseException.ACCESS_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 access token");
-            } catch (Exception e){
-                log.error("access token 예상치 못한 에러");
             } finally {
                 chain.doFilter(request, response);
             }

@@ -32,19 +32,19 @@ public class FavoriteService {
         User user1 = findByUserId(user.getId());
         Portfolio portfolio = findByPortfolioId(portfolioId);
         Optional<Favorite> favoriteOptional = favoriteJPARepository.findByUserAndPortfolio(user1.getId(), portfolio.getId());
+
         // 이전에 좋아요 누른 적 있으면 에러 반환
         if (favoriteOptional.isPresent()){
             throw new BadRequestException(BaseException.FAVORITE_ALREADY_EXISTS);
         }
-        else {
-            // 없을 경우 새로운 좋아요 저장
-            favoriteJPARepository.save(
-                    Favorite.builder()
-                            .user(user1)
-                            .portfolio(portfolio)
-                            .build()
-            );
-        }
+
+        // 없을 경우 새로운 좋아요 저장
+        favoriteJPARepository.save(
+                Favorite.builder()
+                        .user(user1)
+                        .portfolio(portfolio)
+                        .build()
+        );
     }
 
     @Transactional
@@ -61,6 +61,7 @@ public class FavoriteService {
         List<Favorite> favoriteList = favoriteJPARepository.findByUserIdFetchJoinPortfolio(user.getId(), pageable);
         List<Portfolio> portfolioList = favoriteList.stream().map(Favorite::getPortfolio).toList();
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolioList);
+
         // 이 부분 정상작동하는지 확인 필요
         List<String> imageItems = portfolioList
                 .stream()

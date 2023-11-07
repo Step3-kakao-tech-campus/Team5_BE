@@ -29,6 +29,8 @@ public class QuotationService {
     private final MatchJPARepository matchJPARepository;
     private final QuotationJPARepository quotationJPARepository;
 
+    private final PriceCalculator priceCalculator;
+
     @Transactional
     public void insertQuotation(User user, Long chatId, QuotationRequest.Add request) {
         Match match = getMatchByChatIdAndPlannerId(user, chatId);
@@ -98,7 +100,7 @@ public class QuotationService {
         quotationJPARepository.save(quotation);
 
         // 확정 가격 업데이트
-        Long confirmedPrice = PriceCalculator.calculateConfirmedQuotationPrice(quotations);
+        Long confirmedPrice = priceCalculator.calculateConfirmedQuotationPrice(quotations);
         match.updateConfirmedPrice(confirmedPrice);
         matchJPARepository.save(match);
     }
@@ -120,7 +122,7 @@ public class QuotationService {
         quotationJPARepository.save(quotation);
 
         if (isPriceChanged) {
-            Long price = PriceCalculator.calculateQuotationPrice(quotations);
+            Long price = priceCalculator.calculateQuotationPrice(quotations);
             match.updatePrice(price);
             matchJPARepository.save(match);
         }

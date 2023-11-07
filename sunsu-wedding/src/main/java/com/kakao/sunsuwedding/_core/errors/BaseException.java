@@ -25,11 +25,12 @@ public enum BaseException {
 
     // 토큰 2100
     ACCESS_TOKEN_EXPIRED("액세스 토큰이 만료되었습니다. 리프레시 토큰으로 다시 요청해주세요.", 2100, 401),
-    ACCESS_TOKEN_STILL_ALIVE("액세스 토큰이 아직 유효합니다. 액세스 토큰만 가지고 접근해주세요.", 2101, 401),
-    ALL_TOKEN_EXPIRED("모든 토큰이 만료되었습니다. 다시 로그인 해야합니다.", 2102, 401),
-    TOKEN_NOT_FOUND("토큰을 찾을 수 없습니다. 다시 로그인해주세요.", 2103, 404),
+    ACCESS_TOKEN_STILL_ALIVE("액세스 토큰이 아직 유효합니다. 이상한 접근이 감지되었습니다. 다시 로그인해주세요.", 2101, 401),
+    ALL_TOKEN_EXPIRED("모든 토큰이 만료되었습니다. 다시 로그인 해주세요.", 2102, 401),
+    TOKEN_NOT_FOUND("토큰을 찾을 수 없습니다. 다시 로그인 해주세요.", 2103, 404),
     TOKEN_NOT_VALID("로그인 토큰이 유효하지 않습니다. 다시 로그인 해주세요.", 2104, 401),
     TOKEN_REFRESH_FORBIDDEN("토큰을 갱신할 수 없습니다.", 2105, 401),
+    REFRESH_TOKEN_REQUIRED("리프레시 토큰을 가지고 다시 요청해주세요.", 2106, 401),
 
     // 이메일 2200
     CODE_GENERATE_ERROR("인증코드 생성 과정에서 오류가 발생했습니다.", 2200, 500),

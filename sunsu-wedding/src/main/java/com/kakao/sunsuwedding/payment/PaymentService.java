@@ -57,16 +57,17 @@ public class PaymentService {
         //  1. 검증: 프론트 정보와 백엔드 정보 비교
         Boolean isOK = isCorrectData(payment, requestDTO.orderId(), requestDTO.amount());
 
-        if (isOK){
-            payment.updatePaymentKey(requestDTO.paymentKey());
-            // 2. 토스 페이먼츠 승인 요청
-            tossPayApprove(requestDTO);
-            // 3. 유저 업그레이드
-            user.upgrade();
-            // 4. 결제시간 업데이트
-            payment.updatePayedAt();
+        if (!isOK) {
+            throw new BadRequestException(BaseException.PAYMENT_WRONG_INFORMATION);
         }
-        else throw new BadRequestException(BaseException.PAYMENT_WRONG_INFORMATION);
+
+        payment.updatePaymentKey(requestDTO.paymentKey());
+        // 2. 토스 페이먼츠 승인 요청
+        tossPayApprove(requestDTO);
+        // 3. 유저 업그레이드
+        user.upgrade();
+        // 4. 결제시간 업데이트
+        payment.updatePayedAt();
     }
 
     private void tossPayApprove(PaymentRequest.ApproveDTO requestDTO){
