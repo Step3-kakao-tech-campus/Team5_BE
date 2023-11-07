@@ -24,7 +24,7 @@ public class ReviewDTOConverter {
         List<ReviewResponse.ReviewDTO> reviewDTOS = reviews.stream()
                 .map(review -> new ReviewResponse.ReviewDTO(
                         review.id,
-                        (review.getMatch().getCouple() != null) ? review.getMatch().getCouple().getUsername() : "탈퇴한 사용자" ,
+                        (review.getMatch().getPlanner() != null) ? review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자" ,
                         review.stars,
                         review.content,
                         images
