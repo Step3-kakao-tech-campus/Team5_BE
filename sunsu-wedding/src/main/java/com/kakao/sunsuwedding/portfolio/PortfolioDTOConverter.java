@@ -21,7 +21,7 @@ public class PortfolioDTOConverter {
         this.priceCalculator = priceCalculator;
     }
 
-    public Portfolio toPortfolioByAdd(Planner planner, Long totalPrice, PortfolioRequest.AddDTO request){
+    public Portfolio toPortfolioByRequest(Planner planner, Long totalPrice, PortfolioRequest.AddDTO request){
         return Portfolio.builder()
                 .planner(planner)
                 .plannerName(request.plannerName())
@@ -38,7 +38,7 @@ public class PortfolioDTOConverter {
                 .build();
     }
 
-    public List<PriceItem> getPriceItem(List<PortfolioRequest.ItemDTO> items, Portfolio portfolio){
+    public List<PriceItem> toPriceItemByPortfolio(List<PortfolioRequest.ItemDTO> items, Portfolio portfolio){
         return items.stream()
                 .map(item -> PriceItem.builder()
                         .portfolio(portfolio)
@@ -136,10 +136,9 @@ public class PortfolioDTOConverter {
         );
     }
 
-    public PortfolioResponse.MyPortfolioDTO toMyPortfolioDTO(Planner planner,
-                                                                           Portfolio portfolio,
-                                                                           List<String> imageItems,
-                                                                           List<PriceItem> priceItems) {
+    public PortfolioResponse.MyPortfolioDTO toMyPortfolioDTO(Portfolio portfolio,
+                                                             List<String> imageItems,
+                                                             List<PriceItem> priceItems) {
         return new PortfolioResponse.MyPortfolioDTO(
                 portfolio.getPlannerName(),
                 toPriceItemDTO(priceItems),

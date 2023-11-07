@@ -60,14 +60,14 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Transactional
     public void addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
         // 요청한 플래너 탐색
-        Planner planner = getPlannerIfExist(plannerId);
+        Planner planner = findPlannerByUserIdIfExist(plannerId);
 
         // 해당 플래너가 생성한 포트폴리오가 이미 있는 경우 예외처리
         checkPortfolioAlreadyExist(plannerId);
 
         // 포트폴리오 저장
         Long totalPrice = priceCalculator.getRequestTotalPrice(request.items());
-        Portfolio portfolio = portfolioDTOConverter.toPortfolioByAdd(planner, totalPrice, request);
+        Portfolio portfolio = portfolioDTOConverter.toPortfolioByRequest(planner, totalPrice, request);
         portfolioJPARepository.save(portfolio);
 
         // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
@@ -77,11 +77,11 @@ public class PortfolioServiceImpl implements PortfolioService {
         updateAvgStars(planner);
 
         // 가격 내용 저장
-        List<PriceItem> priceItems = portfolioDTOConverter.getPriceItem(request.items(), portfolio);
+        List<PriceItem> priceItems = portfolioDTOConverter.toPriceItemByPortfolio(request.items(), portfolio);
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 이미지 내용 저장
-        portfolioImageItemService.uploadImage(request.imageItems(), portfolio);
+        portfolioImageItemService.uploadImage(request.images(), portfolio);
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> findPortfolios(CursorRequest request, Long userId) {
@@ -112,7 +112,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     public PortfolioResponse.FindByIdDTO findPortfolioById(Long portfolioId, Long userId) {
 
-        Portfolio portfolio = getPortfolioById(portfolioId);
+        Portfolio portfolio = findPortfolioById(portfolioId);
 
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolioId);
         List<String> imageItems  = portfolioImageItems.stream().map(PortfolioImageItem::getImage).toList();
@@ -140,7 +140,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Transactional
     public void updatePortfolio(PortfolioRequest.UpdateDTO request, Long plannerId) {
-        getPlannerIfExist(plannerId);
+        findPlannerByUserIdIfExist(plannerId);
         Portfolio portfolio = findPortfolioByUserId(plannerId);
 
         portfolio.update(request.plannerName(), request.title(), request.description(),
@@ -150,11 +150,11 @@ public class PortfolioServiceImpl implements PortfolioService {
         priceItemJPARepository.deleteAllByPortfolioId(portfolio.getId());
 
         // 업데이트 가격 항목 새로 저장
-        List<PriceItem> updatedPriceItems = portfolioDTOConverter.getPriceItem(request.items(), portfolio);
+        List<PriceItem> updatedPriceItems = portfolioDTOConverter.toPriceItemByPortfolio(request.items(), portfolio);
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 이미지 저장
-        portfolioImageItemService.updateImage(request.imageItems(), portfolio);
+        portfolioImageItemService.updateImage(request.images(), portfolio);
     }
 
     @Transactional
@@ -173,8 +173,13 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
 
         // 플래너의 포트폴리오 탐색
-        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
+        Optional<Portfolio> portfolioOptional  = portfolioJPARepository.findByPlannerId(plannerId);
+
+        // 작성한 포트폴리오가 없으면 null DTO 리턴 - 프론트 요청 사항
+        if (portfolioOptional.isEmpty())
+            return portfolioDTOConverter.toMyPortfolioDTO();
+
+        Portfolio portfolio = portfolioOptional.get();
 
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolio.getId());
@@ -234,7 +239,7 @@ public class PortfolioServiceImpl implements PortfolioService {
             throw new BadRequestException(BaseException.PORTFOLIO_ALREADY_EXIST);
     }
 
-    private Portfolio getPortfolioById(Long portfolioId) {
+    private Portfolio findPortfolioById(Long portfolioId) {
         Portfolio portfolio = portfolioJPARepository.findById(portfolioId).orElseThrow(
                 () -> new NotFoundException(BaseException.PORTFOLIO_NOT_FOUND)
         );
@@ -251,7 +256,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
     }
 
-    private Planner getPlannerIfExist(Long plannerId) {
+    private Planner findPlannerByUserIdIfExist(Long plannerId) {
         return plannerJPARepository.findById(plannerId)
                 .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
     }

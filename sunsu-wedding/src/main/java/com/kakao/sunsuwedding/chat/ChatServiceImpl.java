@@ -26,10 +26,8 @@ public class ChatServiceImpl {
         Long coupleId = user.getId();
         Long plannerId = requestDTO.plannerId();
 
-        Couple couple = coupleJPARepository.findById(coupleId).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND));
-        Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
-                () -> new NotFoundException(BaseException.PLANNER_NOT_FOUND));
+        Couple couple = findCoupleById(coupleId);
+        Planner planner = findPlannerById(plannerId);
 
         Chat chat = chatJPARepository.save(Chat.builder().build());
 
@@ -37,5 +35,15 @@ public class ChatServiceImpl {
         matchServiceImpl.addMatch(couple, planner, chat);
 
         return new ChatResponse.ChatDTO(chat.getId());
+    }
+
+    private Planner findPlannerById(Long plannerId) {
+        return plannerJPARepository.findById(plannerId).orElseThrow(
+                () -> new NotFoundException(BaseException.PLANNER_NOT_FOUND));
+    }
+
+    private Couple findCoupleById(Long coupleId) {
+        return coupleJPARepository.findById(coupleId).orElseThrow(
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND));
     }
 }
