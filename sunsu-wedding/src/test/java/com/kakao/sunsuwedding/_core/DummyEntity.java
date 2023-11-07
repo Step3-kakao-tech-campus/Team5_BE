@@ -5,7 +5,7 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.payment.Payment;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
-import com.kakao.sunsuwedding.portfolio.image.ImageItem;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItem;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.quotation.Quotation;
 import com.kakao.sunsuwedding.quotation.QuotationStatus;
@@ -82,12 +82,10 @@ public class DummyEntity {
                 .build();
     }
 
-    protected ImageItem newImageItem(Portfolio portfolio,String fileName, String filePath, Boolean isThumbnail){
-        return ImageItem.builder()
+    protected PortfolioImageItem newImageItem(Portfolio portfolio, String image, Boolean isThumbnail){
+        return PortfolioImageItem.builder()
                 .portfolio(portfolio)
-                .originFileName(fileName)
-                .filePath(filePath)
-                .fileSize(522499L)
+                .image(image)
                 .thumbnail(isThumbnail)
                 .build();
     }

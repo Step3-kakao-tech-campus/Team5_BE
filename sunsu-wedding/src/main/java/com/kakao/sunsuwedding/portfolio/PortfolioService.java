@@ -11,10 +11,9 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
-import com.kakao.sunsuwedding.portfolio.image.ImageEncoder;
-import com.kakao.sunsuwedding.portfolio.image.ImageItem;
-import com.kakao.sunsuwedding.portfolio.image.ImageItemJPARepository;
-import com.kakao.sunsuwedding.portfolio.image.ImageItemService;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItem;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemJPARepository;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemService;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJDBCRepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
@@ -35,7 +34,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,7 @@ import java.util.Optional;
 public class PortfolioService {
 
     private final PortfolioJPARepository portfolioJPARepository;
-    private final ImageItemJPARepository imageItemJPARepository;
+    private final PortfolioImageItemJPARepository portfolioImageItemJPARepository;
     private final PriceItemJPARepository priceItemJPARepository;
     private final PriceItemJDBCRepository priceItemJDBCRepository;
     private final MatchJPARepository matchJPARepository;
@@ -55,12 +53,11 @@ public class PortfolioService {
     private final PlannerJPARepository plannerJPARepository;
     private final UserJPARepository userJPARepository;
     private final FavoriteJPARepository favoriteJPARepository;
-
-    private final ImageItemService imageItemService;
+    private final PortfolioImageItemService portfolioImageItemService;
     private final ReviewJPARepository reviewJPARepository;
 
     @Transactional
-    public void addPortfolio(PortfolioRequest.AddDTO request, MultipartFile[] images, Long plannerId) {
+    public void addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
         // 요청한 플래너 탐색
         Planner planner = findPlannerById(plannerId);
 
@@ -74,8 +71,9 @@ public class PortfolioService {
         Portfolio portfolio = PortfolioDTOConverter.getPortfolioByAdd(planner, totalPrice, request);
         portfolioJPARepository.save(portfolio);
 
-        // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max),
+        // 포트폴리오 삭제 후 재등록일 때 이전 거래내역(avg,min,max) 불러오기
         updateConfirmedPrices(planner);
+      
         // 평균 평점 불러오기
         updateAvgStars(planner);
 
@@ -84,7 +82,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 이미지 내용 저장
-        imageItemService.uploadImage(images, portfolio, planner);
+        portfolioImageItemService.uploadImage(request.imageItems(), portfolio);
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> getPortfolios(CursorRequest request, Long userId) {
@@ -103,15 +101,15 @@ public class PortfolioService {
         // 커서가 1이거나 NONE_KEY 일 경우 null 로 대체)
         Long nextKey = getNextKey(portfolios);
 
-        List<ImageItem> imageItems = imageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
-        List<String> encodedImages = ImageEncoder.encode(portfolios, imageItems);
+        List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(true, portfolios);
+        List<String> imageItems = portfolioImageItems.stream().map(PortfolioImageItem::getImage).toList();
         List<Favorite> favorites = new ArrayList<>();
 
         // 유저가 존재하는 경우 찜하기 누른 목록 받아옴
         if (userId >= 0)
              favorites = favoriteJPARepository.findByUserIdFetchJoinPortfolio(userId, pageable);
 
-        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, encodedImages, favorites);
+        List<PortfolioResponse.FindAllDTO> data = PortfolioDTOConverter.FindAllDTOConvertor(portfolios, imageItems, favorites);
         return new PageCursor<>(data, request.next(nextKey).key());
     }
 
@@ -124,8 +122,8 @@ public class PortfolioService {
         if (portfolio.getPlanner() == null)
             throw new NotFoundException(BaseException.PLANNER_NOT_FOUND);
 
-        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolioId);
-        List<String> images  = encodeImages(imageItems);
+        List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolioId);
+        List<String> imageItems  = portfolioImageItems.stream().map(PortfolioImageItem::getImage).toList();
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolioId);
 
         // 기본적으로 매칭 내역과 견적서에는 빈 배열 할당
@@ -147,11 +145,11 @@ public class PortfolioService {
             }
         }
 
-        return PortfolioDTOConverter.FindByIdDTOConvertor(portfolio, images, priceItems, matches, quotations, isLiked, isPremium);
+        return PortfolioDTOConverter.FindByIdDTOConvertor(portfolio, imageItems, priceItems, matches, quotations, isLiked, isPremium);
     }
 
     @Transactional
-    public void updatePortfolio(PortfolioRequest.UpdateDTO request, MultipartFile[] images, Long plannerId) {
+    public void updatePortfolio(PortfolioRequest.UpdateDTO request, Long plannerId) {
         Planner planner = findPlannerById(plannerId);
         Portfolio portfolio = findPortfolioByUserId(plannerId);
 
@@ -166,7 +164,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 이미지 저장
-        imageItemService.uploadImage(images, portfolio, planner);
+        portfolioImageItemService.updateImage(request.imageItems(), portfolio);
     }
 
     @Transactional
@@ -175,7 +173,7 @@ public class PortfolioService {
             throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
         priceItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
-        imageItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
+        portfolioImageItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
         portfolioJPARepository.deleteByPlanner(user);
     }
 
@@ -188,15 +186,13 @@ public class PortfolioService {
         Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
                 .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
 
-        List<ImageItem> imageItems = imageItemJPARepository.findByPortfolioId(portfolio.getId());
-        if (imageItems.isEmpty()) {
-            throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
-        }
-
-        List<String> encodedImages = encodeImages(imageItems);
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
 
-        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, encodedImages, priceItems);
+        List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolio.getId());
+        if (portfolioImageItems.isEmpty()) throw new NotFoundException(BaseException.PORTFOLIO_IMAGE_NOT_FOUND);
+        List<String> imageItems = portfolioImageItems.stream().map(PortfolioImageItem::getImage).toList();
+
+        return PortfolioDTOConverter.MyPortfolioDTOConvertor(planner, portfolio, imageItems, priceItems);
     }
 
 
@@ -266,10 +262,4 @@ public class PortfolioService {
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
-    private List<String> encodeImages(List<ImageItem> imageItems) {
-        return imageItems
-                .stream()
-                .map(ImageEncoder::encode)
-                .toList();
-    }
 }
