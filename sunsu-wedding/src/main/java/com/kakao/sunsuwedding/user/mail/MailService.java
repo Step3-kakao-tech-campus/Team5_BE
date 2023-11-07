@@ -1,8 +1,11 @@
 package com.kakao.sunsuwedding.user.mail;
 
 public interface MailService {
+
     int CODE_LENGTH = 6;
+
     int CODE_EXP = 60 * 30;
+
     String EMAIL_CONTENT = """
                             <div style="text-align: center; font-size: 1.2rem; color: black; background-color: rgb(231, 240, 254); padding: 100px 40px;">
                                 <h1 style="padding: 0 0 50px 0; margin: 0 0;">순수웨딩</h1>
@@ -16,5 +19,6 @@ public interface MailService {
 
 
     void send(MailRequest.SendCode request);
+
     void verify(MailRequest.CheckCode request);
 }

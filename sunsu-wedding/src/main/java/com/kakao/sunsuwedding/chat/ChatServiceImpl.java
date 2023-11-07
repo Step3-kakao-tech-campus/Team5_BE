@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ChatServiceImpl {
+public class ChatServiceImpl implements ChatService {
     private final ChatJPARepository chatJPARepository;
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;

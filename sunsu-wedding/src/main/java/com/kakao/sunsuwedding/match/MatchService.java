@@ -6,7 +6,10 @@ import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
 
 public interface MatchService {
+
     void addMatch(Couple couple, Planner planner, Chat chat);
+
     MatchResponse.FindAllWithNoReviewDTO findMatchesWithNoReview(User user);
+
     void confirmAll(User user, Long chatId);
 }

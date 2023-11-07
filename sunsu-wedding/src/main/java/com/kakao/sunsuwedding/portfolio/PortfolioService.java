@@ -8,6 +8,7 @@ import com.kakao.sunsuwedding.user.planner.Planner;
 import java.util.List;
 
 public interface PortfolioService {
+
     void addPortfolio(PortfolioRequest.AddDTO request, Long plannerId);
 
     PageCursor<List<PortfolioResponse.FindAllDTO>> findPortfolios(CursorRequest request, Long userId);
