@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
 @Import({
         SecurityConfig.class,
 })
@@ -51,7 +53,8 @@ public class ReviewRestControllerTest {
     public void add_review_success_test() throws Exception {
         // given
         Long chatId = 1L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!", images);
 
         String requestBody = om.writeValueAsString(request);
 
@@ -76,7 +79,8 @@ public class ReviewRestControllerTest {
     public void add_review_fail_test_match_not_found() throws Exception {
         // given
         Long chatId = 80L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!", images);
 
         String requestBody = om.writeValueAsString(request);
 
@@ -103,7 +107,8 @@ public class ReviewRestControllerTest {
     public void add_review_fail_test_not_my_match() throws Exception {
         // given
         Long chatId = 3L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!", images);
 
         String requestBody = om.writeValueAsString(request);
 
@@ -130,7 +135,8 @@ public class ReviewRestControllerTest {
     public void add_review_fail_test_match_not_confirmed() throws Exception {
         // given
         Long chatId = 2L;
-        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!", images);
 
         String requestBody = om.writeValueAsString(request);
 
@@ -267,7 +273,8 @@ public class ReviewRestControllerTest {
     public void update_review_success_test() throws Exception {
         // given
         Long reviewId = 1L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!", images);
 
         String requestBody = om.writeValueAsString(request);
 
@@ -291,7 +298,8 @@ public class ReviewRestControllerTest {
     public void update_review_fail_test_review_not_found() throws Exception {
         // given
         Long reviewId = 10L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!", images);
 
         String requestBody = om.writeValueAsString(request);
 
@@ -318,7 +326,8 @@ public class ReviewRestControllerTest {
     public void update_review_fail_test_not_my_review() throws Exception {
         // given
         Long reviewId = 1L;
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "최고의 플래너!", images);
 
         String requestBody = om.writeValueAsString(request);
 

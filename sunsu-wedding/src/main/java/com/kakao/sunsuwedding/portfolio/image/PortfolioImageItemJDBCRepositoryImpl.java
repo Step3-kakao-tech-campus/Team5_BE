@@ -29,5 +29,7 @@ public class PortfolioImageItemJDBCRepositoryImpl implements PortfolioImageItemJ
                     ps.setString(2, imageItem.getImage());
                     ps.setBoolean(3, imageItem.getThumbnail());
                 });
+
     }
+
 }

@@ -123,9 +123,23 @@ public class PortfolioDTOConverter {
                 .toList();
     }
 
-    public PortfolioResponse.MyPortfolioDTO toMyPortfolioDTO(Portfolio portfolio,
-                                                             List<String> imageItems,
-                                                             List<PriceItem> priceItems) {
+    public PortfolioResponse.MyPortfolioDTO toMyPortfolioDTO() {
+        return new PortfolioResponse.MyPortfolioDTO(
+                null,
+                List.of(new PortfolioResponse.PriceItemDTO(null, null)),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public PortfolioResponse.MyPortfolioDTO toMyPortfolioDTO(Planner planner,
+                                                                           Portfolio portfolio,
+                                                                           List<String> imageItems,
+                                                                           List<PriceItem> priceItems) {
         return new PortfolioResponse.MyPortfolioDTO(
                 portfolio.getPlannerName(),
                 toPriceItemDTO(priceItems),
