@@ -24,28 +24,28 @@ public class ReviewRestController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> findAllByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+    public ResponseEntity<?> findReviewsByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                               @Valid @RequestBody ReviewRequest.FindAllByPlannerDTO request) {
-        ReviewResponse.FindAllByPlannerDTO response = reviewService.findAllByPlanner(page, request.plannerId());
+        ReviewResponse.FindAllByPlannerDTO response = reviewService.findReviewsByPlanner(page, request.plannerId());
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/collect")
-    public  ResponseEntity<?> findAllByCouple(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        ReviewResponse.FindAllByCoupleDTO response = reviewService.findAllByCouple(userDetails.getUser());
+    public  ResponseEntity<?> findReviewsByCouple(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        ReviewResponse.FindAllByCoupleDTO response = reviewService.findReviewsByCouple(userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<?> findByReviewId(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ResponseEntity<?> findReviewById(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @PathVariable Long reviewId) {
-        ReviewResponse.ReviewDTO response = reviewService.findByReviewId(userDetails.getUser(), reviewId);
+        ReviewResponse.ReviewDTO response = reviewService.findReviewById(userDetails.getUser(), reviewId);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
 
-    @PostMapping("/update/{reviewId}")
+    @PutMapping("/{reviewId}")
     public ResponseEntity<?> updateReview(@AuthenticationPrincipal CustomUserDetails userDetails,
                                           @PathVariable @Min(1) Long reviewId,
                                           @Valid @RequestBody ReviewRequest.UpdateDTO request) {

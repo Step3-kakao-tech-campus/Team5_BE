@@ -52,7 +52,7 @@ public class ReviewService {
         portfolioService.updateAvgStars(match.getPlanner());
     }
 
-    public ReviewResponse.FindAllByPlannerDTO findAllByPlanner(int page, Long plannerId) {
+    public ReviewResponse.FindAllByPlannerDTO findReviewsByPlanner(int page, Long plannerId) {
         Pageable pageable = PageRequest.of(page,10);
         Page<Review> pageContent = reviewJPARepository.findAllByMatchPlannerId(plannerId, pageable);
         List<Review> reviews = pageContent.getContent();
@@ -63,7 +63,7 @@ public class ReviewService {
 
     }
 
-    public ReviewResponse.FindAllByCoupleDTO findAllByCouple(User user) {
+    public ReviewResponse.FindAllByCoupleDTO findReviewsByCouple(User user) {
         roleCheck(user.getDtype());
 
         List<Review> reviews = reviewJPARepository.findAllByMatchCoupleId(user.getId());
@@ -72,7 +72,7 @@ public class ReviewService {
         return new ReviewResponse.FindAllByCoupleDTO(reviewDTOS);
     }
 
-    public ReviewResponse.ReviewDTO findByReviewId(User user, Long reviewId) {
+    public ReviewResponse.ReviewDTO findReviewById(User user, Long reviewId) {
         Review review = reviewJPARepository.findById(reviewId).orElseThrow(
                 () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
         );

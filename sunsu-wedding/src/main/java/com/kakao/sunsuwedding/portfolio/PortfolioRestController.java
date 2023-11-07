@@ -22,14 +22,14 @@ public class PortfolioRestController {
     private static final int PAGE_SIZE = 10;
 
     @PostMapping(value = "")
-    public ResponseEntity<?> addPortfolios(@RequestBody PortfolioRequest.AddDTO request,
+    public ResponseEntity<?> addPortfolio(@RequestBody PortfolioRequest.AddDTO request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         portfolioService.addPortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
+    public ResponseEntity<?> findPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
                                            @RequestParam @Nullable String name,
                                            @RequestParam @Nullable String location,
                                            @RequestParam @Nullable Long minPrice,
@@ -38,22 +38,22 @@ public class PortfolioRestController {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
         CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
-        PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest, userId);
+        PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.findPortfolios(cursorRequest, userId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id,
+    public ResponseEntity<?> findPortfolioById(@PathVariable @Min(1) Long id,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
-        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userId);
+        PortfolioResponse.FindByIdDTO portfolio = portfolioService.findPortfolioById(id, userId);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PostMapping(value = "/update")
-    public ResponseEntity<?> updatePortfolios(@RequestBody PortfolioRequest.UpdateDTO request,
+    @PutMapping(value = "")
+    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioRequest.UpdateDTO request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         portfolioService.updatePortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));

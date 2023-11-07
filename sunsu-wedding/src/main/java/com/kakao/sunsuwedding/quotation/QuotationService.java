@@ -32,7 +32,7 @@ public class QuotationService {
     private final PriceCalculator priceCalculator;
 
     @Transactional
-    public void insertQuotation(User user, Long chatId, QuotationRequest.Add request) {
+    public void addQuotation(User user, Long chatId, QuotationRequest.Add request) {
         Match match = getMatchByChatIdAndPlannerId(user, chatId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
@@ -106,7 +106,7 @@ public class QuotationService {
     }
 
     @Transactional
-    public void update(User user, Long chatId, Long quotationId, QuotationRequest.Update request) {
+    public void updateQuotation(User user, Long chatId, Long quotationId, QuotationRequest.Update request) {
         Match match = getMatchByChatIdAndPlannerId(user, chatId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {

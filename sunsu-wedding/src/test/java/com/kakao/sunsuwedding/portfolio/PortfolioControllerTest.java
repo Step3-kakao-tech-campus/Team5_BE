@@ -291,7 +291,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/portfolios/update")
+                        .put("/api/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -312,7 +312,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/portfolios/update")
+                        .put("/api/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -335,7 +335,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/portfolios/update")
+                        .put("/api/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -359,7 +359,7 @@ public class PortfolioControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/portfolios/update")
+                        .put("/api/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );

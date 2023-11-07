@@ -274,7 +274,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/reviews/update/" + reviewId)
+                        .put("/api/reviews/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -298,7 +298,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/reviews/update/" + reviewId)
+                        .put("/api/reviews/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -325,7 +325,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/reviews/update/" + reviewId)
+                        .put("/api/reviews/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
