@@ -61,8 +61,8 @@ public class MatchServiceImpl implements MatchService {
         );
 
         List<Match> matches = matchJPARepository.findAllByCouple(couple);
-        List<Match> confirmedMatches = getConfirmedMatches(matches);
-        List<Match> matchesWithNoReview = getMatchesWithNoReview(confirmedMatches);
+        List<Match> confirmedMatches = findConfirmedMatches(matches);
+        List<Match> matchesWithNoReview = findMatchesWithNoReview(confirmedMatches);
 
         List<MatchResponse.MatchDTO> matchDTOS = matchDTOConverter.toFindAllWithNoReviewDTO(matchesWithNoReview);
 
@@ -89,6 +89,7 @@ public class MatchServiceImpl implements MatchService {
         match.updateStatusConfirmed();
         match.updateConfirmedPrice(match.getPrice());
         matchJPARepository.save(match);
+
         // 견적서 전체 확정 후 플래너 포트폴리오의 avg, min, max price 업데이트 하기
         portfolioServiceImpl.updateConfirmedPrices(match.getPlanner());
     }
@@ -113,13 +114,13 @@ public class MatchServiceImpl implements MatchService {
         }
     }
 
-    private List<Match> getConfirmedMatches(List<Match> matches) {
+    private List<Match> findConfirmedMatches(List<Match> matches) {
         return matches.stream()
                 .filter(match -> match.getStatus().equals(MatchStatus.CONFIRMED))
                 .toList();
     }
 
-    private List<Match> getMatchesWithNoReview(List<Match> matches) {
+    private List<Match> findMatchesWithNoReview(List<Match> matches) {
         return matches.stream()
                 .filter(match -> match.getReviewStatus().equals(ReviewStatus.UNWRITTEN))
                 .toList();

@@ -37,7 +37,7 @@ public class FavoriteRestController {
     @GetMapping("")
     public ResponseEntity<?> findFavorites(@AuthenticationPrincipal CustomUserDetails userDetails,
                                            @PageableDefault(size=10, page=0, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable){
-        List<FavoriteResponse.FindPortfolioDTO> favorites = favoriteServiceImpl.getFavoritePortfolios(userDetails.getUser(), pageable);
+        List<FavoriteResponse.FindPortfolioDTO> favorites = favoriteServiceImpl.findFavoritePortfoliosByUser(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(ApiUtils.success(favorites));
     }
 

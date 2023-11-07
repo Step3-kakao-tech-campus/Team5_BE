@@ -34,7 +34,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Transactional
     public void addQuotation(User user, Long chatId, QuotationRequest.Add request) {
-        Match match = getMatchByChatIdAndPlannerId(user, chatId);
+        Match match = findMatchByChatIdAndPlannerId(user, chatId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new BadRequestException(BaseException.MATCHING_ALREADY_CONFIRMED);
@@ -57,8 +57,7 @@ public class QuotationServiceImpl implements QuotationService {
     }
 
     public QuotationResponse.FindAllByMatchId findQuotationsByChatId(Long chatId) {
-        Match match = matchJPARepository.findByChatId(chatId)
-                .orElseThrow(() -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
+        Match match = findMatchByChatId(chatId);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         MatchStatus status = match.getStatus();
@@ -72,7 +71,7 @@ public class QuotationServiceImpl implements QuotationService {
     public QuotationResponse.FindByUserDTO findQuotationsByUser(User user, int page) {
         Pageable pageable = PageRequest.of(page, 10);
 
-        Page<Quotation> pageContent = getQuotationsByUser(user.getDtype(), user.getId(), pageable);
+        Page<Quotation> pageContent = findQuotationsByUser(user.getDtype(), user.getId(), pageable);
         List<Quotation> quotations = pageContent.getContent();
 
         Map<Long, List<Quotation>> quotationsByChatId = quotations.stream().collect(
@@ -88,14 +87,14 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Transactional
     public void confirm(User user, Long chatId, Long quotationId) {
-        Match match = getMatchByChatIdAndPlannerId(user, chatId);
+        Match match = findMatchByChatIdAndPlannerId(user, chatId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
         }
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
-        Quotation quotation = getQuotationById(quotationId, quotations);
+        Quotation quotation = findQuotationById(quotationId, quotations);
 
         quotation.updateStatus(QuotationStatus.CONFIRMED);
         quotationJPARepository.save(quotation);
@@ -108,14 +107,14 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Transactional
     public void updateQuotation(User user, Long chatId, Long quotationId, QuotationRequest.Update request) {
-        Match match = getMatchByChatIdAndPlannerId(user, chatId);
+        Match match = findMatchByChatIdAndPlannerId(user, chatId);
 
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
         }
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
-        Quotation quotation = getQuotationById(quotationId, quotations);
+        Quotation quotation = findQuotationById(quotationId, quotations);
 
         Boolean isPriceChanged = (!quotation.getPrice().equals(request.price()));
 
@@ -131,9 +130,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Transactional
     public void deleteQuotation(User user, Long quotationId) {
-        Quotation quotation = quotationJPARepository.findById(quotationId).orElseThrow(
-                () -> new NotFoundException(BaseException.QUOTATION_NOT_FOUND)
-        );
+        Quotation quotation = findQuotationById(quotationId);
 
         if (!quotation.getMatch().getPlanner().getId().equals(user.getId())) {
             throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
@@ -142,12 +139,22 @@ public class QuotationServiceImpl implements QuotationService {
         quotationJPARepository.delete(quotation);
     }
 
-    private Match getMatchByChatIdAndPlannerId(User user, Long chatId) {
+    private Quotation findQuotationById(Long quotationId) {
+        return quotationJPARepository.findById(quotationId).orElseThrow(
+                () -> new NotFoundException(BaseException.QUOTATION_NOT_FOUND)
+        );
+    }
+
+    private Match findMatchByChatId(Long chatId) {
+        return matchJPARepository.findByChatId(chatId)
+                .orElseThrow(() -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
+    }
+
+    private Match findMatchByChatIdAndPlannerId(User user, Long chatId) {
         // 매칭 내역이 존재하지 않을 때는 404 에러를 내보내야 하고
         // 해당 매칭 내역에 접근할 수 없다면 403 에러를 내보내야 하기 때문에
         // 매칭 ID 로만 조회 후 권한 체크
-        Match match = matchJPARepository.findByChatId(chatId)
-                .orElseThrow(() -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
+        Match match = findMatchByChatId(chatId);
 
         if (!match.getPlanner().getId().equals(user.getId())) {
             throw new ForbiddenException(BaseException.QUOTATION_ACCESS_DENIED);
@@ -156,7 +163,7 @@ public class QuotationServiceImpl implements QuotationService {
         return match;
     }
 
-    private Quotation getQuotationById(Long quotationId, List<Quotation> quotations) {
+    private Quotation findQuotationById(Long quotationId, List<Quotation> quotations) {
         Quotation quotation = quotations
                 .stream()
                 .filter(iter -> Objects.equals(iter.getId(), quotationId))
@@ -170,7 +177,7 @@ public class QuotationServiceImpl implements QuotationService {
         return quotation;
     }
 
-    private Page<Quotation> getQuotationsByUser(String role, Long id, Pageable pageable) {
+    private Page<Quotation> findQuotationsByUser(String role, Long id, Pageable pageable) {
         return role.equals(Role.PLANNER.getRoleName()) ?
                 quotationJPARepository.findAllByMatchPlannerIdOrderByModifiedAtDesc(id, pageable) :
                 quotationJPARepository.findAllByMatchCoupleIdOrderByModifiedAtDesc(id, pageable);

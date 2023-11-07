@@ -41,16 +41,19 @@ public class TokenServiceImpl implements TokenService {
 
     @Transactional
     public void expireTokenByUserId(Long userId) {
-        Token token = tokenJPARepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(BaseException.TOKEN_NOT_FOUND));
+        Token token = findTokenByUserId(userId);
 
         tokenJPARepository.delete(token);
     }
 
     public Boolean checkTokenValidation(Long userId, String accessToken, String refreshToken) {
-        Token token = tokenJPARepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(BaseException.TOKEN_NOT_FOUND));
+        Token token = findTokenByUserId(userId);
 
         return token.getAccessToken().equals(accessToken) && token.getRefreshToken().equals(refreshToken);
+    }
+
+    private Token findTokenByUserId(Long userId) {
+        return tokenJPARepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(BaseException.TOKEN_NOT_FOUND));
     }
 }

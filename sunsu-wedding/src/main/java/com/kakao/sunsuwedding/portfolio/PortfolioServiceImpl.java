@@ -13,7 +13,7 @@ import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItem;
 import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemJPARepository;
-import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemService;
+import com.kakao.sunsuwedding.portfolio.image.PortfolioImageItemServiceImpl;
 import com.kakao.sunsuwedding.portfolio.price.PriceItem;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJDBCRepository;
 import com.kakao.sunsuwedding.portfolio.price.PriceItemJPARepository;
@@ -51,7 +51,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final PlannerJPARepository plannerJPARepository;
     private final UserJPARepository userJPARepository;
     private final FavoriteJPARepository favoriteJPARepository;
-    private final PortfolioImageItemService portfolioImageItemService;
+    private final PortfolioImageItemServiceImpl portfolioImageItemServiceImpl;
     private final ReviewJPARepository reviewJPARepository;
 
     private final PortfolioDTOConverter portfolioDTOConverter;
@@ -81,7 +81,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 이미지 내용 저장
-        portfolioImageItemService.uploadImage(request.images(), portfolio);
+        portfolioImageItemServiceImpl.uploadImage(request.images(), portfolio);
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> findPortfolios(CursorRequest request, Long userId) {
@@ -154,7 +154,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 이미지 저장
-        portfolioImageItemService.updateImage(request.images(), portfolio);
+        portfolioImageItemServiceImpl.updateImage(request.images(), portfolio);
     }
 
     @Transactional

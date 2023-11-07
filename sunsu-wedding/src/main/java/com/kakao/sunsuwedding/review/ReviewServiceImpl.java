@@ -38,9 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     public void addReview(User user, Long chatId, ReviewRequest.AddDTO request) {
-        Match match = matchJPARepository.findByChatId(chatId).orElseThrow(
-                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND)
-        );
+        Match match = findMatchByChatId(chatId);
 
         roleCheck(user.getDtype()); // 예비부부이며
         permissionCheck(user.getId(), match); //본인의 매칭이 맞는지 확인
@@ -55,6 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 첫 리뷰라면 리뷰 작성 여부 업데이트
         updateReviewStatus(match);
+
         // 평균 평점 수정
         portfolioServiceImpl.updateAvgStars(match.getPlanner());
 
@@ -81,9 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public ReviewResponse.ReviewDTO findReviewById(User user, Long reviewId) {
-        Review review = reviewJPARepository.findById(reviewId).orElseThrow(
-                () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
-        );
+        Review review = findReviewById(reviewId);
 
         roleCheck(user.getDtype());
         permissionCheck(user.getId(),review.getMatch());
@@ -98,9 +95,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     public void updateReview(User user, Long reviewId, ReviewRequest.UpdateDTO request) {
-        Review review = reviewJPARepository.findById(reviewId).orElseThrow(
-                () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
-        );
+        Review review = findReviewById(reviewId);
 
         roleCheck(user.getDtype());
         permissionCheck(user.getId(), review.getMatch());
@@ -118,15 +113,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     public void deleteReview(User user, Long reviewId) {
-        Review review = reviewJPARepository.findById(reviewId).orElseThrow(
-                () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
-        );
+        Review review = findReviewById(reviewId);
         Match match = review.getMatch();
 
         roleCheck(user.getDtype());
         permissionCheck(user.getId(), review.getMatch());
 
         reviewJPARepository.delete(review);
+
         // 평균 평점 수정
         portfolioServiceImpl.updateAvgStars(review.getMatch().getPlanner());
 
@@ -134,7 +128,20 @@ public class ReviewServiceImpl implements ReviewService {
         if (reviewJPARepository.findAllByMatch(match).isEmpty()) {
             updateReviewStatus(match);
         }
+
         reviewImageItemJPARepository.deleteAllByReviewId(reviewId);
+    }
+
+    private Match findMatchByChatId(Long chatId) {
+        return matchJPARepository.findByChatId(chatId).orElseThrow(
+                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND)
+        );
+    }
+
+    private Review findReviewById(Long reviewId) {
+        return reviewJPARepository.findById(reviewId).orElseThrow(
+                () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
+        );
     }
 
     private void roleCheck(String role) {

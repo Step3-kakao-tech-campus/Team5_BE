@@ -8,5 +8,5 @@ import java.util.List;
 public interface FavoriteService {
     void likePortfolio(User user, Long portfolioId);
     void unlikePortfolio(User user, Long portfolioId);
-    List<FavoriteResponse.FindPortfolioDTO> getFavoritePortfolios(User user, Pageable pageable);
+    List<FavoriteResponse.FindPortfolioDTO> findFavoritePortfoliosByUser(User user, Pageable pageable);
 }

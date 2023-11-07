@@ -39,8 +39,7 @@ public class MailServiceImpl implements MailService {
         MimeMessage email = createMail(request.email(), code);
         javaMailSender.send(email);
 
-        MailCode mailCode = mailCodeJPARepository.findByEmail(request.email())
-                        .orElseGet(() -> MailCode.builder().build());
+        MailCode mailCode = findMailCodeByRequest(request);
 
         mailCode.setCode(code);
         mailCode.setEmail(request.email());
@@ -51,14 +50,23 @@ public class MailServiceImpl implements MailService {
     }
 
     public void verify(MailRequest.CheckCode request) {
-        MailCode mailCode = mailCodeJPARepository.findByEmail(request.email())
-                .orElseThrow(() -> new NotFoundException(BaseException.CODE_NOT_FOUND));
+        MailCode mailCode = findMailCodeByRequest(request);
 
         checkCodeExpiration(mailCode);
         matchCode(request, mailCode);
 
         mailCode.setConfirmed(true);
         mailCodeJPARepository.save(mailCode);
+    }
+
+    private MailCode findMailCodeByRequest(MailRequest.SendCode request) {
+        return mailCodeJPARepository.findByEmail(request.email())
+                .orElseGet(() -> MailCode.builder().build());
+    }
+
+    private MailCode findMailCodeByRequest(MailRequest.CheckCode request) {
+        return mailCodeJPARepository.findByEmail(request.email())
+                .orElseThrow(() -> new NotFoundException(BaseException.CODE_NOT_FOUND));
     }
 
     private static void matchCode(MailRequest.CheckCode request, MailCode mailCode) {

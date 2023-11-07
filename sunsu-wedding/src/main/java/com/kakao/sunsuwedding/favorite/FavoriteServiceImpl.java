@@ -58,7 +58,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         favoriteJPARepository.delete(favorite);
     }
 
-    public List<FavoriteResponse.FindPortfolioDTO> getFavoritePortfolios(User user, Pageable pageable){
+    public List<FavoriteResponse.FindPortfolioDTO> findFavoritePortfoliosByUser(User user, Pageable pageable){
         // userId와 일치하는 favorite의 포트폴리오 내용들 가져옴
         List<Favorite> favoriteList = favoriteJPARepository.findByUserIdFetchJoinPortfolio(user.getId(), pageable);
         List<Portfolio> portfolioList = favoriteList.stream().map(Favorite::getPortfolio).toList();
