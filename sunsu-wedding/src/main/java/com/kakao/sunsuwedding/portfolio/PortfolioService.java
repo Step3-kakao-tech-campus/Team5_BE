@@ -82,7 +82,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(priceItems);
 
         // 이미지 내용 저장
-        portfolioImageItemService.uploadImage(request.imageItems(), portfolio);
+        portfolioImageItemService.uploadImage(request.images(), portfolio);
     }
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> findPortfolios(CursorRequest request, Long userId) {
@@ -164,7 +164,7 @@ public class PortfolioService {
         priceItemJDBCRepository.batchInsertPriceItems(updatedPriceItems);
 
         // 이미지 저장
-        portfolioImageItemService.updateImage(request.imageItems(), portfolio);
+        portfolioImageItemService.updateImage(request.images(), portfolio);
     }
 
     @Transactional
@@ -183,9 +183,13 @@ public class PortfolioService {
                 .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
 
         // 플래너의 포트폴리오 탐색
-        Portfolio portfolio = portfolioJPARepository.findByPlannerId(plannerId)
-                .orElseThrow(() -> new BadRequestException(BaseException.PORTFOLIO_NOT_FOUND));
+        Optional<Portfolio> portfolioOptional  = portfolioJPARepository.findByPlannerId(plannerId);
 
+        // 작성한 포트폴리오가 없으면 null DTO 리턴 - 프론트 요청 사항
+        if (portfolioOptional.isEmpty())
+            return PortfolioDTOConverter.MyPortfolioDTOConvertor();
+
+        Portfolio portfolio = portfolioOptional.get();
         List<PriceItem> priceItems = priceItemJPARepository.findAllByPortfolioId(portfolio.getId());
 
         List<PortfolioImageItem> portfolioImageItems = portfolioImageItemJPARepository.findByPortfolioId(portfolio.getId());

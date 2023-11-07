@@ -19,15 +19,13 @@ public class ReviewImageItemJDBCRepositoryImpl implements ReviewImageItemJDBCRep
     }
 
     public void batchInsertImageItems(List<ReviewImageItem> reviewImageItems) {
-        String sql = "INSERT INTO imageitem_tb (review_id, origin_file_name, file_path, file_size, thumbnail) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO review_imageitem_tb (review_id, image, thumbnail) VALUES (?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql, reviewImageItems, reviewImageItems.size(),
-                (ps, reviewImageItem) -> {
-                    ps.setLong(1, reviewImageItem.getReview().getId());
-                    ps.setString(2, reviewImageItem.getOriginFileName());
-                    ps.setString(3, reviewImageItem.getFilePath());
-                    ps.setLong(4, reviewImageItem.getFileSize());
-                    ps.setBoolean(5, reviewImageItem.isThumbnail());
+                (ps, imageItem) -> {
+                    ps.setLong(1, imageItem.getReview().getId());
+                    ps.setString(2, imageItem.getImage());
+                    ps.setBoolean(3, imageItem.getThumbnail());
                 });
 
     }

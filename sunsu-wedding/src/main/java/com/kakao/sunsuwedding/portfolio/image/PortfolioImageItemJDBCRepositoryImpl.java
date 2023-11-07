@@ -17,7 +17,7 @@ public class PortfolioImageItemJDBCRepositoryImpl implements PortfolioImageItemJ
     }
 
     public void batchInsertImageItems(List<PortfolioImageItem> portfolioImageItems) {
-        String sql = "INSERT INTO portfolioimageitem_tb (portfolio_id, image, thumbnail) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO portfolio_imageitem_tb (portfolio_id, image, thumbnail) VALUES (?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql, portfolioImageItems, portfolioImageItems.size(),
                 (ps, imageItem) -> {

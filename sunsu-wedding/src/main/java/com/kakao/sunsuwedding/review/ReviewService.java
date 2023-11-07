@@ -9,6 +9,9 @@ import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.match.ReviewStatus;
 import com.kakao.sunsuwedding.portfolio.PortfolioService;
+import com.kakao.sunsuwedding.review.image.ReviewImageItem;
+import com.kakao.sunsuwedding.review.image.ReviewImageItemJPARepository;
+import com.kakao.sunsuwedding.review.image.ReviewImageItemService;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,6 +31,8 @@ import java.util.List;
 public class ReviewService {
     private final ReviewJPARepository reviewJPARepository;
     private final MatchJPARepository matchJPARepository;
+    private final ReviewImageItemJPARepository reviewImageItemJPARepository;
+    private final ReviewImageItemService reviewImageItemService;
     private final PortfolioService portfolioService;
 
     @Transactional
@@ -39,18 +45,20 @@ public class ReviewService {
         permissionCheck(user.getId(), match); //본인의 매칭이 맞는지 확인
         matchConfirmedCheck(match); // 리뷰 작성 가능한 상태인지 확인
 
-        reviewJPARepository.save(
-                Review.builder()
-                    .match(match)
-                    .stars(request.stars())
-                    .content(request.content())
-                    .build()
-        );
+        Review review = Review.builder()
+                .match(match)
+                .stars(request.stars())
+                .content(request.content())
+                .build();
+        reviewJPARepository.save(review);
 
         // 첫 리뷰라면 리뷰 작성 여부 업데이트
         updateReviewStatus(match);
         // 평균 평점 수정
         portfolioService.updateAvgStars(match.getPlanner());
+
+        // 리뷰 이미지 저장
+        reviewImageItemService.uploadImage(request.images(),review);
     }
 
     public ReviewResponse.FindAllByPlannerDTO findReviewsByPlanner(int page, Long plannerId) {
@@ -58,7 +66,18 @@ public class ReviewService {
         Page<Review> pageContent = reviewJPARepository.findAllByMatchPlannerId(plannerId, pageable);
         List<Review> reviews = pageContent.getContent();
 
-        List<ReviewResponse.FindByPlannerDTO> reviewDTOS = ReviewDTOConverter.toFindAllByPlannerDTO(reviews);
+        List<ReviewResponse.FindByPlannerDTO> reviewDTOS = new ArrayList<>();
+        for (Review review : reviews) {
+            reviewDTOS.add(
+                    new ReviewResponse.FindByPlannerDTO(
+                            review.id,
+                            (review.getMatch().getCouple() != null) ? review.getMatch().getCouple().getUsername() : "탈퇴한 사용자" ,
+                            review.stars,
+                            review.content,
+                            reviewImageItemJPARepository.findByPlannerId(plannerId)
+                            )
+            );
+        }
 
         return new ReviewResponse.FindAllByPlannerDTO(reviewDTOS);
 
@@ -68,8 +87,19 @@ public class ReviewService {
         roleCheck(user.getDtype());
 
         List<Review> reviews = reviewJPARepository.findAllByMatchCoupleId(user.getId());
-        List<ReviewResponse.ReviewDTO> reviewDTOS = ReviewDTOConverter.toFindAllByCoupleDTO(reviews);
 
+        List<ReviewResponse.ReviewDTO> reviewDTOS = new ArrayList<>();
+        for (Review review : reviews) {
+            reviewDTOS.add(
+                    new ReviewResponse.ReviewDTO(
+                            review.id,
+                            (review.getMatch().getPlanner() != null) ? review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자" ,
+                            review.stars,
+                            review.content,
+                            reviewImageItemJPARepository.findByCoupleId(user.getId())
+                    )
+            );
+        }
         return new ReviewResponse.FindAllByCoupleDTO(reviewDTOS);
     }
 
@@ -83,7 +113,10 @@ public class ReviewService {
 
         String plannerName = (review.getMatch().getPlanner() != null ) ?
                               review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자";
-        return new ReviewResponse.ReviewDTO(review.getId(), plannerName, review.stars, review.getContent());
+
+        List<String> images = reviewImageItemJPARepository.findByReviewId(reviewId);
+
+        return new ReviewResponse.ReviewDTO(review.getId(), plannerName, review.stars, review.getContent(), images);
     }
 
     @Transactional
@@ -101,6 +134,9 @@ public class ReviewService {
         portfolioService.updateAvgStars(review.getMatch().getPlanner());
 
         reviewJPARepository.save(review);
+
+        // 리뷰 이미지 수정
+        reviewImageItemService.updateImage(request.images(), review);
     }
 
     @Transactional
@@ -114,13 +150,13 @@ public class ReviewService {
         permissionCheck(user.getId(), review.getMatch());
 
         reviewJPARepository.delete(review);
-
         // 평균 평점 수정
         portfolioService.updateAvgStars(review.getMatch().getPlanner());
         // 삭제 후 리뷰가 1개도 없다면 ReviewStatus UNWRITTEN으로 변경
         if (reviewJPARepository.findAllByMatch(match).isEmpty()) {
             updateReviewStatus(match);
         }
+        reviewImageItemJPARepository.deleteAllByReviewId(reviewId);
     }
 
     private void roleCheck(String role) {

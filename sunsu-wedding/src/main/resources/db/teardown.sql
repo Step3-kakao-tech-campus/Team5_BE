@@ -3,12 +3,13 @@ truncate table user_tb;
 truncate table token_tb;
 truncate table payment_tb;
 truncate table portfolio_tb;
-truncate table portfolioimageitem_tb;
+truncate table portfolio_imageitem_tb;
 truncate table priceitem_tb;
 truncate table match_tb;
 truncate table quotation_tb;
 truncate table chat_tb;
 truncate table review_tb;
+truncate table review_imageitem_tb;
 truncate table favorite_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
@@ -73,30 +74,30 @@ INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALU
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('6', '2', '메이크업2', '200000');
 INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('7', '2', '메이크업2', '200000');
 
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('1', '1', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('2', '1', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('3', '1', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('4', '1', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('5', '1', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('6', '2', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('7', '2', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('8', '2', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('9', '2', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('10', '2', '/wAA', 'false');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('11', '3', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('12', '4', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('14', '5', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('15', '6', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('16', '7', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('17', '8', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('18', '9', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('19', '10', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('20', '11', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('21', '12', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('22', '13', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('23', '14', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('24', '15', '/wAA', 'true');
-INSERT INTO portfolioimageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('25', '16', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('1', '1', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('2', '1', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('3', '1', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('4', '1', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('5', '1', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('6', '2', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('7', '2', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('8', '2', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('9', '2', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('10', '2', '/wAA', 'false');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('11', '3', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('12', '4', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('14', '5', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('15', '6', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('16', '7', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('17', '8', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('18', '9', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('19', '10', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('20', '11', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('21', '12', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('22', '13', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('23', '14', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('24', '15', '/wAA', 'true');
+INSERT INTO portfolio_imageitem_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('25', '16', '/wAA', 'true');
 
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (1, '2023-10-08 08:30:12.00', true);
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (2, '2023-10-08 08:30:12.00', true);
@@ -126,6 +127,11 @@ INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `descri
 
 INSERT INTO review_tb (`id`, `match_id`, `stars`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (1, 1, 5, '최고의 플래너!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);
 
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('1', '1', '/wAA', 'true');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('2', '1', '/wAA', 'false');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('3', '1', '/wAA', 'false');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('4', '1', '/wAA', 'false');
+INSERT INTO review_imageitem_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('5', '1', '/wAA', 'false');
 
 INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(1, 1, 1, '2023-10-08 08:30:12.00');
 INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(2, 1, 2, '2023-10-08 08:30:13.00');

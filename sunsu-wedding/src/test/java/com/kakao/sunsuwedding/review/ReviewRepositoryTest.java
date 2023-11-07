@@ -81,7 +81,8 @@ public class ReviewRepositoryTest {
         Review review = reviewJPARepository.findById(reviewId).orElseThrow(
                 () -> new NotFoundException(BaseException.REVIEW_NOT_FOUND)
         );
-        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "review1 updated");
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.UpdateDTO request = new ReviewRequest.UpdateDTO(3, "review1 updated", images);
 
         // when
         review.updateReview(request);

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
+
 public class ReviewRequest {
     public record AddDTO (
             @NotNull(message = "평점은 비어있으면 안됩니다.")
@@ -13,7 +15,8 @@ public class ReviewRequest {
             Integer stars,
             @NotNull(message = "content는 비어있으면 안됩니다.")
             @Length(max = 500, message = "리뷰는 500자까지만 작성 가능합니다.")
-            String content
+            String content,
+            List<String> images
     ){}
 
     public record UpdateDTO (
@@ -23,7 +26,8 @@ public class ReviewRequest {
             Integer stars,
             @NotNull(message = "content는 비어있으면 안됩니다.")
             @Length(max = 500, message = "리뷰는 500자까지만 작성 가능합니다.")
-            String content
+            String content,
+            List<String> images
     ){}
 
     public record FindAllByPlannerDTO(
