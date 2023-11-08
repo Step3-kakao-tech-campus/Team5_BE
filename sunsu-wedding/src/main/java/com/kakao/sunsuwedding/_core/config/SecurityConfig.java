@@ -91,29 +91,30 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/user/signup"),
                                 new AntPathRequestMatcher("/api/user/login"),
-                                new AntPathRequestMatcher("/api/portfolios/**", "GET")
+                                new AntPathRequestMatcher("/api/portfolio/**", "GET"),
+                                new AntPathRequestMatcher("/api/mail/**")
                         ).permitAll()
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/user/**"),
-                                new AntPathRequestMatcher("/api/portfolios/**"),
+                                new AntPathRequestMatcher("/api/portfolio/**"),
                                 new AntPathRequestMatcher("/api/chat/**"),
                                 new AntPathRequestMatcher("/api/match/**"),
-                                new AntPathRequestMatcher("/api/quotations/**"),
-                                new AntPathRequestMatcher("/api/payments/**"),
-                                new AntPathRequestMatcher("/api/reviews/**"),
-                                new AntPathRequestMatcher("/api/favorites/**")
+                                new AntPathRequestMatcher("/api/quotation/**"),
+                                new AntPathRequestMatcher("/api/payment/**"),
+                                new AntPathRequestMatcher("/api/review/**"),
+                                new AntPathRequestMatcher("/api/favorite/**")
                                 ).authenticated()
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/chat", "POST"),
-                                new AntPathRequestMatcher("/api/quotations/confirmAll/**", "POST")
+                                new AntPathRequestMatcher("/api/quotation/confirm/**", "POST")
                         ).hasRole("couple")
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/portfolios", "POST"),
-                                new AntPathRequestMatcher("/api/portfolios", "PUT"),
-                                new AntPathRequestMatcher("/api/portfolios", "DELETE"),
-                                new AntPathRequestMatcher("/api/quotations/**", "PUT"),
-                                new AntPathRequestMatcher("/api/quotations/**", "POST"),
-                                new AntPathRequestMatcher("/api/quotations/**", "DELETE")
+                                new AntPathRequestMatcher("/api/portfolio", "POST"),
+                                new AntPathRequestMatcher("/api/portfolio", "PUT"),
+                                new AntPathRequestMatcher("/api/portfolio", "DELETE"),
+                                new AntPathRequestMatcher("/api/quotation/**", "PUT"),
+                                new AntPathRequestMatcher("/api/quotation/**", "POST"),
+                                new AntPathRequestMatcher("/api/quotation/**", "DELETE")
                         ).hasRole("planner")
                         .anyRequest().permitAll()
         );

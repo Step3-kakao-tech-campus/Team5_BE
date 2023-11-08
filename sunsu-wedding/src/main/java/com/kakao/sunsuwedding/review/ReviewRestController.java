@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reviews")
+@RequestMapping("/api/review")
 public class ReviewRestController {
     private final ReviewServiceImpl reviewServiceImpl;
     @PostMapping("")
@@ -23,6 +23,7 @@ public class ReviewRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
+    // 특정 플래너에게 작성된 리뷰를 모아봄
     @GetMapping("")
     public ResponseEntity<?> findReviewsByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page,
                                               @Valid @RequestBody ReviewRequest.FindAllByPlannerDTO request) {
@@ -31,7 +32,8 @@ public class ReviewRestController {
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
-    @GetMapping("/collect")
+    // 예비 부부가 자신이 작성한 리뷰를 모두 모아봄
+    @GetMapping("/all")
     public  ResponseEntity<?> findReviewsByCouple(@AuthenticationPrincipal CustomUserDetails userDetails) {
         ReviewResponse.FindAllByCoupleDTO response = reviewServiceImpl.findReviewsByCouple(userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(response));

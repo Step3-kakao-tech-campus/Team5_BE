@@ -56,7 +56,7 @@ public class PaymentRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/payments/save")
+                        .post("/api/payment/save")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -78,7 +78,7 @@ public class PaymentRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/payments/save")
+                        .post("/api/payment/save")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -104,7 +104,7 @@ public class PaymentRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/payments/approve")
+                        .post("/api/payment/approve")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
