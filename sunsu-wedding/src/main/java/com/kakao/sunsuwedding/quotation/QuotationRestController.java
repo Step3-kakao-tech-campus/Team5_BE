@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/quotations")
+@RequestMapping("/api/quotation")
 public class QuotationRestController {
     private final QuotationServiceImpl quotationServiceImpl;
-    private final MatchServiceImpl matchServiceImpl;
 
     @PostMapping("")
     public ResponseEntity<?> addQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -25,13 +24,15 @@ public class QuotationRestController {
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
+    // 사용자가 특정 채팅방에서 작성한 견적서 조회
     @GetMapping("")
     public ResponseEntity<?> findQuotationsByChatId(@RequestParam @Min(1) Long chatId) {
         QuotationResponse.FindAllByMatchId response = quotationServiceImpl.findQuotationsByChatId(chatId);
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
-    @GetMapping("/collect")
+    // 사용자가 이때까지 작성한 모든 견적서 조회
+    @GetMapping("/all")
     public ResponseEntity<?> findQuotationsByUser(@AuthenticationPrincipal CustomUserDetails userDetails,
                                         @RequestParam(defaultValue = "0") Integer page) {
         QuotationResponse.FindByUserDTO response = quotationServiceImpl.findQuotationsByUser(userDetails.getUser(), page);

@@ -21,6 +21,7 @@ public class FavoriteDTOConverter {
                             favorite.getPortfolio().getTotalPrice(),
                             favorite.getPortfolio().getLocation(),
                             favorite.getPortfolio().getContractCount(),
+                            favorite.getPortfolio().getAvgStars(),
                             true
                     );
                 })

@@ -61,7 +61,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/reviews")
+                        .post("/api/review")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -87,7 +87,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/reviews")
+                        .post("/api/review")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -115,7 +115,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/reviews")
+                        .post("/api/review")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -143,7 +143,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/reviews")
+                        .post("/api/review")
                         .param("chatId", String.valueOf(chatId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
@@ -174,7 +174,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/reviews")
+                        .get("/api/review")
                         .param("page", String.valueOf(page))
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -196,7 +196,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/reviews/collect")
+                        .get("/api/review/all")
         );
 
         logResult(result);
@@ -213,7 +213,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/reviews/collect")
+                        .get("/api/review/all")
         );
 
         logResult(result);
@@ -233,7 +233,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/reviews/{reviewId}", reviewId)
+                        .get("/api/review/{reviewId}", reviewId)
         );
 
         logResult(result);
@@ -254,7 +254,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/reviews/{reviewId}", reviewId)
+                        .get("/api/review/{reviewId}", reviewId)
         );
 
         logResult(result);
@@ -281,7 +281,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/api/reviews/" + reviewId)
+                        .put("/api/review/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -306,7 +306,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/api/reviews/" + reviewId)
+                        .put("/api/review/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -334,7 +334,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .put("/api/reviews/" + reviewId)
+                        .put("/api/review/" + reviewId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -362,7 +362,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/api/reviews/" + reviewId)
+                        .delete("/api/review/" + reviewId)
         );
 
         logResult(result);
@@ -380,7 +380,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/api/reviews/" + reviewId)
+                        .delete("/api/review/" + reviewId)
         );
 
         logResult(result);
@@ -402,7 +402,7 @@ public class ReviewRestControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/api/reviews/" + reviewId)
+                        .delete("/api/review/" + reviewId)
         );
 
         logResult(result);

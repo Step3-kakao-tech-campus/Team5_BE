@@ -71,7 +71,7 @@ public class MatchServiceImpl implements MatchService {
 
     // Match Update : 확정 상태, 가격, 확정 날짜
     @Transactional
-    public void confirmAll(User user, Long chatId) {
+    public void confirm(User user, Long chatId) {
         Match match = matchJPARepository.findByChatId(chatId).orElseThrow(
                 () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
 
