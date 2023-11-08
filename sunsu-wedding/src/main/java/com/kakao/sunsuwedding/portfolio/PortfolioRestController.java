@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,12 +33,15 @@ public class PortfolioRestController {
     public ResponseEntity<?> findPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
                                            @RequestParam @Nullable String name,
                                            @RequestParam @Nullable String location,
-                                           @RequestParam @Nullable Long minPrice,
-                                           @RequestParam @Nullable Long maxPrice,
+                                           @RequestParam(defaultValue = "null") String minPrice,
+                                           @RequestParam(defaultValue = "null") String maxPrice,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        Long min = (Objects.equals(minPrice, "null") ? null : Long.valueOf(minPrice));
+        Long max = (Objects.equals(maxPrice, "null") ? null : Long.valueOf(maxPrice));
+
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
-        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, min, max);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioServiceImpl.findPortfolios(cursorRequest, userId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));

@@ -1,6 +1,6 @@
-package com.kakao.sunsuwedding.user.mail;
+package com.kakao.sunsuwedding.user.email;
 
-public class MailRequest {
+public class EmailRequest {
     public record SendCode(
             String email
     ) {}

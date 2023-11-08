@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -23,10 +22,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Import({
@@ -40,7 +35,8 @@ import java.util.List;
         "security.jwt-config.secret.refresh=your-test-refresh-secret",
         "payment.toss.secret=your-test-toss-payment-secret",
         "email.username=test@email.com",
-        "email.password=qweasdzxc"
+        "email.password=qweasdzxc",
+        "email.test-code=999999"
 })
 @EnableWebMvc
 @SpringBootTest

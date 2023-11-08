@@ -6,12 +6,14 @@ import jakarta.persistence.criteria.Fetch;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class PortfolioSpecification {
-    public static Specification<Portfolio> findPortfolio(CursorRequest request) {
+    public Specification<Portfolio> findPortfolio(CursorRequest request) {
         return ((root, query, criteriaBuilder) -> {
             Fetch<Portfolio, Planner> fetch = null;
             if (query.getResultType() != Long.class && query.getResultType() != long.class) {
@@ -62,6 +64,6 @@ public class PortfolioSpecification {
     }
 
     private static boolean valid(Long data) {
-        return data != null;
+        return data != null && data >= 0;
     }
 }
