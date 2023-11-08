@@ -7,7 +7,7 @@ import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.JwtAuthenticationFilter;
 import com.kakao.sunsuwedding._core.security.JwtExceptionFilter;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
-import com.kakao.sunsuwedding.user.token.TokenService;
+import com.kakao.sunsuwedding.user.token.TokenServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
     private final FilterResponseUtils filterResponseUtils;
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenServiceImpl;
     private final JWTProvider jwtProvider;
 
     @Bean
@@ -42,7 +42,7 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProvider, tokenService));
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProvider, tokenServiceImpl));
             builder.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
             super.configure(builder);
         }

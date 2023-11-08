@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/mail")
 public class MailCodeController {
-    private final MailService mailService;
+    private final MailServiceImpl mailServiceImpl;
 
     @PostMapping("")
     public ResponseEntity<?> sendAuthenticationCode(@RequestBody MailRequest.SendCode request) {
-        mailService.send(request);
+        mailServiceImpl.send(request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @PostMapping(value = "/verify")
     public ResponseEntity<?> checkAuthenticationCode(@RequestBody MailRequest.CheckCode request) {
-        mailService.verify(request);
+        mailServiceImpl.verify(request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

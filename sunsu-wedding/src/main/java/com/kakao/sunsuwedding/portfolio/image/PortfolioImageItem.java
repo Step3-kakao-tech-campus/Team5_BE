@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "portfolio_imageitem_tb")
+@Table(name = "portfolio_image_item_tb")
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "ImageItemWithPortfolio",
