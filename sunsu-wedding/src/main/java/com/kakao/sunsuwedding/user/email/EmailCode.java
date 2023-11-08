@@ -1,4 +1,4 @@
-package com.kakao.sunsuwedding.user.mail;
+package com.kakao.sunsuwedding.user.email;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,12 +11,12 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="mail_code_tb")
-@SQLDelete(sql = "UPDATE mail_code_tb SET is_active = false WHERE id = ?")
+@Table(name="email_code_tb")
+@SQLDelete(sql = "UPDATE email_code_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MailCode {
+public class EmailCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -37,7 +37,7 @@ public class MailCode {
     Boolean isActive;
 
     @Builder
-    public MailCode(Long id, String email, String code, Boolean confirmed, LocalDateTime createdAt) {
+    public EmailCode(Long id, String email, String code, Boolean confirmed, LocalDateTime createdAt) {
         this.id = id;
         this.email = email;
         this.code = code;

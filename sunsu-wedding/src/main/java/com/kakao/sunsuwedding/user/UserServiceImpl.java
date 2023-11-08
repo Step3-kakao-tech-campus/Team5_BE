@@ -9,8 +9,8 @@ import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
-import com.kakao.sunsuwedding.user.mail.MailCode;
-import com.kakao.sunsuwedding.user.mail.MailCodeJPARepository;
+import com.kakao.sunsuwedding.user.email.EmailCode;
+import com.kakao.sunsuwedding.user.email.EmailCodeJPARepository;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import com.kakao.sunsuwedding.user.token.Token;
 import com.kakao.sunsuwedding.user.token.TokenDTO;
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;
     private final TokenJPARepository tokenJPARepository;
-    private final MailCodeJPARepository mailCodeJPARepository;
+    private final EmailCodeJPARepository emailCodeJPARepository;
     private final JWTProvider jwtProvider;
     private final UserDataChecker userDataChecker;
 
@@ -90,10 +90,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkEmailAuthenticated(UserRequest.SignUpDTO requestDTO) {
-        MailCode mailCode = mailCodeJPARepository.findByEmail(requestDTO.email())
+        EmailCode EMailCode = emailCodeJPARepository.findByEmail(requestDTO.email())
                 .orElseThrow(() -> new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL));
 
-        if (mailCode.getConfirmed().equals(false)) {
+        if (EMailCode.getConfirmed().equals(false)) {
             throw new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL);
         }
     }

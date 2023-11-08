@@ -39,6 +39,7 @@ public enum BaseException {
     CODE_EXPIRED("인증코드가 만료되었습니다. 다시 요청해주세요.", 2203, 400),
     CODE_NOT_MATCHED("인증코드가 일치하지 않습니다.", 2204, 400),
     UNAUTHENTICATED_EMAIL("인증되지 않은 이메일입니다.", 2205, 400),
+    EMAIL_ALREADY_AUTHENTICATED("이미 인증이 완료되었습니다.", 2206, 400),
 
 
     // 결제 3000
