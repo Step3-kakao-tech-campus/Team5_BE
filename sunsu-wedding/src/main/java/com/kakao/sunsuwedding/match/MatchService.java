@@ -11,5 +11,5 @@ public interface MatchService {
 
     MatchResponse.FindAllWithNoReviewDTO findMatchesWithNoReview(User user);
 
-    void confirmAll(User user, Long chatId);
+    void confirm(User user, Long chatId);
 }
