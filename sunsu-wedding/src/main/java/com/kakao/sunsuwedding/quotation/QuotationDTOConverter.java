@@ -16,7 +16,8 @@ public class QuotationDTOConverter {
                 .stream()
                 .map(quotation -> new QuotationResponse.QuotationDTO(
                         quotation.getId(), quotation.getTitle(), quotation.getPrice(), quotation.getCompany(),
-                        quotation.getDescription(), quotation.getStatus().toString(), quotation.getModifiedAt()
+                        quotation.getDescription(), quotation.getStatus().toString(),
+                        DateFormat.dateFormatToMinuteKorean(quotation.getModifiedAt())
                 ))
                 .toList();
     }
