@@ -4,10 +4,14 @@ import java.util.List;
 
 public class ReviewResponse {
     public record FindAllByPlannerDTO(
-            List<FindByPlannerDTO> reviews
-    ){}
+            List<FindByUserDTO> reviews
+    ) {}
 
-    public record FindByPlannerDTO(
+    public record FindAllByCoupleDTO(
+            List<FindByUserDTO> reviews
+    ) {}
+
+    public record FindByUserDTO(
             Long id,
             String coupleName,
             Integer stars,
@@ -15,13 +19,11 @@ public class ReviewResponse {
             List<String> images
     ) {}
 
-    public record FindAllByCoupleDTO(
-            List<ReviewDTO> reviews
-    ) {}
-
     public record ReviewDTO(
             Long id,
+            Long portfolioId,
             String plannerName,
+            String coupleName,
             Integer stars,
             String content,
             List<String> images

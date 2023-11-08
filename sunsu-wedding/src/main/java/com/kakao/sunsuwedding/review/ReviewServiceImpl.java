@@ -8,6 +8,8 @@ import com.kakao.sunsuwedding.match.Match;
 import com.kakao.sunsuwedding.match.MatchJPARepository;
 import com.kakao.sunsuwedding.match.MatchStatus;
 import com.kakao.sunsuwedding.match.ReviewStatus;
+import com.kakao.sunsuwedding.portfolio.Portfolio;
+import com.kakao.sunsuwedding.portfolio.PortfolioJPARepository;
 import com.kakao.sunsuwedding.portfolio.PortfolioServiceImpl;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemJPARepository;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemService;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewImageItemJPARepository reviewImageItemJPARepository;
     private final ReviewImageItemService reviewImageItemService;
     private final PortfolioServiceImpl portfolioServiceImpl;
+    private final PortfolioJPARepository portfolioJPARepository;
 
     private final ReviewDTOConverter reviewDTOConverter;
 
@@ -85,12 +89,14 @@ public class ReviewServiceImpl implements ReviewService {
         roleCheck(user.getDtype());
         permissionCheck(user.getId(),review.getMatch());
 
-        String plannerName = (review.getMatch().getPlanner() != null ) ?
-                review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자";
+        String plannerName = (review.getMatch().getPlanner() != null ) ? review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자";
+        String coupleName = (review.getMatch().getCouple() != null ) ? review.getMatch().getCouple().getUsername() : "탈퇴한 사용자";
+        Optional<Portfolio> portfolio = portfolioJPARepository.findByPlanner(review.getMatch().getPlanner());
+        Long portfolioId = portfolio.isPresent() ? portfolio.get().getId() : -1L;
 
         List<String> images = reviewImageItemJPARepository.findByReviewId(reviewId);
 
-        return new ReviewResponse.ReviewDTO(review.getId(), plannerName, review.stars, review.getContent(), images);
+        return new ReviewResponse.ReviewDTO(review.getId(), portfolioId, plannerName, coupleName, review.stars, review.getContent(), images);
     }
 
     @Transactional

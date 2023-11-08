@@ -9,6 +9,7 @@ import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +27,17 @@ public class ChatServiceImpl implements ChatService {
         Long coupleId = user.getId();
         Long plannerId = requestDTO.plannerId();
 
-        Couple couple = findCoupleById(coupleId);
-        Planner planner = findPlannerById(plannerId);
+        Couple couple = coupleJPARepository.findById(coupleId).orElseThrow(
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND));
+        Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
+                () -> new NotFoundException(BaseException.PLANNER_NOT_FOUND));
 
         Chat chat = chatJPARepository.save(Chat.builder().build());
 
         // 채팅방 생성 시 매칭내역도 생성
-        matchServiceImpl.addMatch(couple, planner, chat);
+        Pair<Boolean, Long> chatInfo = matchServiceImpl.addMatch(couple, planner, chat);
 
-        return new ChatResponse.ChatDTO(chat.getId());
+        return new ChatResponse.ChatDTO(chatInfo.getFirst(), chatInfo.getSecond());
     }
 
     private Planner findPlannerById(Long plannerId) {
