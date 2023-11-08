@@ -34,12 +34,12 @@ public class MatchService {
     private final PortfolioService portfolioService;
 
     @Transactional
-    public void addMatch(Couple couple, Planner planner, Chat chat) {
+    public Pair<Boolean, Long> addMatch(Couple couple, Planner planner, Chat chat) {
         List<Match> matches = matchJPARepository.findByCoupleAndPlanner(couple, planner);
         // 플래너, 유저 매칭은 최대 한 개까지만 생성 가능
-        if (!matches.isEmpty()){
-            throw new BadRequestException(BaseException.MATCHING_ALREADY_EXIST);
-        }
+        Boolean existed = existCheck(matches);
+        Long chatId = getChatId(existed, matches, chat);
+
         matchJPARepository.save(
             Match.builder()
                     .couple(couple)
@@ -48,6 +48,7 @@ public class MatchService {
                     .price(0L)
                     .build()
         );
+        return Pair.of(existed, chatId);
     }
 
     public MatchResponse.FindAllWithNoReviewDTO findMatchesWithNoReview(User user) {
@@ -124,5 +125,20 @@ public class MatchService {
         return matches.stream()
                 .filter(match -> match.getReviewStatus().equals(ReviewStatus.UNWRITTEN))
                 .toList();
+    }
+
+    private Boolean existCheck(List<Match> matches) {
+        if (!matches.isEmpty()){
+            return true;
+        }
+        else return false;
+    }
+    private Long getChatId(Boolean existed, List<Match> matches, Chat chat) {
+        if (existed) {
+            return matches.get(0).getChat().getId();
+        }
+        else {
+            return chat.getId();
+        }
     }
 }

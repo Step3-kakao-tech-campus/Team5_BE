@@ -9,6 +9,7 @@ import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,8 @@ public class ChatService {
         Chat chat = chatJPARepository.save(Chat.builder().build());
 
         // 채팅방 생성 시 매칭내역도 생성
-        matchService.addMatch(couple, planner, chat);
+        Pair<Boolean, Long> chatInfo = matchService.addMatch(couple, planner, chat);
 
-        return new ChatResponse.ChatDTO(chat.getId());
+        return new ChatResponse.ChatDTO(chatInfo.getFirst(), chatInfo.getSecond());
     }
 }
