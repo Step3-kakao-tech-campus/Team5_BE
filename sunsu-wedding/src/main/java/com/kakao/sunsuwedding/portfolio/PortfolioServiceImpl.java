@@ -56,6 +56,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioDTOConverter portfolioDTOConverter;
     private final PriceCalculator priceCalculator;
+    private final PortfolioSpecification portfolioSpecification;
 
     @Transactional
     public void addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
@@ -86,14 +87,14 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     public PageCursor<List<PortfolioResponse.FindAllDTO>> findPortfolios(CursorRequest request, Long userId) {
         if (!request.hasKey())
-            return new PageCursor<>(null, null);
+            return new PageCursor<>(new ArrayList<>(), null);
 
         Pageable pageable = request.get();
         List<Portfolio> portfolios = search(request, pageable);
 
         // 더이상 보여줄 포트폴리오가 없다면 커서 null 반환
         if (portfolios.isEmpty())
-            return new PageCursor<>(null, null);
+            return new PageCursor<>(new ArrayList<>(), null);
 
         // 커서가 1이거나 NONE_KEY 일 경우 null 로 대체)
         Long nextKey = getNextKey(portfolios);
@@ -273,7 +274,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private List<Portfolio> search(CursorRequest request, Pageable pageable) {
-        Specification<Portfolio> specification = PortfolioSpecification.findPortfolio(request);
+        Specification<Portfolio> specification = portfolioSpecification.findPortfolio(request);
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
 
