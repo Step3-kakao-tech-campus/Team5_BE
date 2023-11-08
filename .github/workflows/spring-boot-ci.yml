@@ -11,6 +11,7 @@ env:
   TOSS_PAYMENT_SECRET: ${{secrets.TOSS_PAYMENT_SECRET}}
   SENDER: ${{secrets.SENDER}}
   GMAIL_PASSWORD: ${{secrets.GMAIL_PASSWORD}}
+  EMAIL_TEST_CODE: ${{secrets.EMAIL_TEST_CODE}}
 
 jobs:
   build:
