@@ -55,7 +55,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/favorites/" + portfolioId)
+                        .post("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -73,7 +73,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/api/favorites/" + portfolioId)
+                        .post("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -94,7 +94,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/api/favorites/" + portfolioId)
+                        .delete("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -112,7 +112,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/api/favorites/" + portfolioId)
+                        .delete("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -126,11 +126,11 @@ public class FavoriteRestControllerTest {
     @DisplayName("찜하기 모아보기 성공 테스트")
     @Test
     @WithUserDetails("planner0@gmail.com")
-    void find_all_favorites_success() throws Exception {
+    void find_all_favorite_success() throws Exception {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/favorites")
+                        .get("/api/favorite")
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
