@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/payments")
 public class PaymentRestController {
 
-    private final PaymentService paymentService;
+    private final PaymentServiceImpl paymentServiceImpl;
 
     // 결제 정보 저장 (프론트 결제 요청 전)
     @PostMapping("/save")
@@ -24,7 +24,7 @@ public class PaymentRestController {
             @RequestBody @Valid PaymentRequest.SaveDTO requestDTO,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        paymentService.save(userDetails.getUser().getId(), requestDTO);
+        paymentServiceImpl.save(userDetails.getUser().getId(), requestDTO);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
@@ -34,7 +34,7 @@ public class PaymentRestController {
             @RequestBody @Valid PaymentRequest.ApproveDTO requestDTO,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        paymentService.approve(userDetails.getUser().getId(), requestDTO);
+        paymentServiceImpl.approve(userDetails.getUser().getId(), requestDTO);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 }

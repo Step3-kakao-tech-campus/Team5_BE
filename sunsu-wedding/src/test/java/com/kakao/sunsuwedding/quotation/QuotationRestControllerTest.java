@@ -5,7 +5,7 @@ import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.config.SecurityConfig;
 import com.kakao.sunsuwedding.user.UserRequest;
 import com.kakao.sunsuwedding.user.UserResponse;
-import com.kakao.sunsuwedding.user.UserService;
+import com.kakao.sunsuwedding.user.UserServiceImpl;
 import com.kakao.sunsuwedding.user.token.TokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "security.jwt-config.secret.access=your-test-access-secret",
         "security.jwt-config.secret.refresh=your-test-refresh-secret",
-        "payment.toss.secret=your-test-toss-payment-secret"
+        "payment.toss.secret=your-test-toss-payment-secret",
+        "email.username=test@email.com",
+        "email.password=qweasdzxc"
 })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class QuotationRestControllerTest {
@@ -49,7 +51,7 @@ public class QuotationRestControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
     private JWTProvider jwtProvider;
@@ -59,7 +61,7 @@ public class QuotationRestControllerTest {
     @BeforeEach
     void beforeEach() {
         UserRequest.LoginDTO request = new UserRequest.LoginDTO("planner1@gmail.com", "planner1234!");
-        Pair<TokenDTO, UserResponse.FindUserId> response = userService.login(request);
+        Pair<TokenDTO, UserResponse.FindUserId> response = userServiceImpl.login(request);
         plannerToken = response.getFirst().accessToken();
     }
     // ============ 견적서 등록 테스트 ============

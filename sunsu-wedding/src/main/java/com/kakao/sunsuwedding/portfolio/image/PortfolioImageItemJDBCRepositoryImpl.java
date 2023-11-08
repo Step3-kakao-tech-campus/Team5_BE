@@ -2,14 +2,15 @@ package com.kakao.sunsuwedding.portfolio.image;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Component
+@Repository
 public class PortfolioImageItemJDBCRepositoryImpl implements PortfolioImageItemJDBCRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final static String TABLE = "portfolio_image_item_tb";
 
     @Autowired
     public PortfolioImageItemJDBCRepositoryImpl(JdbcTemplate jdbcTemplate) {
@@ -17,7 +18,10 @@ public class PortfolioImageItemJDBCRepositoryImpl implements PortfolioImageItemJ
     }
 
     public void batchInsertImageItems(List<PortfolioImageItem> portfolioImageItems) {
-        String sql = "INSERT INTO portfolio_imageitem_tb (portfolio_id, image, thumbnail) VALUES (?, ?, ?)";
+        String sql = String.format("""
+                INSERT INTO %s (portfolio_id, image, thumbnail)
+                VALUES (?, ?, ?)
+                """, TABLE);
 
         jdbcTemplate.batchUpdate(sql, portfolioImageItems, portfolioImageItems.size(),
                 (ps, imageItem) -> {

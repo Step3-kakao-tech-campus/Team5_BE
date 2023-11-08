@@ -11,7 +11,7 @@ import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
 import com.kakao.sunsuwedding.user.planner.Planner;
-import com.kakao.sunsuwedding.user.token.TokenService;
+import com.kakao.sunsuwedding.user.token.TokenServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,15 +27,15 @@ import java.io.IOException;
 
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenServiceImpl;
 
     private final JWTProvider jwtProvider;
 
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JWTProvider jwtProvider, TokenService tokenService) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JWTProvider jwtProvider, TokenServiceImpl tokenServiceImpl) {
         super(authenticationManager);
         this.jwtProvider = jwtProvider;
-        this.tokenService = tokenService;
+        this.tokenServiceImpl = tokenServiceImpl;
     }
 
     @Override
@@ -64,6 +64,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
         else {
             try {
+                if (request.getRequestURI().equals("/api/user/token")) {
+                    throw new TokenException(BaseException.REFRESH_TOKEN_REQUIRED);
+                }
                 DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessToken);
                 Long userId = decodedJWT.getClaim("id").asLong();
                 createAuthentication(decodedJWT, userId);
@@ -75,8 +78,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 throw new TokenException(BaseException.ACCESS_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 access token");
-            } catch (Exception e){
-                log.error("access token 예상치 못한 에러");
             } finally {
                 chain.doFilter(request, response);
             }
@@ -91,15 +92,15 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                     .verifyAccessToken(accessToken)
                     .getClaim("id")
                     .asLong();
-            tokenService.expireTokenByUserId(userId);
+            tokenServiceImpl.expireTokenByUserId(userId);
             throw new TokenException(BaseException.ACCESS_TOKEN_STILL_ALIVE);
         }
 
         DecodedJWT decodedJWT = jwtProvider.verifyRefreshToken(refreshToken);
         Long userId = decodedJWT.getClaim("id").asLong();
-        Boolean isTokenPairValid = tokenService.checkTokenValidation(userId, accessToken, refreshToken);
+        Boolean isTokenPairValid = tokenServiceImpl.checkTokenValidation(userId, accessToken, refreshToken);
 
-        tokenService.expireTokenByUserId(userId);
+        tokenServiceImpl.expireTokenByUserId(userId);
 
         if (isTokenPairValid) {
             createAuthentication(decodedJWT, userId);

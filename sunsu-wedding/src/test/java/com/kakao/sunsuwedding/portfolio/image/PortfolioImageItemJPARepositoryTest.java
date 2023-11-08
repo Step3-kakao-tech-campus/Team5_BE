@@ -57,7 +57,7 @@ public class PortfolioImageItemJPARepositoryTest extends DummyEntity {
 
     @AfterEach
     void afterEach() {
-        entityManager.createNativeQuery("ALTER TABLE portfolio_imageitem_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE portfolio_image_item_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE portfolio_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
     }
