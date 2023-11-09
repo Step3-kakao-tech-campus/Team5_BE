@@ -82,7 +82,7 @@ public class SecurityConfig {
         // 9. 권한 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    filterResponseUtils.writeResponse(response, new ForbiddenException(BaseException.USER_PERMISSION_DENIED));
+                    filterResponseUtils.writeResponse(response, new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS));
                 })
         );
 
@@ -90,11 +90,31 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(
+                                new AntPathRequestMatcher("/api/portfolio/self", "GET")
+                        ).hasAuthority("planner")
+                        .requestMatchers(
                                 new AntPathRequestMatcher("/api/user/signup"),
                                 new AntPathRequestMatcher("/api/user/login"),
                                 new AntPathRequestMatcher("/api/portfolio/**", "GET"),
                                 new AntPathRequestMatcher("/api/mail/**")
                         ).permitAll()
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/chat"),
+                                new AntPathRequestMatcher("/api/match/**"),
+                                new AntPathRequestMatcher("/api/review/all", "GET"),
+                                new AntPathRequestMatcher("/api/review/{reviewId}", "GET"),
+                                new AntPathRequestMatcher("/api/review/**", "POST"),
+                                new AntPathRequestMatcher("/api/review/**", "PUT"),
+                                new AntPathRequestMatcher("/api/review/**", "DELETE")
+                        ).hasAuthority("couple")
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/portfolio", "POST"),
+                                new AntPathRequestMatcher("/api/portfolio", "PUT"),
+                                new AntPathRequestMatcher("/api/portfolio", "DELETE"),
+                                new AntPathRequestMatcher("/api/quotation/**", "PUT"),
+                                new AntPathRequestMatcher("/api/quotation/**", "POST"),
+                                new AntPathRequestMatcher("/api/quotation/**", "DELETE")
+                        ).hasAuthority("planner")
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/user/**"),
                                 new AntPathRequestMatcher("/api/portfolio/**"),
@@ -104,19 +124,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/payment/**"),
                                 new AntPathRequestMatcher("/api/review/**"),
                                 new AntPathRequestMatcher("/api/favorite/**")
-                                ).authenticated()
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/api/chat", "POST"),
-                                new AntPathRequestMatcher("/api/quotation/confirm/**", "POST")
-                        ).hasRole("couple")
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/api/portfolio", "POST"),
-                                new AntPathRequestMatcher("/api/portfolio", "PUT"),
-                                new AntPathRequestMatcher("/api/portfolio", "DELETE"),
-                                new AntPathRequestMatcher("/api/quotation/**", "PUT"),
-                                new AntPathRequestMatcher("/api/quotation/**", "POST"),
-                                new AntPathRequestMatcher("/api/quotation/**", "DELETE")
-                        ).hasRole("planner")
+                        ).authenticated()
                         .anyRequest().permitAll()
         );
 
