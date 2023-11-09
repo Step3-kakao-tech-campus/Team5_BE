@@ -11,6 +11,7 @@ import com.kakao.sunsuwedding.user.token.TokenServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.*;
@@ -125,11 +126,21 @@ public class SecurityConfig {
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedOriginPattern("*");
+
+        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod(HttpMethod.POST);
+        configuration.addAllowedMethod(HttpMethod.PUT);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
+
+        configuration.addAllowedOriginPattern("http://localhost:8080/**");
+        configuration.addAllowedOriginPattern("http://localhost:3000/**");
+        configuration.addAllowedOriginPattern("https://k6f3d3b1a0696a.user-app.krampoline.com/**");
+
         configuration.setAllowCredentials(true);
+
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
