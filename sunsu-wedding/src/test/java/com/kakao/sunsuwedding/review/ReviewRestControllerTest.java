@@ -53,6 +53,32 @@ public class ReviewRestControllerTest {
     @WithUserDetails("couple@gmail.com")
     public void add_review_success_test() throws Exception {
         // given
+        Long chatId = 6L;
+        List<String> images = List.of("/wAA", "/wAA");
+        ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(4, "최고의 플래너!", images);
+
+        String requestBody = om.writeValueAsString(request);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .post("/api/review")
+                        .param("chatId", String.valueOf(chatId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        );
+
+        logResult(result);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+    }
+
+    @DisplayName("리뷰 등록 실패 테스트0 - 이미 리뷰가 존재하는 채팅방")
+    @Test
+    @WithUserDetails("couple@gmail.com")
+    public void add_review_fail_test_exist_review() throws Exception {
+        // given
         Long chatId = 1L;
         List<String> images = List.of("/wAA", "/wAA");
         ReviewRequest.AddDTO request = new ReviewRequest.AddDTO(5, "최고의 플래너!", images);
@@ -71,7 +97,7 @@ public class ReviewRestControllerTest {
         logResult(result);
 
         // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
     }
 
     @DisplayName("리뷰 등록 실패 테스트 1 - 존재하지 않는 채팅방")

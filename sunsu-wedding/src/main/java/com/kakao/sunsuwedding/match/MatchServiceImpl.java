@@ -53,9 +53,6 @@ public class MatchServiceImpl implements MatchService {
 
 
     public MatchResponse.FindAllWithNoReviewDTO findMatchesWithNoReview(User user) {
-        if (user.getDtype().equals(Role.PLANNER.getRoleName())) {
-            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
-        }
 
         Couple couple = coupleJPARepository.findById(user.getId()).orElseThrow(
                 () -> new NotFoundException(BaseException.USER_NOT_FOUND)

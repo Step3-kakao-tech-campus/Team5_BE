@@ -160,18 +160,12 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Transactional
     public void deletePortfolio(User user) {
-        if (!user.getDtype().equals(Role.PLANNER.getRoleName())) {
-            throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
-        }
         priceItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
         portfolioImageItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
         portfolioJPARepository.deleteByPlanner(user);
     }
 
     public PortfolioResponse.MyPortfolioDTO myPortfolio(Long plannerId) {
-        // 요청한 플래너 탐색
-        plannerJPARepository.findById(plannerId)
-                .orElseThrow(() -> new NotFoundException(BaseException.USER_NOT_FOUND));
 
         // 플래너의 포트폴리오 탐색
         Optional<Portfolio> portfolioOptional  = portfolioJPARepository.findByPlannerId(plannerId);
