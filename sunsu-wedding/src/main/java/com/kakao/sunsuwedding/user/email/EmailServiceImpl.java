@@ -53,7 +53,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     public void send(EmailRequest.SendCode request) {
-        userDataChecker.sameCheckEmail(request.email());
+        userDataChecker.checkEmailAlreadyExist(request.email());
 
         // 크램폴린 내부 정책으로 인한 smtp 프로토콜 사용 불가로
         // 이메일 인증 코드를 테스트 코드로 대체 및 이메일 발송 제외

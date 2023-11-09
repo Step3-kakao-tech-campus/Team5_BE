@@ -602,7 +602,7 @@ public class QuotationRestControllerTest {
         // then
         resultActions.andExpect(jsonPath("$.success").value("false"));
         resultActions.andExpect(jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
-        resultActions.andExpect(jsonPath("$.error.status").value("403"));
+        resultActions.andExpect(jsonPath("$.error.status").value("1000"));
     }
 
 

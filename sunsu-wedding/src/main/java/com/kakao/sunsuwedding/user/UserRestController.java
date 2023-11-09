@@ -51,7 +51,7 @@ public class UserRestController {
     // 유저 정보 조회
     @GetMapping("/info")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        UserResponse.FindById responseDTO = userServiceImpl.findById(userDetails.getUser());
+        UserResponse.FindById responseDTO = userServiceImpl.findById(userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 

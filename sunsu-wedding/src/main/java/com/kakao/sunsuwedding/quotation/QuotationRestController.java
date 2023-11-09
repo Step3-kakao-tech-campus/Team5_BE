@@ -2,7 +2,6 @@ package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding._core.security.CustomUserDetails;
 import com.kakao.sunsuwedding._core.utils.ApiUtils;
-import com.kakao.sunsuwedding.match.MatchServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +17,8 @@ public class QuotationRestController {
 
     @PostMapping("")
     public ResponseEntity<?> addQuotation(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @RequestParam @Min(1) Long chatId,
-                                             @Valid @RequestBody QuotationRequest.Add request) {
+                                          @RequestParam @Min(1) Long chatId,
+                                          @Valid @RequestBody QuotationRequest.Add request) {
         quotationServiceImpl.addQuotation(userDetails.getUser(), chatId, request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
