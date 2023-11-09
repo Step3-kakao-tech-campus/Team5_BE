@@ -10,6 +10,7 @@ public enum BaseException {
     // 공통 에러 1000
     PERMISSION_DENIED_METHOD_ACCESS("사용할 수 없는 기능입니다.", 1000, 403),
     DATABASE_ERROR("데이터베이스 에러입니다.", 1001, 500),
+    USER_UNAUTHORIZED("인증되지 않았습니다.", 1002, 401),
 
     // 회원 2000
     USER_NOT_FOUND("서비스를 탈퇴했거나 가입하지 않은 유저의 요청입니다.", 2000, 404),
@@ -20,8 +21,6 @@ public enum BaseException {
     USER_PASSWORD_WRONG("패스워드를 잘못 입력하셨습니다.", 2005, 400),
     USER_PASSWORD_NOT_SAME("패스워드1과 패스워드2는 동일해야 합니다.", 2006, 400),
     USER_ALREADY_PREMIUM("이미 프리미엄 회원입니다.", 2007, 400),
-    USER_PERMISSION_DENIED("권한이 없습니다.", 2008, 403),
-    USER_UNAUTHORIZED("인증되지 않았습니다.", 2009, 401),
 
     // 토큰 2100
     ACCESS_TOKEN_EXPIRED("액세스 토큰이 만료되었습니다. 리프레시 토큰으로 다시 요청해주세요.", 2100, 401),
