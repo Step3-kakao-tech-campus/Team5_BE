@@ -19,7 +19,7 @@ public class UnauthorizedException extends RuntimeException implements CustomExc
     }
 
     public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.UNAUTHORIZED);
+        return ApiUtils.error(exception);
     }
 
     public HttpStatus status(){

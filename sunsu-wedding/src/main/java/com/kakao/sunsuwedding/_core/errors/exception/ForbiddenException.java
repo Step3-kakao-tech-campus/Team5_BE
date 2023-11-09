@@ -18,7 +18,7 @@ public class ForbiddenException extends RuntimeException implements CustomExcept
     }
     
     public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.FORBIDDEN);
+        return ApiUtils.error(exception);
     }
 
     public HttpStatus status(){
