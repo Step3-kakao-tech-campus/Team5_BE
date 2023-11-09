@@ -115,7 +115,7 @@ public class UserRestControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(2004));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("role은 플래너, 또는 예비 부부만 가능합니다."));
     }
 
@@ -165,7 +165,7 @@ public class UserRestControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(2003));
         result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다."));
     }
 
@@ -188,7 +188,7 @@ public class UserRestControllerTest {
 
         // then
         result.andExpect(jsonPath("$.success").value("false"));
-        result.andExpect(jsonPath("$.error.status").value(400));
+        result.andExpect(jsonPath("$.error.status").value(2005));
         result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다."));
     }
 
