@@ -45,6 +45,7 @@ public enum BaseException {
     // 결제 3000
     PAYMENT_WRONG_INFORMATION("잘못된 결제 정보입니다.", 3000, 400),
     PAYMENT_NOT_FOUND("결제 내용이 존재하지 않습니다.", 3001, 404),
+    PAYMENT_FAIL("토스페이먼츠 승인 요청에 실패했습니다.", 3002, 400),
 
     // 포트폴리오 4000
     PORTFOLIO_NOT_FOUND("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다.", 4000, 404),

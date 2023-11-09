@@ -3,6 +3,7 @@ package com.kakao.sunsuwedding.payment;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
+import com.kakao.sunsuwedding._core.errors.exception.ServerException;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Grade;
@@ -96,6 +97,9 @@ public class PaymentServiceImpl implements PaymentService {
                         .bodyValue(parameters)
                         .retrieve()
                         .bodyToMono(TossPaymentResponse.TosspayDTO.class)
+                        .onErrorResume(e -> {
+                            throw new ServerException(BaseException.PAYMENT_FAIL);
+                        })
                         .block();
     }
 
