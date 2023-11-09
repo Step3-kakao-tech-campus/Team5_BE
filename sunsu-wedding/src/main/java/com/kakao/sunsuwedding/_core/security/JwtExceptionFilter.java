@@ -5,7 +5,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
-import com.kakao.sunsuwedding._core.errors.exception.TokenException;
 import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
 import jakarta.servlet.FilterChain;
@@ -32,7 +31,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             chain.doFilter(request, response);
         }
-        catch (TokenException | UnauthorizedException | ForbiddenException | NotFoundException exception) {
+        catch (UnauthorizedException | ForbiddenException | NotFoundException exception) {
             filterResponseUtils.writeResponse(response, exception);
         }
         catch (JWTCreationException | JWTVerificationException e) {

@@ -18,7 +18,7 @@ public class MatchRestController {
 
     @PostMapping("/confirm")
     public ResponseEntity<?> confirm(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                        @RequestParam @Min(1) Long chatId) {
+                                     @RequestParam @Min(1) Long chatId) {
         matchServiceImpl.confirm(userDetails.getUser(), chatId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }

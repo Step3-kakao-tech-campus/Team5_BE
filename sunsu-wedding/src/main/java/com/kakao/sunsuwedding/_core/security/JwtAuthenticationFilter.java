@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kakao.sunsuwedding._core.errors.BaseException;
-import com.kakao.sunsuwedding._core.errors.exception.TokenException;
+import com.kakao.sunsuwedding._core.errors.exception.UnauthorizedException;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.Couple;
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         if (request.getRequestURI().equals("/api/portfolio") && request.getMethod().equals("GET")) {
             if (accessToken != null && !jwtProvider.isValidAccessToken(accessToken)) {
-                throw new TokenException(BaseException.ACCESS_TOKEN_EXPIRED);
+                throw new UnauthorizedException(BaseException.ACCESS_TOKEN_EXPIRED);
             }
         }
 
@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 log.error("refresh token 검증 실패");
             } catch (TokenExpiredException tee) {
                 log.error("refresh token 만료됨");
-                throw new TokenException(BaseException.ALL_TOKEN_EXPIRED);
+                throw new UnauthorizedException(BaseException.ALL_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 refresh token");
             } finally {
@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         else {
             try {
                 if (request.getRequestURI().equals("/api/user/token")) {
-                    throw new TokenException(BaseException.REFRESH_TOKEN_REQUIRED);
+                    throw new UnauthorizedException(BaseException.REFRESH_TOKEN_REQUIRED);
                 }
                 DecodedJWT decodedJWT = jwtProvider.verifyAccessToken(accessToken);
                 Long userId = decodedJWT.getClaim("id").asLong();
@@ -81,7 +81,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 log.error("access token 검증 실패");
             } catch (TokenExpiredException tee) {
                 log.error("access token 만료됨");
-                throw new TokenException(BaseException.ACCESS_TOKEN_EXPIRED);
+                throw new UnauthorizedException(BaseException.ACCESS_TOKEN_EXPIRED);
             } catch (JWTDecodeException jde) {
                 log.error("잘못된 access token");
             } finally {
@@ -99,7 +99,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                     .getClaim("id")
                     .asLong();
             tokenServiceImpl.expireTokenByUserId(userId);
-            throw new TokenException(BaseException.ACCESS_TOKEN_STILL_ALIVE);
+            throw new UnauthorizedException(BaseException.ACCESS_TOKEN_STILL_ALIVE);
         }
 
         DecodedJWT decodedJWT = jwtProvider.verifyRefreshToken(refreshToken);
@@ -113,7 +113,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             log.debug("refresh-token 을 이용한 인증 객체 생성");
         }
         else {
-            throw new TokenException(BaseException.TOKEN_NOT_VALID);
+            throw new UnauthorizedException(BaseException.TOKEN_NOT_VALID);
         }
     }
 
