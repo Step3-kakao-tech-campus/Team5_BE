@@ -10,7 +10,7 @@ public interface UserService {
 
     Pair<TokenDTO, UserResponse.FindUserId> login(UserRequest.LoginDTO requestDTO);
 
-    UserResponse.FindById findById(User user);
+    UserResponse.FindById findById(Long userId);
 
     void withdraw(User user);
 }

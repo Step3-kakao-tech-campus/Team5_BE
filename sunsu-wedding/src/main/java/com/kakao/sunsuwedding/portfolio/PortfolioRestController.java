@@ -5,6 +5,7 @@ import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class PortfolioRestController {
     private static final int PAGE_SIZE = 10;
 
     @PostMapping(value = "")
-    public ResponseEntity<?> addPortfolio(@RequestBody PortfolioRequest.AddDTO request,
+    public ResponseEntity<?> addPortfolio(@Valid @RequestBody PortfolioRequest.AddDTO request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         portfolioServiceImpl.addPortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
@@ -33,15 +33,12 @@ public class PortfolioRestController {
     public ResponseEntity<?> findPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
                                            @RequestParam @Nullable String name,
                                            @RequestParam @Nullable String location,
-                                           @RequestParam(defaultValue = "null") String minPrice,
-                                           @RequestParam(defaultValue = "null") String maxPrice,
+                                           @RequestParam(defaultValue = "-1") String minPrice,
+                                           @RequestParam(defaultValue = "-1") String maxPrice,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Long min = (Objects.equals(minPrice, "null") ? null : Long.valueOf(minPrice));
-        Long max = (Objects.equals(maxPrice, "null") ? null : Long.valueOf(maxPrice));
-
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
-        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, min, max);
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, Long.valueOf(minPrice), Long.valueOf(maxPrice));
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioServiceImpl.findPortfolios(cursorRequest, userId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
