@@ -46,7 +46,7 @@ public class TokenServiceImpl implements TokenService {
         tokenJPARepository.delete(token);
     }
 
-    public Boolean checkTokenValidation(Long userId, String accessToken, String refreshToken) {
+    public Boolean checkTokenPairValidation(Long userId, String accessToken, String refreshToken) {
         Token token = findTokenByUserId(userId);
 
         return token.getAccessToken().equals(accessToken) && token.getRefreshToken().equals(refreshToken);
