@@ -115,7 +115,7 @@ public class PaymentRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("잘못된 결제 정보입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("400"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("3000"));
     }
 
 

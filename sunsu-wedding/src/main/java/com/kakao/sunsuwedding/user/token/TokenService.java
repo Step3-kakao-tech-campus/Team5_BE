@@ -8,5 +8,5 @@ public interface TokenService {
 
     void expireTokenByUserId(Long userId);
 
-    Boolean checkTokenValidation(Long userId, String accessToken, String refreshToken);
+    Boolean checkTokenPairValidation(Long userId, String accessToken, String refreshToken);
 }

@@ -81,7 +81,7 @@ public class FavoriteRestControllerTest {
         logResult(result);
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("이미 존재하는 찜하기 입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("400"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("8001"));
     }
 
     // ============ 찜하기 취소 테스트 ============
@@ -120,7 +120,7 @@ public class FavoriteRestControllerTest {
         logResult(result);
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("존재하지 않는 찜하기 입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("404"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("8002"));
     }
 
     // ============ 찜하기 모아보기 테스트 ============

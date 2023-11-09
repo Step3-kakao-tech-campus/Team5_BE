@@ -43,6 +43,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String accessToken = request.getHeader(jwtProvider.AUTHORIZATION_HEADER);
         String refreshToken = request.getHeader(jwtProvider.REFRESH_HEADER);
 
+        if (request.getRequestURI().equals("/api/portfolio") && request.getMethod().equals("GET")) {
+            if (accessToken != null && !jwtProvider.isValidAccessToken(accessToken)) {
+                throw new TokenException(BaseException.ACCESS_TOKEN_EXPIRED);
+            }
+        }
+
         if (accessToken == null) {
             chain.doFilter(request, response);
             return;
@@ -98,7 +104,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         DecodedJWT decodedJWT = jwtProvider.verifyRefreshToken(refreshToken);
         Long userId = decodedJWT.getClaim("id").asLong();
-        Boolean isTokenPairValid = tokenServiceImpl.checkTokenValidation(userId, accessToken, refreshToken);
+        Boolean isTokenPairValid = tokenServiceImpl.checkTokenPairValidation(userId, accessToken, refreshToken);
 
         tokenServiceImpl.expireTokenByUserId(userId);
 

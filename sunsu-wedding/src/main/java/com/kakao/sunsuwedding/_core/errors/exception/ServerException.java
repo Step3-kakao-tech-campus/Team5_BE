@@ -17,7 +17,7 @@ public class ServerException extends RuntimeException implements CustomException
     }
 
     public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ApiUtils.error(exception);
     }
 
     public HttpStatus status(){

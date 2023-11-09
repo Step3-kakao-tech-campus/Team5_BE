@@ -89,8 +89,9 @@ public class ReviewServiceImpl implements ReviewService {
         roleCheck(user.getDtype());
         permissionCheck(user.getId(),review.getMatch());
 
-        String plannerName = (review.getMatch().getPlanner() != null ) ? review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자";
-        String coupleName = (review.getMatch().getCouple() != null ) ? review.getMatch().getCouple().getUsername() : "탈퇴한 사용자";
+        String plannerName = getNameByUser(review.getMatch().getPlanner());
+        String coupleName = getNameByUser(review.match.getCouple());
+
         Optional<Portfolio> portfolio = portfolioJPARepository.findByPlanner(review.getMatch().getPlanner());
         Long portfolioId = portfolio.isPresent() ? portfolio.get().getId() : -1L;
 
@@ -173,9 +174,14 @@ public class ReviewServiceImpl implements ReviewService {
             match.updateReviewStatus(ReviewStatus.WRITTEN);
             matchJPARepository.save(match);
         }
-        else {
-            match.updateReviewStatus(ReviewStatus.UNWRITTEN);
-            matchJPARepository.save(match);
+        match.updateReviewStatus(ReviewStatus.UNWRITTEN);
+        matchJPARepository.save(match);
+    }
+
+    private static String getNameByUser(User user) {
+        if (user == null) {
+            return "탈퇴한 사용자";
         }
+        return user.getUsername();
     }
 }

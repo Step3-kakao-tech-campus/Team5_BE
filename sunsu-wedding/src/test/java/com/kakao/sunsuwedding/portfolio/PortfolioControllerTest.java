@@ -94,7 +94,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(2000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴했거나 가입하지 않은 유저의 요청입니다."));
     }
 
@@ -117,7 +117,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(4001));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("해당 플래너의 포트폴리오가 이미 존재합니다. 포트폴리오는 플래너당 하나만 생성할 수 있습니다."));
     }
 
@@ -140,7 +140,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(4003));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("요청한 이미지의 수가 5개를 초과합니다."));
     }
 
@@ -252,7 +252,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(4000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다."));
     }
 
@@ -272,7 +272,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(4000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다."));
     }
 
@@ -317,7 +317,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(2000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴했거나 가입하지 않은 유저의 요청입니다."));
     }
 
@@ -340,7 +340,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(4000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("해당하는 플래너의 포트폴리오가 삭제되었거나 존재하지 않습니다."));
     }
 
@@ -364,7 +364,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(4003));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("요청한 이미지의 수가 5개를 초과합니다."));
     }
 
@@ -401,7 +401,7 @@ public class PortfolioControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(1000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
     }
 
