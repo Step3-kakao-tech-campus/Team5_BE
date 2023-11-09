@@ -73,6 +73,7 @@ public enum BaseException {
 
     // 리뷰 7000
     REVIEW_NOT_FOUND("해당 리뷰가 삭제되었거나 존재하지 않습니다.", 7001, 404),
+    REVIEW_EXIST("해당 매칭에 대한 리뷰가 이미 존재합니다.", 7002, 400),
 
     // 찜하기 8000
     FAVORITE_ALREADY_EXISTS("이미 존재하는 찜하기 입니다.", 8001, 400),

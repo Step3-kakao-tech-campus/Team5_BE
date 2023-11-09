@@ -162,6 +162,12 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    private void reviewExistCheck(Match match){
+        if (match.getReviewStatus().equals(ReviewStatus.WRITTEN)){
+            throw new BadRequestException(BaseException.REVIEW_EXIST);
+        }
+    }
+
     private void updateReviewStatus(Match match){
         if (match.getReviewStatus().equals(ReviewStatus.UNWRITTEN)) {
             match.updateReviewStatus(ReviewStatus.WRITTEN);
