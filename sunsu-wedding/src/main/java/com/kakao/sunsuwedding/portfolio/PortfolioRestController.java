@@ -23,19 +23,19 @@ public class PortfolioRestController {
     private static final int PAGE_SIZE = 10;
 
     @PostMapping(value = "")
-    public ResponseEntity<?> addPortfolio(@Valid @RequestBody PortfolioRequest.AddDTO request,
-                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> addPortfolio(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                          @RequestBody @Valid PortfolioRequest.AddDTO request) {
         portfolioServiceImpl.addPortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> findPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
-                                           @RequestParam @Nullable String name,
-                                           @RequestParam @Nullable String location,
-                                           @RequestParam(defaultValue = "-1") String minPrice,
-                                           @RequestParam(defaultValue = "-1") String maxPrice,
-                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> findPortfolios(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
+                                            @RequestParam @Nullable String name,
+                                            @RequestParam @Nullable String location,
+                                            @RequestParam(defaultValue = "-1") String minPrice,
+                                            @RequestParam(defaultValue = "-1") String maxPrice) {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
         CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, Long.valueOf(minPrice), Long.valueOf(maxPrice));
@@ -45,8 +45,8 @@ public class PortfolioRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findPortfolioById(@PathVariable @Min(1) Long id,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> findPortfolioById(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                               @PathVariable @Min(1) Long id) {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
         PortfolioResponse.FindByIdDTO portfolio = portfolioServiceImpl.findPortfolioById(id, userId);
@@ -54,8 +54,8 @@ public class PortfolioRestController {
     }
 
     @PutMapping(value = "")
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioRequest.UpdateDTO request,
-                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> updatePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                             @Valid @RequestBody PortfolioRequest.UpdateDTO request) {
         portfolioServiceImpl.updatePortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }

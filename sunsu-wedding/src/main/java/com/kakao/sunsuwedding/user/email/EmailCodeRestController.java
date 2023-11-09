@@ -13,13 +13,13 @@ public class EmailCodeRestController {
     private final EmailServiceImpl emailServiceImpl;
 
     @PostMapping("")
-    public ResponseEntity<?> sendAuthenticationCode(@RequestBody @Valid EmailRequest.SendCode request) {
+    public ResponseEntity<?> sendAuthenticationCode(@Valid @RequestBody EmailRequest.SendCode request) {
         emailServiceImpl.send(request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @PostMapping(value = "/verify")
-    public ResponseEntity<?> checkAuthenticationCode(@RequestBody @Valid EmailRequest.CheckCode request) {
+    public ResponseEntity<?> checkAuthenticationCode(@Valid @RequestBody EmailRequest.CheckCode request) {
         emailServiceImpl.verify(request);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }

@@ -20,20 +20,16 @@ public class PaymentRestController {
 
     // 결제 정보 저장 (프론트 결제 요청 전)
     @PostMapping("/save")
-    public ResponseEntity<?> save(
-            @RequestBody @Valid PaymentRequest.SaveDTO requestDTO,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
+    public ResponseEntity<?> save(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                  @Valid @RequestBody PaymentRequest.SaveDTO requestDTO) {
         paymentServiceImpl.save(userDetails.getUser().getId(), requestDTO);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     // 유저 통합 승인
     @PostMapping("/approve")
-    public ResponseEntity<?> approve(
-            @RequestBody @Valid PaymentRequest.ApproveDTO requestDTO,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
+    public ResponseEntity<?> approve(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                     @Valid @RequestBody PaymentRequest.ApproveDTO requestDTO) {
         paymentServiceImpl.approve(userDetails.getUser().getId(), requestDTO);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
