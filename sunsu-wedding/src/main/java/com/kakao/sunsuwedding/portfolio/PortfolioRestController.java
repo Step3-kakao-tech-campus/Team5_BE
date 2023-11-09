@@ -32,13 +32,15 @@ public class PortfolioRestController {
     @GetMapping(value = "")
     public ResponseEntity<?> findPortfolios(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
-                                            @RequestParam @Nullable String name,
-                                            @RequestParam @Nullable String location,
-                                            @RequestParam(defaultValue = "-1") String minPrice,
-                                            @RequestParam(defaultValue = "-1") String maxPrice) {
+                                            @RequestParam(defaultValue = "null") String name,
+                                            @RequestParam(defaultValue = "null") String location,
+                                            @RequestParam(defaultValue = "null") String minPrice,
+                                            @RequestParam(defaultValue = "null") String maxPrice) {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
-        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, Long.valueOf(minPrice), Long.valueOf(maxPrice));
+        Long min = minPrice.equals("null") ? -1L : Long.valueOf(minPrice);
+        Long max = maxPrice.equals("null") ? -1L : Long.valueOf(maxPrice);
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, min, max);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioServiceImpl.findPortfolios(cursorRequest, userId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
