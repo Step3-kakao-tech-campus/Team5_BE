@@ -72,7 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         Page<Review> pageContent = reviewJPARepository.findAllByMatchPlannerId(plannerId, pageable);
         List<Review> reviews = pageContent.getContent();
-        List<ReviewImageItem> reviewImageItems = reviewImageItemJPARepository.findByReviewMatchPlannerId(plannerId);
+        List<ReviewImageItem> reviewImageItems = reviewImageItemJPARepository.findAllByReviewMatchPlannerId(plannerId);
 
         return reviewDTOConverter.getFindAllByPlannerDTO(reviews, reviewImageItems);
     }
@@ -80,7 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponse.FindAllByCoupleDTO findReviewsByCouple(User user) {
 
         List<Review> reviews = reviewJPARepository.findAllByMatchCoupleId(user.getId());
-        List<ReviewImageItem> reviewImageItems = reviewImageItemJPARepository.findByReviewMatchCoupleId(user.getId());
+        List<ReviewImageItem> reviewImageItems = reviewImageItemJPARepository.findAllByReviewMatchCoupleId(user.getId());
 
         return reviewDTOConverter.getFindAllByCoupleDTO(reviews, reviewImageItems);
     }
