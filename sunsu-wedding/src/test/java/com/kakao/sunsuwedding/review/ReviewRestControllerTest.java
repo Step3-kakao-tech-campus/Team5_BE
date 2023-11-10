@@ -194,16 +194,14 @@ public class ReviewRestControllerTest {
     public void find_review_by_planner_success_test() throws Exception {
         // given
         int page = 0;
-        ReviewRequest.FindAllByPlannerDTO request = new ReviewRequest.FindAllByPlannerDTO(2L);
-
-        String requestBody = om.writeValueAsString(request);
+        Long plannerId = 2L;
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
                         .get("/api/review")
                         .param("page", String.valueOf(page))
-                        .content(requestBody)
+                        .param("plannerId", String.valueOf(plannerId))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
