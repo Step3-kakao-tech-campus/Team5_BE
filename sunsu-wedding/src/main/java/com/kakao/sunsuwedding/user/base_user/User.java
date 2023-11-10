@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @Table(
         name="user_tb",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"email", "is_active"})
-})
+                @UniqueConstraint(columnNames = {"id", "email", "is_active"})
+        })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
 @SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
