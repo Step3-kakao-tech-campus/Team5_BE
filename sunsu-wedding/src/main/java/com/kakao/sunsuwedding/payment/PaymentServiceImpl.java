@@ -87,8 +87,9 @@ public class PaymentServiceImpl implements PaymentService {
                 .proxy(it ->
                         it.type(ProxyProvider.Proxy.HTTP)
                                 .host("http://krmp-proxy.9rum.cc")
-                                .port(312)
-                );
+                                .port(3128)
+                )
+                .proxyWithSystemProperties();
 
         WebClient webClient =
                 WebClient
