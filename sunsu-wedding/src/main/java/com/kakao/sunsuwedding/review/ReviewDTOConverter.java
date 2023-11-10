@@ -25,8 +25,8 @@ public class ReviewDTOConverter {
     }
 
     public ReviewResponse.FindAllByCoupleDTO getFindAllByCoupleDTO(List<Review> reviews, List<ReviewImageItem> reviewImageItems) {
-        List<ReviewResponse.FindByUserDTO> reviewDTOS = reviews.stream()
-                .map(review -> new ReviewResponse.FindByUserDTO(
+        List<ReviewResponse.FindByPlannerDTO> reviewDTOS = reviews.stream()
+                .map(review -> new ReviewResponse.FindByPlannerDTO(
                         review.id,
                         (review.getMatch().getPlanner() != null) ? review.getMatch().getPlanner().getUsername() : "탈퇴한 사용자" ,
                         review.stars,
