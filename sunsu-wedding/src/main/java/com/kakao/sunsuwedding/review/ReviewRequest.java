@@ -15,11 +15,11 @@ public class ReviewRequest {
             @Max(value = 5,message = "최고 평점은 5점입니다.")
             Integer stars,
 
-            @NotEmpty(message = "content는 비어있으면 안됩니다.")
+            @NotEmpty(message = "내용은 비어있으면 안됩니다.")
             @Length(max = 500, message = "리뷰는 500자까지만 작성 가능합니다.")
             String content,
 
-            @NotNull(message = "images는 비어있으면 안됩니다.")
+            @NotNull(message = "이미지는 비어있으면 안됩니다.")
             List<String> images
     ){}
 
@@ -29,11 +29,11 @@ public class ReviewRequest {
             @Max(value = 5,message = "최고 평점은 5점입니다.")
             Integer stars,
 
-            @NotEmpty(message = "content는 비어있으면 안됩니다.")
+            @NotEmpty(message = "내용은 비어있으면 안됩니다.")
             @Length(max = 500, message = "리뷰는 500자까지만 작성 가능합니다.")
             String content,
 
-            @NotNull(message = "images는 비어있으면 안됩니다.")
+            @NotNull(message = "이미지는 비어있으면 안됩니다.")
             List<String> images
     ){}
 }
