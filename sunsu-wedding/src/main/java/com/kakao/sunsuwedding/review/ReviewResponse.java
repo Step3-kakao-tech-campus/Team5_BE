@@ -8,12 +8,20 @@ public class ReviewResponse {
     ) {}
 
     public record FindAllByCoupleDTO(
-            List<FindByUserDTO> reviews
+            List<FindByPlannerDTO> reviews
     ) {}
 
     public record FindByUserDTO(
             Long id,
             String coupleName,
+            Integer stars,
+            String content,
+            List<String> images
+    ) {}
+
+    public record FindByPlannerDTO(
+            Long id,
+            String plannerName,
             Integer stars,
             String content,
             List<String> images
