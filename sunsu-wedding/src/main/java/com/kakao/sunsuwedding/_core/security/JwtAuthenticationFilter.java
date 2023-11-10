@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String accessToken = request.getHeader(jwtProvider.AUTHORIZATION_HEADER);
         String refreshToken = request.getHeader(jwtProvider.REFRESH_HEADER);
 
-        if (request.getRequestURI().equals("/api/portfolio") && request.getMethod().equals("GET")) {
+        if (request.getRequestURI().contains("/api/portfolio") && request.getMethod().equals("GET")) {
             if (accessToken != null && !jwtProvider.isValidAccessToken(accessToken)) {
                 throw new UnauthorizedException(BaseException.ACCESS_TOKEN_EXPIRED);
             }
