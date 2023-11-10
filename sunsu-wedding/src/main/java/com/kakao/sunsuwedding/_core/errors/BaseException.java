@@ -40,8 +40,6 @@ public enum BaseException {
     CODE_NOT_MATCHED("인증코드가 일치하지 않습니다.", 2204, 400),
     UNAUTHENTICATED_EMAIL("인증되지 않은 이메일입니다.", 2205, 400),
     EMAIL_ALREADY_AUTHENTICATED("이미 인증이 완료되었습니다.", 2206, 400),
-    AUTHENTICATION_EXPIRED("인증 시간이 초과되었습니다. 다시 인증해주세요.", 2207, 400),
-
 
     // 결제 3000
     PAYMENT_WRONG_INFORMATION("잘못된 결제 정보입니다.", 3000, 400),

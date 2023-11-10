@@ -11,12 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
-
-import static com.kakao.sunsuwedding.user.email.EmailServiceImpl.AUTHENTICATION_EXP;
 
 @Component
 @RequiredArgsConstructor
@@ -40,18 +36,10 @@ public class UserDataChecker {
     }
 
     public void checkEmailAuthenticated(UserRequest.SignUpDTO requestDTO) {
-        EmailCode emailCode = emailCodeJPARepository.findByEmail(requestDTO.email())
-                .orElseThrow(() -> new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL));
+        EmailCode emailCode = findEmailCodeByRequest(requestDTO);
 
         if (emailCode.getConfirmed().equals(false)) {
             throw new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL);
-        }
-
-        // 인증 지속시간은 30분. 30분 초과 시 재인증 필요
-        Duration duration = Duration.between(emailCode.getCreatedAt(), LocalDateTime.now());
-        if (duration.getSeconds() > AUTHENTICATION_EXP) {
-            emailCodeJPARepository.delete(emailCode);
-            throw new BadRequestException(BaseException.AUTHENTICATION_EXPIRED);
         }
     }
 
@@ -59,5 +47,10 @@ public class UserDataChecker {
         if (!passwordEncoder.matches(requestDTO.password(), user.getPassword())) {
             throw new BadRequestException(BaseException.USER_PASSWORD_WRONG);
         }
+    }
+
+    private EmailCode findEmailCodeByRequest(UserRequest.SignUpDTO requestDTO) {
+        return emailCodeJPARepository.findByEmail(requestDTO.email())
+                .orElseThrow(() -> new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL));
     }
 }

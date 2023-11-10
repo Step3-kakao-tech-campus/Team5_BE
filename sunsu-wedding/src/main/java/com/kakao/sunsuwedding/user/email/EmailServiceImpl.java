@@ -32,8 +32,6 @@ public class EmailServiceImpl implements EmailService {
 
     private final static int CODE_EXP = 60 * 10;
 
-    public final static int AUTHENTICATION_EXP = 60 * 30;
-
     String EMAIL_CONTENT = """
                             <body style="margin: 0 0;">
                                 <div style="vertical-align: middle; text-align: center; font-size: 14px; color: black; margin: 0 0; padding: 0 20px 100px 20px; background-image: linear-gradient(to top, rgba(167, 207, 255, 0.05), rgba(167, 207, 255, 0.5));">
@@ -66,6 +64,8 @@ public class EmailServiceImpl implements EmailService {
 
         EmailCode emailCode = findMailCodeByRequest(request);
 
+        checkEmailAlreadyAuthenticated(emailCode);
+
         emailCode.setCode(code);
         emailCode.setEmail(request.email());
         emailCode.setConfirmed(false);
@@ -77,8 +77,8 @@ public class EmailServiceImpl implements EmailService {
     public void verify(EmailRequest.CheckCode request) {
         EmailCode emailCode = findMailCodeByRequest(request);
 
-        checkCodeExpiration(emailCode);
         checkEmailAlreadyAuthenticated(emailCode);
+        checkCodeExpiration(emailCode);
         matchCode(request, emailCode);
 
         emailCode.setConfirmed(true);
@@ -110,7 +110,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private static void checkEmailAlreadyAuthenticated(EmailCode emailCode) {
-        if (emailCode.getConfirmed().equals(true)) {
+        if (emailCode.getConfirmed() != null && emailCode.getConfirmed().equals(true)) {
             throw new BadRequestException(BaseException.EMAIL_ALREADY_AUTHENTICATED);
         }
     }
