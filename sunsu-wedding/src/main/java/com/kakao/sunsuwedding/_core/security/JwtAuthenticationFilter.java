@@ -94,11 +94,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         Boolean isAccessTokenValid = jwtProvider.isValidAccessToken(accessToken);
 
         if (isAccessTokenValid) {
-            Long userId = jwtProvider
-                    .verifyAccessToken(accessToken)
-                    .getClaim("id")
-                    .asLong();
-            tokenServiceImpl.expireTokenByUserId(userId);
             throw new UnauthorizedException(BaseException.ACCESS_TOKEN_STILL_ALIVE);
         }
 
@@ -106,9 +101,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         Long userId = decodedJWT.getClaim("id").asLong();
         Boolean isTokenPairValid = tokenServiceImpl.checkTokenPairValidation(userId, accessToken, refreshToken);
 
-        tokenServiceImpl.expireTokenByUserId(userId);
-
         if (isTokenPairValid) {
+            tokenServiceImpl.expireTokenByUserId(userId);
             createAuthentication(decodedJWT, userId);
             log.debug("refresh-token 을 이용한 인증 객체 생성");
         }
