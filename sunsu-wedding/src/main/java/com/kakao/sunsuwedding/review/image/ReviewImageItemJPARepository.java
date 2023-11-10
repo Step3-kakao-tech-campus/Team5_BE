@@ -13,8 +13,11 @@ public interface ReviewImageItemJPARepository extends JpaRepository<ReviewImageI
     @Query("delete from ReviewImageItem r where r.review.id = :reviewId")
     void deleteAllByReviewId(@Param("reviewId") Long reviewId);
 
-    List<ReviewImageItem> findByReviewMatchPlannerId(@Param("plannerId") Long plannerId);
-    List<ReviewImageItem> findByReviewMatchCoupleId(@Param("coupleId") Long coupleId);
+    @Query("select r from ReviewImageItem r where r.review.match.planner.id = :plannerId")
+    List<ReviewImageItem> findAllByReviewMatchPlannerId(@Param("plannerId") Long plannerId);
+
+    @Query("select r from ReviewImageItem r where r.review.match.couple.id = :coupleId")
+    List<ReviewImageItem> findAllByReviewMatchCoupleId(@Param("coupleId") Long coupleId);
 
     @Query("select r.image from ReviewImageItem r where r.review.id = :reviewId")
     List<String> findByReviewId(@Param("reviewId") Long reviewId);
