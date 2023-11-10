@@ -129,10 +129,8 @@ public class ReviewServiceImpl implements ReviewService {
         // 평균 평점 수정
         portfolioServiceImpl.updateAvgStars(review.getMatch().getPlanner());
 
-        // 삭제 후 리뷰가 1개도 없다면 ReviewStatus UNWRITTEN으로 변경
-        if (reviewJPARepository.findAllByMatch(match).isEmpty()) {
-            updateReviewStatus(match);
-        }
+        // ReviewStatus UNWRITTEN으로 변경
+        updateReviewStatus(match);
 
         reviewImageItemJPARepository.deleteAllByReviewId(reviewId);
     }
