@@ -11,6 +11,7 @@ public enum BaseException {
     PERMISSION_DENIED_METHOD_ACCESS("사용할 수 없는 기능입니다.", 1000, 403),
     DATABASE_ERROR("데이터베이스 에러입니다.", 1001, 500),
     USER_UNAUTHORIZED("인증되지 않았습니다.", 1002, 401),
+    INVALID_METHOD_ARGUMENTS("잘못된 매개변수가 입력되었습니다.", 1003, 400),
 
     // 회원 2000
     USER_NOT_FOUND("서비스를 탈퇴했거나 가입하지 않은 유저의 요청입니다.", 2000, 404),
@@ -39,6 +40,7 @@ public enum BaseException {
     CODE_NOT_MATCHED("인증코드가 일치하지 않습니다.", 2204, 400),
     UNAUTHENTICATED_EMAIL("인증되지 않은 이메일입니다.", 2205, 400),
     EMAIL_ALREADY_AUTHENTICATED("이미 인증이 완료되었습니다.", 2206, 400),
+    AUTHENTICATION_EXPIRED("인증 시간이 초과되었습니다. 다시 인증해주세요.", 2207, 400),
 
 
     // 결제 3000
