@@ -11,6 +11,7 @@ import com.kakao.sunsuwedding.match.ReviewStatus;
 import com.kakao.sunsuwedding.portfolio.Portfolio;
 import com.kakao.sunsuwedding.portfolio.PortfolioJPARepository;
 import com.kakao.sunsuwedding.portfolio.PortfolioServiceImpl;
+import com.kakao.sunsuwedding.review.image.ReviewImageItem;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemJPARepository;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemService;
 import com.kakao.sunsuwedding.user.base_user.User;
@@ -72,17 +73,17 @@ public class ReviewServiceImpl implements ReviewService {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         Page<Review> pageContent = reviewJPARepository.findAllByMatchPlannerId(plannerId, pageable);
         List<Review> reviews = pageContent.getContent();
-        List<String> images = reviewImageItemJPARepository.findByPlannerId(plannerId);
+        List<ReviewImageItem> reviewImageItems = reviewImageItemJPARepository.findByReviewMatchPlannerId(plannerId);
 
-        return reviewDTOConverter.getFindAllByPlannerDTO(reviews, images);
+        return reviewDTOConverter.getFindAllByPlannerDTO(reviews, reviewImageItems);
     }
 
     public ReviewResponse.FindAllByCoupleDTO findReviewsByCouple(User user) {
 
         List<Review> reviews = reviewJPARepository.findAllByMatchCoupleId(user.getId());
-        List<String> images = reviewImageItemJPARepository.findByCoupleId(user.getId());
+        List<ReviewImageItem> reviewImageItems = reviewImageItemJPARepository.findByReviewMatchCoupleId(user.getId());
 
-        return reviewDTOConverter.getFindAllByCoupleDTO(reviews, images);
+        return reviewDTOConverter.getFindAllByCoupleDTO(reviews, reviewImageItems);
     }
 
     public ReviewResponse.ReviewDTO findReviewById(User user, Long reviewId) {
