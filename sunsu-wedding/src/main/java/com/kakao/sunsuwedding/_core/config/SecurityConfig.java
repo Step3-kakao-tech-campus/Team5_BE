@@ -122,7 +122,11 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/match/**"),
                                 new AntPathRequestMatcher("/api/quotation/**"),
                                 new AntPathRequestMatcher("/api/payment/**"),
-                                new AntPathRequestMatcher("/api/review/**"),
+                                new AntPathRequestMatcher("/api/review/all", "GET"),
+                                new AntPathRequestMatcher("/api/review/{reviewId}", "GET"),
+                                new AntPathRequestMatcher("/api/review/**", "POST"),
+                                new AntPathRequestMatcher("/api/review/**", "PUT"),
+                                new AntPathRequestMatcher("/api/review/**", "DELETE"),
                                 new AntPathRequestMatcher("/api/favorite/**")
                         ).authenticated()
                         .anyRequest().permitAll()
