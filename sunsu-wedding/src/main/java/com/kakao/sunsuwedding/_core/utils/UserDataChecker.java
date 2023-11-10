@@ -36,10 +36,9 @@ public class UserDataChecker {
     }
 
     public void checkEmailAuthenticated(UserRequest.SignUpDTO requestDTO) {
-        EmailCode EMailCode = emailCodeJPARepository.findByEmail(requestDTO.email())
-                .orElseThrow(() -> new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL));
+        EmailCode emailCode = findEmailCodeByRequest(requestDTO);
 
-        if (EMailCode.getConfirmed().equals(false)) {
+        if (emailCode.getConfirmed().equals(false)) {
             throw new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL);
         }
     }
@@ -48,5 +47,10 @@ public class UserDataChecker {
         if (!passwordEncoder.matches(requestDTO.password(), user.getPassword())) {
             throw new BadRequestException(BaseException.USER_PASSWORD_WRONG);
         }
+    }
+
+    private EmailCode findEmailCodeByRequest(UserRequest.SignUpDTO requestDTO) {
+        return emailCodeJPARepository.findByEmail(requestDTO.email())
+                .orElseThrow(() -> new BadRequestException(BaseException.UNAUTHENTICATED_EMAIL));
     }
 }

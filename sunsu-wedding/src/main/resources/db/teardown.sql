@@ -48,6 +48,7 @@ INSERT INTO token_tb (`id`,`user_id`,`access_token`,`refresh_token`) VALUES ('2'
 INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('1', 'ssarmango@nate.com', '123456', 'true', '2023-11-06 09:00:00.00', 'true');
 INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('2', 'asdf@naver.com', '123456', 'true', '2023-11-06 10:00:00.00', 'true');
 INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('3', 'test@naver.com', '123456', 'false', '2023-11-06 13:00:00.00', 'true');
+INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('4', 'couple@gmail.com', '123456', 'true', '2023-11-06 13:00:00.00', 'true');
 
 -- payment
 INSERT INTO payment_tb (`id`,`user_id`,`order_id`,`payment_key`, `payed_amount`, `created_at`, `payed_at`, `is_active`) VALUES ('1', '4','order', 'payment', '1000', '2023-10-16 01:06:55.00', '2023-10-16 01:06:55.10', 'true');

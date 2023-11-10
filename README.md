@@ -1,43 +1,136 @@
 # Team5_BE
 
 ## 📌 프로젝트 소개
-![순수웨딩이란?](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/fc737fc0-a34d-434c-9d9e-370d8956313d)
 
-|내용|설명|
-|-----------|----|
-|프로젝트 이름|순수웨딩| 
-|한줄 소개|투명한 가격으로 웨딩 플래너와 예비 부부를 매칭시켜주는 서비스|
-|개발 목적| 예비 부부에게는 결혼 비용의 투명성 보장을, 웨딩 플래너에게는 더 많은 고객 유치를 위해 **순수 웨딩**을 기획했습니다. |
-|개발 기간|2023.09 - 2023.11|
+![순수웨딩 소개](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/ebb9b772-69cd-413d-9d17-cb10fefdf714)
 
-<br>
+### 개발 동기 및 목적
+ 예비 부부의 경우 결혼과 관련된 정보를 찾기 위해서는 웨딩 박람회, 온라인 검색, SNS 등 여러 방법을 사용하지만, 어디를 알아봐도 복잡하기만 하고 가격도 천차만별이라 선택하기 어렵습니다. 또한, 결혼 시장의 경우 일회성 고객이 대부분이다 보니 소비자보다 판매자 위주의 시장이 형성되어 왔습니다. 이에 따라 결혼 비용을 공개하지 않아 지인 소개 등으로 가면 훨씬 싸게 해주는 등 소비자 입장에선 모르고 당하기 십상입니다.
 
-## 👨‍👩‍👧‍👦 팀원 소개
-| [남원정](https://github.com/1jeongg) | [문석준](https://github.com/seokwns) | [천영채](https://github.com/chaee813)|[김정도](https://github.com/Rizingblare) |
-|----------|----------|----------|----------|
-| <img src="https://github.com/1jeongg.png" width="100"> | <img src="https://github.com/seokwns.png" width="100"> | <img src="https://github.com/chaee813.png" width="100"> | <img src="https://github.com/Rizingblare.png" width="100"> |
+ 웨딩 플래너의 경우 무급으로 시작해서 실력이 아닌 연차가 쌓일 때까지는 최저시급에도 미치지 못하는 기본급을 받으며 열정 페이를 강요받아 어려움을 겪고 있었습니다.
+
+✨ 저희 `순수웨딩` 팀은 앞선 웨딩플래너의 결혼 준비 비용 불투명성 문제와 웨딩 플래너의 급여 공정성 문제를 해결하기 위해 투명한 가격으로 이 둘을 매칭 해주는 서비스를 기획하게 되었습니다. ✨
 
 <br>
 
-## ✅ 주요 기능
-|기능|디자인|상세설명|
-|----|------|---|
-|포트폴리오 등록| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/33ab83be-a388-449c-8a1c-75a4f85153d0" width="800" > |포트폴리오와 상세 비용을 등록하여 자신을 소개할 수 있다|
-|포트폴리오 조회| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/5ff7c1ef-a5d1-4c50-8d34-10e4cd1223d6" width="800" > |플래너의 거래 기록들과 다른 플래너들의 가격비교를 통해 적정가를 확인할 수 있다|
-|채팅 상담| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/d7c250fb-b208-4bc1-a480-9f97f3b7d290" width="800" > |온라인으로 간편하게 여러 명의 플래너와 견적 상담을 받을 수 있다|
-|견적서| <img src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/c4dfb4d7-4410-417b-8d29-b4bccdfa3156" width="800" > |빠르고 간편하게 진행 과정에 대한 상세 내역을 확인할 수 있다|
+### 서비스 소개
+> 투명한 가격으로 웨딩 플래너와 예비 부부를 매칭하다, '순수웨딩'
+
+1. ✏️ 투명한 웨딩 플래너의 **포트폴리오**
+   - 웨딩 플래너가 직접 등록한 자기 소개, 예상 가격, 사진, 사용자 리뷰등 볼 수 있어요
+   - `순수 웨딩 멤버십`에 가입하면 플래너의 실제 이전 계약 기록(업체, 가격, 날짜 등)을 볼 수 있어요
+   - 마음에 드는 플래너를 찜할 수 있어요!
+     
+2. 🗨️ 내 PICK! 플래너에게 **채팅 상담받기**
+   - 원하는 플래너들과 채팅으로 상담받으며 결혼 준비를 할 수 있어요
+     
+3. 📜 **견적서**로 결혼 진행 과정을 서로 공유해요
+   - 채팅방에서 견적서를 만들어서 업체 이름, 가격 등을 확인하고 진행 상황을 한눈에 확인할 수 있어요
+   - 전체 견적서를 확정하면 해당 플래너에 대한 리뷰를 작성할 수 있어요
+    
+4. 💯 **리뷰**를 통해 생생한 결혼 진행 후기 확인하기
+   - 다른 사람이 실제로 플래너와 진행한 후기를 들려줘요 이를 기반으로 더 좋은 플래너를 선택할 수 있어요
+   - 해당 내용은 포트폴리오 상세 페이지에서 확인할 수 있어요
+  
+<br>
+
+### 개발 기간
+2023.09-11 (카카오 테크 캠퍼스 1기 - 3단계 진행 기간)
 
 <br>
 
-## 🔗 링크 모음
-||
-|----|
-[순수웨딩 - GitHub (FE)](https://github.com/Step3-kakao-tech-campus/Team5_FE)
-[순수웨딩 - Notion 협업 문서](https://www.notion.so/f11783c42731479ca1f6c9a97a738324)
-[순수웨딩 - 기획안](https://www.figma.com/file/A81sCNiwoLUfSe5aqXEHXr/%EC%B9%B4%ED%85%8C%EC%BA%A0-5%EC%A1%B0---%EA%B8%B0%ED%9A%8D%EC%95%88?type=design&node-id=972-145&mode=design&t=QdcoBgtPZi631myk-0)
-[순수웨딩 - ERD](https://www.erdcloud.com/d/ANQiRdphNrhxhme59)  
-[순수웨딩 - API 문서](https://www.notion.so/API-1f290dbfaf54438293b5b1d7da4c6645)  
-[순수웨딩 - 와이어프레임 디자인](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/SUNSU-WEDDING?type=design&node-id=0-1&mode=design&t=uNARBufsvVjsAFYP-0)
+## 팀원 소개
+| | <img src="https://github.com/1jeongg.png" width="100"> | <img src="https://github.com/seokwns.png" width="100"> | <img src="https://github.com/chaee813.png" width="100"> | <img src="https://github.com/Rizingblare.png" width="100"> |
+|:--:|:----------:|:----------:|:----------:|:----------:|
+| 이름 | [남원정](https://github.com/1jeongg) | [문석준](https://github.com/seokwns) | [천영채](https://github.com/chaee813)|[김정도](https://github.com/Rizingblare) |
+| 개발 범위 | 회원, 결제, 찜하기 | 토큰, 이메일, 포트폴리오, 견적서 | 채팅, 매칭, 견적서, 리뷰 | 포트폴리오 |
+
+<br>
+
+
+## 주요 기능
+> - ✏️ 포트폴리오
+> - 🗨️ 채팅 상담
+> - 📜 견적서
+> - 💯 리뷰
+
+|분류|기능1|기능2|
+|------|------|---|
+|포트폴리오| ![포트폴리오 조회](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/add60899-8a8f-433f-9ca0-dd68d22970cb) | ![포트폴리오 등록](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/65bad53a-0916-40fe-9e3b-7f001034c890) |
+|         | • 플래너가 등록한 정보, 이미지, 리뷰 등 조회 <br> • 검색과 필터링 <br> • 멤버십 사용자 - 지난 계약 정보(진행 가격, 업체 등) 조회  <br> • 찜하기  | • 플래너의 소개, 가격 등의 정보를 등록 <br> • 수정 및 삭제 |
+|채팅 상담| ![채팅 상담](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/5741cb65-a3ff-4260-954d-be354dc25964)| | 
+|견적서| ![예비 부부 견적서](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/20fbc800-3808-4e73-a545-63356b9ff47c) | ![플래너 견적서](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/764d33a5-e988-4667-9329-ccbc245169df) |
+|  |  • 견적서 전체 리스트 조회 <br>  • 견적서 매칭별 리스트 조회 <br>  • 매칭 확정 |  • 견적서 등록, 수정, 삭제 <br> • 견적서 1개 확정 |
+| 리뷰 | ![리뷰](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/7e4d7927-9f1d-4468-b062-b598f80cb84b) | |
+| | • 리뷰 전체 리스트 조회 <br> • 리뷰 플래너별 리스트 조회 <br> • 리뷰 상세 조회 <br> • 등록 수정 삭제  | |
+
+
+<br>
+
+
+## 링크 모음
+| 기획 | 디자인 | 개발 | 배포 |
+|------|-------|------|------|
+| [노션](https://unmarred-belief-362.notion.site/f11783c42731479ca1f6c9a97a738324?pvs=4) | [와이어프레임](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/SUNSU-WEDDING?type=design&node-id=0%3A1&mode=design&t=5PnD2GPs3WktbNNy-1) | [프론트 깃허브](https://github.com/Step3-kakao-tech-campus/Team5_FE) | [크램폴린 배포 주소](https://k6f3d3b1a0696a.user-app.krampoline.com/) |
+| [기획안 PPT](https://www.figma.com/file/A81sCNiwoLUfSe5aqXEHXr/%EC%B9%B4%ED%85%8C%EC%BA%A0-5%EC%A1%B0---%EA%B8%B0%ED%9A%8D%EC%95%88?type=design&node-id=972-145&mode=design&t=QdcoBgtPZi631myk-0) |  | [ERD](https://www.erdcloud.com/d/fww6HRj7oXL9cdp5t) |
+| [Survey](https://unmarred-belief-362.notion.site/Survey-a4c9ba9b8114456f88faa61b33f232c9) | | [API 문서](https://unmarred-belief-362.notion.site/6fd74038970941a2ad02df0045705095?v=545b8da990c74661b2b6b560009766ff) | |
+
+<br>
+
+## ERD
+![ERD](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/2f6cf5f5-64d5-4a89-9b84-a9f552b9cc6d)
+
+## API 모아보기
+<img width="600" alt="API 모아보기" src="https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/4d1b3f33-9411-438d-b78e-756db7fa121d">
+
+## 파일 구조
+```
+└───📂src
+    ├───📂main
+    │   ├───📂generated
+    │   ├───📂java.com.kakao.sunsuwedding
+    │   │               ├───📁chat
+    │   │               ├───📁favorite
+    │   │               ├───📁match
+    │   │               ├───📁payment
+    │   │               ├───📁portfolio
+    │   │               │   ├───📁cursor
+    │   │               │   ├───📁image
+    │   │               │   └───📁price
+    │   │               ├───📁quotation
+    │   │               ├───📁review
+    │   │               │   └───📁image
+    │   │               ├───📁user
+    │   │               │   ├───📁base_user
+    │   │               │   ├───📁constant
+    │   │               │   ├───📁couple
+    │   │               │   ├───📁mail
+    │   │               │   ├───📁planner
+    │   │               │   └───📁token
+    │   │               └───📁_core
+    │   │                   ├───📁constants
+    │   │                   ├───📁errors
+    │   │                   │   └───📁exception
+    │   │                   ├───📁security
+    │   │                   └───📁utils
+    │   └───📂resources
+    │       ├───📁db
+    │       └───📁env
+    └───📂test
+        └───📂java.com.kakao.sunsuwedding
+            ├───📁chat
+            ├───📁favorite
+            ├───📁match
+            ├───📁payment
+            ├───📁portfolio
+            │   ├───📁image
+            │   └───📁price
+            ├───📁quotation
+            ├───📁review
+            ├───📁user
+            ├───📁util
+            └───📁_core
+```
 
 <br>
 
@@ -63,7 +156,7 @@ java -jar sunsu-wedding-0.0.1-SNAPSHOT.jar
 <br>
 
 ## 프레임워크/라이브러리
-- Spring Boot,
+- Spring Boot
 - Spring Framework
 - Spring Boot Starter
 - Lombok
@@ -76,260 +169,11 @@ java -jar sunsu-wedding-0.0.1-SNAPSHOT.jar
 
 <br>
 
-## Reference
+## License - The MIT License (MIT)
 
-<br>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-<details>
-<summary><h2>카카오 테크 캠퍼스 3단계 진행 보드</h2></summary>
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-## 배포와 관련하여
-
-```
-
-최종 배포는 크램폴린으로 배포해야 합니다.
-
-하지만 배포 환경의 불편함이 있는 경우를 고려하여 
-
-임의의 배포를 위해 타 배포 환경을 자유롭게 이용해도 됩니다. (단, 금액적인 지원은 어렵습니다.)
-
-아래는 추가적인 설정을 통해 (체험판, 혹은 프리 티어 등)무료로 클라우드 배포가 가능한 서비스입니다.
-
-ex ) AWS(아마존), GCP(구글), Azure(마이크로소프트), Cloudtype 
-
-```
-## Notice
-
-```
-필요 산출물들은 수료 기준에 영향을 주는 것은 아니지만, 
-주차 별 산출물을 기반으로 평가가 이루어 집니다.
-
-주차 별 평가 점수는 추 후 최종 평가에 최종 합산 점수로 포함됩니다.
-```
-
-![레포지토리 운영-001 (1)](https://github.com/Step3-kakao-tech-campus/practice/assets/138656575/acb0dccd-0441-4200-999a-981865535d5f)
-![image](https://github.com/Step3-kakao-tech-campus/practice/assets/138656575/b42cbc06-c5e7-4806-8477-63dfa8e807a0)
-
-[git flowchart_FE.pdf](https://github.com/Step3-kakao-tech-campus/practice/files/12521045/git.flowchart_FE.pdf)
-
-
-</br>
-
-## 필요 산출물
-<details>
-<summary>Step3. Week-1</summary>
-<div>
-    
-✅**1주차**
-    
-```
-    - 5 Whys
-    - 마켓 리서치
-    - 페르소나 & 저니맵
-    - 와이어 프레임
-    - 칸반보드
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-2</summary>
-<div>
-    
-✅**2주차**
-    
-```
-    - ERD 설계서
-    
-    - API 명세서
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-3</summary>
-<div>
-    
-✅**3주차**
-    
-```
-    - 최종 기획안
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-4</summary>
-<div>
-    
-✅**4주차**
-    
-```
-    - 4주차 github
-    
-    - 4주차 노션
-```
-    
-</div>
-</details>
-
----
-<details>
-<summary>Step3. Week-5</summary>
-<div>
-    
-✅**5주차**
-    
-```
-    - 5주차 github
-    
-    - 5주차 노션
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-6</summary>
-<div>
-    
-✅**6주차**
-    
-```
-    - 6주차 github
-    
-    - 중간발표자료
-    
-    - 피어리뷰시트
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-7</summary>
-<div>
-    
-✅**7주차**
-    
-```
-    - 7주차 github
-    
-    - 7주차 노션
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-8</summary>
-<div>
-    
-✅**8주차**
-    
-```
-    - 중간고사
-    
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-9</summary>
-<div>
-    
-✅**9주차**
-    
-```
-    - 9주차 github
-    
-    - 9주차 노션
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-10</summary>
-<div>
-    
-✅**10주차**
-    
-```
-    - 10주차 github
-    
-    - 테스트 시나리오 명세서
-    
-    - 테스트 결과 보고서
-```
-    
-</div>
-</details>
-
----
-
-<details>
-<summary>Step3. Week-11</summary>
-<div>
-    
-✅**11주차**
-    
-```
-    - 최종 기획안
-    
-    - 배포 인스턴스 링크
-```
-    
-</div>
-</details>
-
----
-
-## **과제 상세 : 수강생들이 과제를 진행할 때, 유념해야할 것**
-
-```
-1. README.md 파일은 동료 개발자에게 프로젝트에 쉽게 랜딩하도록 돕는 중요한 소통 수단입니다.
-해당 프로젝트에 대해 아무런 지식이 없는 동료들에게 설명하는 것처럼 쉽고, 간결하게 작성해주세요.
-
-2. 좋은 개발자는 디자이너, 기획자, 마케터 등 여러 포지션에 있는 분들과 소통을 잘합니다.
-UI 컴포넌트의 명칭과 이를 구현하는 능력은 필수적인 커뮤니케이션 스킬이자 필요사항이니 어떤 상황에서 해당 컴포넌트를 사용하면 좋을지 고민하며 코드를 작성해보세요.
-
-```
-
-</br>
-
-## **코드리뷰 관련: review branch로 PR시, 아래 내용을 포함하여 코멘트 남겨주세요.**
-
-**1. PR 제목과 내용을 아래와 같이 작성 해주세요.**
-
-> PR 제목 : 부산대_0조_아이템명_0주차
-> 
-
-</br>
-
-</div>
-
----
-</details>
