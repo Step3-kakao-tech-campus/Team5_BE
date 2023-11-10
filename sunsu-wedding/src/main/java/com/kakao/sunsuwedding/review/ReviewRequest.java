@@ -36,9 +36,4 @@ public class ReviewRequest {
             @NotNull(message = "images는 비어있으면 안됩니다.")
             List<String> images
     ){}
-
-    public record FindAllByPlannerDTO(
-            @NotNull(message = "plannerId는 비어있으면 안됩니다.")
-            Long plannerId
-    ) {}
 }
