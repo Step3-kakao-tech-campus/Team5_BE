@@ -12,7 +12,11 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="review_tb")
+@Table(
+        name="review_tb",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"id", "match_id", "is_active"})
+        })
 @SQLDelete(sql = "UPDATE review_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter

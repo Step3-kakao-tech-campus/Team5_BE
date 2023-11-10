@@ -29,7 +29,7 @@ public class UserDataChecker {
     }
 
     public void checkEmailAlreadyExist(String email) {
-        Optional<User> userOptional = userJPARepository.findByEmailNative(email);
+        Optional<User> userOptional = userJPARepository.findByEmail(email);
         if (userOptional.isPresent()){
             throw new BadRequestException(BaseException.USER_EMAIL_EXIST);
         }

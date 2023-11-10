@@ -12,6 +12,7 @@ public enum BaseException {
     DATABASE_ERROR("데이터베이스 에러입니다.", 1001, 500),
     USER_UNAUTHORIZED("인증되지 않았습니다.", 1002, 401),
     INVALID_METHOD_ARGUMENTS("잘못된 매개변수가 입력되었습니다.", 1003, 400),
+    UNEXPECTED_EXCEPTION("예상치 못한 에러가 발생했습니다.", 1004, 500),
 
     // 회원 2000
     USER_NOT_FOUND("서비스를 탈퇴했거나 가입하지 않은 유저의 요청입니다.", 2000, 404),

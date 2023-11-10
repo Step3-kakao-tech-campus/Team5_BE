@@ -2,6 +2,8 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kakao.sunsuwedding._core.config.SecurityConfig;
+import com.kakao.sunsuwedding._core.security.JWTProvider;
+import com.kakao.sunsuwedding.user.planner.Planner;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,11 +47,14 @@ public class PortfolioControllerTest {
     private static final Logger logger = LoggerFactory.getLogger(PortfolioControllerTest.class);
     private final MockMvc mockMvc;
     private final ObjectMapper om;
+    private final JWTProvider jwtProvider;
 
     public PortfolioControllerTest(@Autowired MockMvc mockMvc,
-                                   @Autowired ObjectMapper om) {
+                                   @Autowired ObjectMapper om,
+                                   @Autowired JWTProvider jwtProvider) {
         this.mockMvc = mockMvc;
         this.om = om;
+        this.jwtProvider = jwtProvider;
     }
 
     // ============ 포트폴리오 등록 테스트 ============
@@ -77,15 +82,16 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 등록 실패 테스트 1 - 존재하지 않는 유저")
     @Test
-    @WithUserDetails("planner17@gmail.com")
     public void add_portfolio_fail_test_user_not_found() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getAddDTO());
+        String token = jwtProvider.createAccessToken(Planner.builder().id(19L).build());
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
                         .post("/api/portfolio")
+                        .header(jwtProvider.AUTHORIZATION_HEADER, token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
@@ -300,15 +306,16 @@ public class PortfolioControllerTest {
 
     @DisplayName("포트폴리오 수정 실패 테스트 1 - 존재하지 않는 유저")
     @Test
-    @WithUserDetails("planner17@gmail.com")
     public void update_portfolio_fail_test_user_not_found() throws Exception {
         // given
         String requestBody = om.writeValueAsString(getUpdateDTO());
+        String token = jwtProvider.createAccessToken(Planner.builder().id(19L).build());
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders
                         .put("/api/portfolio")
+                        .header(jwtProvider.AUTHORIZATION_HEADER, token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
