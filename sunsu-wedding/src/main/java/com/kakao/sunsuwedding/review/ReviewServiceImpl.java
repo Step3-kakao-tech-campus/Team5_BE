@@ -14,7 +14,6 @@ import com.kakao.sunsuwedding.portfolio.PortfolioServiceImpl;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemJPARepository;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemService;
 import com.kakao.sunsuwedding.user.base_user.User;
-import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -173,8 +172,10 @@ public class ReviewServiceImpl implements ReviewService {
             match.updateReviewStatus(ReviewStatus.WRITTEN);
             matchJPARepository.save(match);
         }
-        match.updateReviewStatus(ReviewStatus.UNWRITTEN);
-        matchJPARepository.save(match);
+        else {
+            match.updateReviewStatus(ReviewStatus.UNWRITTEN);
+            matchJPARepository.save(match);
+        }
     }
 
     private static String getNameByUser(User user) {
