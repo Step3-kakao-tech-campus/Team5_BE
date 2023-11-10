@@ -15,7 +15,6 @@ import com.kakao.sunsuwedding.review.image.ReviewImageItem;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemJPARepository;
 import com.kakao.sunsuwedding.review.image.ReviewImageItemService;
 import com.kakao.sunsuwedding.user.base_user.User;
-import com.kakao.sunsuwedding.user.constant.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -131,10 +130,8 @@ public class ReviewServiceImpl implements ReviewService {
         // 평균 평점 수정
         portfolioServiceImpl.updateAvgStars(review.getMatch().getPlanner());
 
-        // 삭제 후 리뷰가 1개도 없다면 ReviewStatus UNWRITTEN으로 변경
-        if (reviewJPARepository.findAllByMatch(match).isEmpty()) {
-            updateReviewStatus(match);
-        }
+        // ReviewStatus UNWRITTEN으로 변경
+        updateReviewStatus(match);
 
         reviewImageItemJPARepository.deleteAllByReviewId(reviewId);
     }
@@ -174,8 +171,10 @@ public class ReviewServiceImpl implements ReviewService {
             match.updateReviewStatus(ReviewStatus.WRITTEN);
             matchJPARepository.save(match);
         }
-        match.updateReviewStatus(ReviewStatus.UNWRITTEN);
-        matchJPARepository.save(match);
+        else {
+            match.updateReviewStatus(ReviewStatus.UNWRITTEN);
+            matchJPARepository.save(match);
+        }
     }
 
     private static String getNameByUser(User user) {
