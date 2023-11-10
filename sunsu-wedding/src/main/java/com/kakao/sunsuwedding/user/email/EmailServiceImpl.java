@@ -62,25 +62,27 @@ public class EmailServiceImpl implements EmailService {
 //        MimeMessage email = createMail(request.email(), code);
 //        javaMailSender.send(email);
 
-        EmailCode EMailCode = findMailCodeByRequest(request);
+        EmailCode emailCode = findMailCodeByRequest(request);
 
-        EMailCode.setCode(code);
-        EMailCode.setEmail(request.email());
-        EMailCode.setConfirmed(false);
-        EMailCode.setCreatedAt(LocalDateTime.now());
+        checkEmailAlreadyAuthenticated(emailCode);
 
-        emailCodeJPARepository.save(EMailCode);
+        emailCode.setCode(code);
+        emailCode.setEmail(request.email());
+        emailCode.setConfirmed(false);
+        emailCode.setCreatedAt(LocalDateTime.now());
+
+        emailCodeJPARepository.save(emailCode);
     }
 
     public void verify(EmailRequest.CheckCode request) {
-        EmailCode EMailCode = findMailCodeByRequest(request);
+        EmailCode emailCode = findMailCodeByRequest(request);
 
-        checkCodeExpiration(EMailCode);
-        checkEmailAlreadyAuthenticated(EMailCode);
-        matchCode(request, EMailCode);
+        checkEmailAlreadyAuthenticated(emailCode);
+        checkCodeExpiration(emailCode);
+        matchCode(request, emailCode);
 
-        EMailCode.setConfirmed(true);
-        emailCodeJPARepository.save(EMailCode);
+        emailCode.setConfirmed(true);
+        emailCodeJPARepository.save(emailCode);
     }
 
     private EmailCode findMailCodeByRequest(EmailRequest.SendCode request) {
@@ -93,22 +95,22 @@ public class EmailServiceImpl implements EmailService {
                 .orElseThrow(() -> new NotFoundException(BaseException.CODE_NOT_FOUND));
     }
 
-    private static void matchCode(EmailRequest.CheckCode request, EmailCode EMailCode) {
-        if (!Objects.equals(EMailCode.getCode(), request.code())) {
+    private static void matchCode(EmailRequest.CheckCode request, EmailCode emailCode) {
+        if (!Objects.equals(emailCode.getCode(), request.code())) {
             throw new BadRequestException(BaseException.CODE_NOT_MATCHED);
         }
     }
 
-    private void checkCodeExpiration(EmailCode EMailCode) {
-        Duration duration = Duration.between(EMailCode.getCreatedAt(), LocalDateTime.now());
+    private void checkCodeExpiration(EmailCode emailCode) {
+        Duration duration = Duration.between(emailCode.getCreatedAt(), LocalDateTime.now());
         if (duration.getSeconds() > CODE_EXP) {
-            emailCodeJPARepository.delete(EMailCode);
+            emailCodeJPARepository.delete(emailCode);
             throw new BadRequestException(BaseException.CODE_EXPIRED);
         }
     }
 
-    private static void checkEmailAlreadyAuthenticated(EmailCode EMailCode) {
-        if (EMailCode.confirmed.equals(true)) {
+    private static void checkEmailAlreadyAuthenticated(EmailCode emailCode) {
+        if (emailCode.getConfirmed() != null && emailCode.getConfirmed().equals(true)) {
             throw new BadRequestException(BaseException.EMAIL_ALREADY_AUTHENTICATED);
         }
     }

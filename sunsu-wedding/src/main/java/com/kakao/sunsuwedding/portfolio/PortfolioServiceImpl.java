@@ -2,7 +2,6 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding._core.errors.BaseException;
 import com.kakao.sunsuwedding._core.errors.exception.BadRequestException;
-import com.kakao.sunsuwedding._core.errors.exception.ForbiddenException;
 import com.kakao.sunsuwedding._core.errors.exception.NotFoundException;
 import com.kakao.sunsuwedding._core.utils.PriceCalculator;
 import com.kakao.sunsuwedding.favorite.Favorite;
@@ -24,7 +23,6 @@ import com.kakao.sunsuwedding.review.ReviewJPARepository;
 import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Grade;
-import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.planner.Planner;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +56,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final PriceCalculator priceCalculator;
     private final PortfolioSpecification portfolioSpecification;
 
+
+
     @Transactional
     public void addPortfolio(PortfolioRequest.AddDTO request, Long plannerId) {
         // 요청한 플래너 탐색
@@ -90,7 +90,7 @@ public class PortfolioServiceImpl implements PortfolioService {
             return new PageCursor<>(new ArrayList<>(), null);
 
         Pageable pageable = request.get();
-        List<Portfolio> portfolios = search(request, pageable);
+        List<Portfolio> portfolios = findPortfoliosByRequest(request, pageable);
 
         // 더이상 보여줄 포트폴리오가 없다면 커서 null 반환
         if (portfolios.isEmpty())
@@ -267,7 +267,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         return key;
     }
 
-    private List<Portfolio> search(CursorRequest request, Pageable pageable) {
+    private List<Portfolio> findPortfoliosByRequest(CursorRequest request, Pageable pageable) {
         Specification<Portfolio> specification = portfolioSpecification.findPortfolio(request);
         return portfolioJPARepository.findAll(specification, pageable).getContent();
     }
