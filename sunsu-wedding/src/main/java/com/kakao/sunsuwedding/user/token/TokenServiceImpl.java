@@ -17,6 +17,9 @@ public class TokenServiceImpl implements TokenService {
     private final TokenJPARepository tokenJPARepository;
     private final JWTProvider jwtProvider;
 
+    private final static int NON_IDEAL_LOGIN_LIMIT = 10;
+    private final static int LOGIN_FORBIDDEN_TIME = 60 * 3;
+
     @Transactional
     public TokenDTO refreshAllTokens(User user) {
         String accessToken = jwtProvider.createAccessToken(user);
