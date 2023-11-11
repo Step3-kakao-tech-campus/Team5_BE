@@ -413,31 +413,31 @@ public class PortfolioControllerTest {
     }
 
     private PortfolioRequest.AddDTO getAddDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("헤어", 300000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
+        PortfolioRequest.PriceItemDTO priceItemDTO = new PortfolioRequest.PriceItemDTO("헤어", 300000L);
+        List<PortfolioRequest.PriceItemDTO> priceItemDTOS = List.of(priceItemDTO);
         List<String> imageItems = List.of("/wAA", "/wAA");
-        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS, imageItems);
+        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", priceItemDTOS, imageItems);
     }
 
     private PortfolioRequest.AddDTO exceed_five_getAddDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("헤어", 300000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
+        PortfolioRequest.PriceItemDTO priceItemDTO = new PortfolioRequest.PriceItemDTO("헤어", 300000L);
+        List<PortfolioRequest.PriceItemDTO> priceItemDTOS = List.of(priceItemDTO);
         List<String> imageItems = List.of("/wAA", "/wAA", "/wAA", "/wAA", "/wAA", "/wAA");
-        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", itemDTOS, imageItems);
+        return new PortfolioRequest.AddDTO("유희정", "title", "description", "부산", "career", "partnerCompany", priceItemDTOS, imageItems);
     }
 
     private PortfolioRequest.UpdateDTO getUpdateDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("드레스", 400000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
+        PortfolioRequest.PriceItemDTO priceItemDTO = new PortfolioRequest.PriceItemDTO("드레스", 400000L);
+        List<PortfolioRequest.PriceItemDTO> priceItemDTOS = List.of(priceItemDTO);
         List<String> imageItems = List.of("/wAA", "/wAA");
-        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS, imageItems);
+        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", priceItemDTOS, imageItems);
     }
 
     private PortfolioRequest.UpdateDTO exceed_five_getUpdateDTO() {
-        PortfolioRequest.ItemDTO itemDTO = new PortfolioRequest.ItemDTO("드레스", 400000L);
-        List<PortfolioRequest.ItemDTO> itemDTOS = List.of(itemDTO);
+        PortfolioRequest.PriceItemDTO priceItemDTO = new PortfolioRequest.PriceItemDTO("드레스", 400000L);
+        List<PortfolioRequest.PriceItemDTO> priceItemDTOS = List.of(priceItemDTO);
         List<String> imageItems = List.of("/wAA", "/wAA", "/wAA", "/wAA", "/wAA", "/wAA");
-        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", itemDTOS, imageItems);
+        return new PortfolioRequest.UpdateDTO("김희정", "title2", "description2", "부산", "career2", "partnerCompany2", priceItemDTOS, imageItems);
     }
 
     private void logResult(ResultActions result) throws Exception {

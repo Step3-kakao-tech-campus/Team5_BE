@@ -52,13 +52,13 @@ public class PortfolioRequest {
         String partnerCompany,
 
         @NotNull(message = "items는 비어있으면 안됩니다.")
-        List<ItemDTO> items,
+        List<PriceItemDTO> items,
 
         @NotNull(message = "images는 비어있으면 안됩니다.")
         List<String> images
     ) {}
 
-    public record ItemDTO(
+    public record PriceItemDTO(
         @NotEmpty(message = "itemTitle은 비어있으면 안됩니다.")
         String itemTitle,
 

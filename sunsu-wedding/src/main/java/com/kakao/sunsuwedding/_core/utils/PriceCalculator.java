@@ -56,9 +56,9 @@ public class PriceCalculator {
                 .mapToLong(Match::getConfirmedPrice);
     }
 
-    public Long getRequestTotalPrice(List<PortfolioRequest.ItemDTO> items) {
+    public Long getRequestTotalPrice(List<PortfolioRequest.PriceItemDTO> items) {
         return items.stream()
-                .mapToLong(PortfolioRequest.ItemDTO::itemPrice)
+                .mapToLong(PortfolioRequest.PriceItemDTO::itemPrice)
                 .sum();
     }
 }
