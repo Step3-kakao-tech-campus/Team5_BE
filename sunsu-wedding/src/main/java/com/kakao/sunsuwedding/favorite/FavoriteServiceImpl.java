@@ -36,9 +36,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         Optional<Favorite> favoriteOptional = favoriteJPARepository.findByUserAndPortfolio(user1.getId(), portfolio.getId());
 
         // 이전에 좋아요 누른 적 있으면 에러 반환
-        if (favoriteOptional.isPresent()){
-            throw new BadRequestException(BaseException.FAVORITE_ALREADY_EXISTS);
-        }
+        checkFavoritePermission(favoriteOptional);
 
         // 없을 경우 새로운 좋아요 저장
         favoriteJPARepository.save(
@@ -52,9 +50,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Transactional
     public void unlikePortfolio(User user, Long portfolioId){
         // 이전에 좋아요 누른 적 없으면 에러 반환
-        Favorite favorite = favoriteJPARepository.findByUserAndPortfolio(user.getId(), portfolioId).orElseThrow(
-                () -> new NotFoundException(BaseException.FAVORITE_NOT_FOUND)
-        );
+        Favorite favorite = findFavoriteByUserIdAndPortfolioId(user, portfolioId);
         favoriteJPARepository.delete(favorite);
     }
 
@@ -88,5 +84,17 @@ public class FavoriteServiceImpl implements FavoriteService {
         return userJPARepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(BaseException.USER_NOT_FOUND)
         );
+    }
+
+    private Favorite findFavoriteByUserIdAndPortfolioId(User user, Long portfolioId) {
+        return favoriteJPARepository.findByUserAndPortfolio(user.getId(), portfolioId).orElseThrow(
+                () -> new NotFoundException(BaseException.FAVORITE_NOT_FOUND)
+        );
+    }
+
+    private static void checkFavoritePermission(Optional<Favorite> favoriteOptional) {
+        if (favoriteOptional.isPresent()){
+            throw new BadRequestException(BaseException.FAVORITE_ALREADY_EXISTS);
+        }
     }
 }

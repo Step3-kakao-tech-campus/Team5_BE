@@ -32,6 +32,8 @@ public class QuotationServiceImpl implements QuotationService {
     private final PriceCalculator priceCalculator;
     private final QuotationDTOConverter quotationDTOConverter;
 
+    private final static int QUOTATION_PAGE_SIZE = 10;
+
     @Transactional
     public void addQuotation(User user, Long chatId, QuotationRequest.Add request) {
         Match match = findMatchByChatIdAndPlannerId(user, chatId);
@@ -68,7 +70,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     // 견적서 모아보기
     public QuotationResponse.FindByUserDTO findQuotationsByUser(User user, int page) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, QUOTATION_PAGE_SIZE);
 
         Page<Quotation> pageContent = findQuotationsByUser(user.getDtype(), user.getId(), pageable);
         List<Quotation> quotations = pageContent.getContent();
@@ -88,9 +90,7 @@ public class QuotationServiceImpl implements QuotationService {
     public void confirm(User user, Long chatId, Long quotationId) {
         Match match = findMatchByChatIdAndPlannerId(user, chatId);
 
-        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
-            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
-        }
+        checkQuotationConfirmed(match);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = findQuotationById(quotationId, quotations);
@@ -108,9 +108,7 @@ public class QuotationServiceImpl implements QuotationService {
     public void updateQuotation(User user, Long chatId, Long quotationId, QuotationRequest.Update request) {
         Match match = findMatchByChatIdAndPlannerId(user, chatId);
 
-        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
-            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
-        }
+        checkQuotationConfirmed(match);
 
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
         Quotation quotation = findQuotationById(quotationId, quotations);
@@ -155,9 +153,7 @@ public class QuotationServiceImpl implements QuotationService {
         // 매칭 ID 로만 조회 후 권한 체크
         Match match = findMatchByChatId(chatId);
 
-        if (!match.getPlanner().getId().equals(user.getId())) {
-            throw new ForbiddenException(BaseException.QUOTATION_ACCESS_DENIED);
-        }
+        checkQuotationAccessPermission(user, match);
 
         return match;
     }
@@ -169,9 +165,7 @@ public class QuotationServiceImpl implements QuotationService {
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(BaseException.QUOTATION_NOT_FOUND));
 
-        if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
-            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
-        }
+        checkQuotationConfirmed(quotation);
 
         return quotation;
     }
@@ -191,6 +185,24 @@ public class QuotationServiceImpl implements QuotationService {
     private static void checkCoupleExist(Match match) {
         if (match.getCouple() == null) {
             throw new ForbiddenException(BaseException.MATCHING_USER_NOT_FOUND);
+        }
+    }
+
+    private static void checkQuotationConfirmed(Match match) {
+        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
+            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
+        }
+    }
+
+    private static void checkQuotationConfirmed(Quotation quotation) {
+        if (quotation.getStatus().equals(QuotationStatus.CONFIRMED)) {
+            throw new BadRequestException(BaseException.QUOTATION_ALREADY_CONFIRMED);
+        }
+    }
+
+    private static void checkQuotationAccessPermission(User user, Match match) {
+        if (!match.getPlanner().getId().equals(user.getId())) {
+            throw new ForbiddenException(BaseException.QUOTATION_ACCESS_DENIED);
         }
     }
 }
