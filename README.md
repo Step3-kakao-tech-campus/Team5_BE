@@ -174,7 +174,8 @@ java -jar sunsu-wedding-0.0.1-SNAPSHOT.jar
 <br>
 
 ## 기술 스택
-![기술 스택](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/d9a6387b-9717-453f-877c-75d7a7ef59f3)
+
+![기술 스택)](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/1710fc38-9fc3-44d1-b9f9-e2893129eda1)
 
 <br>
 
