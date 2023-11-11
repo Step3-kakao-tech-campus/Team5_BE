@@ -11,12 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.transport.ProxyProvider;
 
 import java.util.*;
 
@@ -78,23 +75,9 @@ public class PaymentServiceImpl implements PaymentService {
         // 토스페이먼츠 승인 api 요청
         String basicToken = "Basic " + Base64.getEncoder().encodeToString((secretKey + ":").getBytes());
 
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("paymentKey", requestDTO.paymentKey());
-        parameters.put("orderId", requestDTO.orderId());
-        parameters.put("amount", requestDTO.amount().toString());
-
-        HttpClient httpClient = HttpClient.create()
-                .proxy(it ->
-                        it.type(ProxyProvider.Proxy.HTTP)
-                                .host("http://krmp-proxy.9rum.cc")
-                                .port(3128)
-                )
-                .proxyWithSystemProperties();
-
         WebClient webClient =
                 WebClient
                         .builder()
-                        .clientConnector(new ReactorClientHttpConnector(httpClient))
                         .baseUrl("https://api.tosspayments.com")
                         .build();
 
@@ -106,7 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
                             headers.add(HttpHeaders.AUTHORIZATION, basicToken);
                             headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
                         })
-                        .bodyValue(parameters)
+                        .bodyValue(requestDTO)
                         .retrieve()
                         .bodyToMono(TossPaymentResponse.TosspayDTO.class)
                         .onErrorResume(e -> {

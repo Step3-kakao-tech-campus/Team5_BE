@@ -34,11 +34,12 @@ public class PortfolioRestController {
                                             @RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
                                             @RequestParam @Nullable String name,
                                             @RequestParam @Nullable String location,
-                                            @RequestParam(defaultValue = "-1") String minPrice,
-                                            @RequestParam(defaultValue = "-1") String maxPrice) {
+                                            @RequestParam(defaultValue = "0") @Min(0) Long minPrice,
+                                            @RequestParam(defaultValue = "-1") @Min(-1) Long maxPrice) {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
-        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, Long.valueOf(minPrice), Long.valueOf(maxPrice));
+
+        CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
         PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioServiceImpl.findPortfolios(cursorRequest, userId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));

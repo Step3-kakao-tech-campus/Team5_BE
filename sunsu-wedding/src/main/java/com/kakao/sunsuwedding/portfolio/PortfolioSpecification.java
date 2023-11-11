@@ -2,9 +2,7 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.user.planner.Planner;
-import jakarta.persistence.criteria.Fetch;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -26,37 +24,66 @@ public class PortfolioSpecification {
             // 조건절을 담을 배열
             List<Predicate> predicates = new ArrayList<>();
 
-            // 시작 커서라면 id 조건은 제외
-            if (!request.key().equals(CursorRequest.START_KEY)) {
-                predicates.add(criteriaBuilder.lessThan(root.get("id"), request.key()));
-            }
+            // 커서 조건 추가
+            insertCursorConstraint(request, root, criteriaBuilder, predicates);
 
-            if (valid(request.name())) {
-                predicates.add(
-                        criteriaBuilder.equal(join.get("username"), request.name())
-                );
-            }
+            // 플래너 이름 조건 추가
+            insertNameConstraint(request, criteriaBuilder, join, predicates);
 
-            if (valid(request.location())) {
-                predicates.add(
-                        criteriaBuilder.equal(root.get("location"), request.location())
-                );
-            }
+            // 지역 조건 추가
+            insertLocationConstraint(request, root, criteriaBuilder, predicates);
 
-            if (valid(request.minPrice())) {
-                predicates.add(
-                        criteriaBuilder.greaterThanOrEqualTo(root.get("totalPrice"), request.minPrice())
-                );
-            }
+            // 최소 가격 조건 추가
+            insertMinPriceConstraint(request, root, criteriaBuilder, predicates);
 
-            if (valid(request.maxPrice())) {
-                predicates.add(
-                        criteriaBuilder.lessThanOrEqualTo(root.get("totalPrice"), request.maxPrice())
-                );
-            }
+            // 최대 가격 조건 추가
+            insertMaxPriceConstraint(request, root, criteriaBuilder, predicates);
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });
+    }
+
+    private static void insertMaxPriceConstraint(CursorRequest request, Root<Portfolio> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+        if (!valid(request.maxPrice()))
+            return;
+
+        predicates.add(
+                criteriaBuilder.lessThanOrEqualTo(root.get("totalPrice"), request.maxPrice())
+        );
+    }
+
+    private static void insertMinPriceConstraint(CursorRequest request, Root<Portfolio> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+        if (!valid(request.minPrice()))
+            return;
+
+        predicates.add(
+                criteriaBuilder.greaterThanOrEqualTo(root.get("totalPrice"), request.minPrice())
+        );
+    }
+
+    private static void insertLocationConstraint(CursorRequest request, Root<Portfolio> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+        if (!valid(request.location()))
+            return;
+
+        predicates.add(
+                criteriaBuilder.equal(root.get("location"), request.location())
+        );
+    }
+
+    private static void insertNameConstraint(CursorRequest request, CriteriaBuilder criteriaBuilder, Join<Portfolio, Planner> join, List<Predicate> predicates) {
+        if (!valid(request.name()))
+            return;
+
+        predicates.add(
+                criteriaBuilder.equal(join.get("username"), request.name())
+        );
+    }
+
+    private static void insertCursorConstraint(CursorRequest request, Root<Portfolio> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
+        if (request.key().equals(CursorRequest.START_KEY))
+            return;
+
+        predicates.add(criteriaBuilder.lessThan(root.get("id"), request.key()));
     }
 
     private static boolean valid(String data) {

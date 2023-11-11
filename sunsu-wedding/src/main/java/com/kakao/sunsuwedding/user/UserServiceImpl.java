@@ -9,6 +9,8 @@ import com.kakao.sunsuwedding.user.base_user.User;
 import com.kakao.sunsuwedding.user.base_user.UserJPARepository;
 import com.kakao.sunsuwedding.user.constant.Role;
 import com.kakao.sunsuwedding.user.couple.CoupleJPARepository;
+import com.kakao.sunsuwedding.user.email.EmailCode;
+import com.kakao.sunsuwedding.user.email.EmailCodeJPARepository;
 import com.kakao.sunsuwedding.user.planner.PlannerJPARepository;
 import com.kakao.sunsuwedding.user.token.Token;
 import com.kakao.sunsuwedding.user.token.TokenDTO;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final CoupleJPARepository coupleJPARepository;
     private final PlannerJPARepository plannerJPARepository;
     private final TokenJPARepository tokenJPARepository;
+    private final EmailCodeJPARepository emailCodeJPARepository;
     private final JWTProvider jwtProvider;
     private final UserDataChecker userDataChecker;
 
@@ -79,7 +82,12 @@ public class UserServiceImpl implements UserService {
     // 회원 탈퇴
     @Transactional
     public void withdraw(User user) {
-        findUserById(user.getId());
+        User user1 = findUserById(user.getId());
+
+        // 탈퇴 시 이메일 인증 정보 삭제
+        EmailCode emailCode = findEmailCodeByUser(user1);
+        emailCodeJPARepository.delete(emailCode);
+
         userJPARepository.deleteById(user.getId());
     }
 
@@ -98,5 +106,10 @@ public class UserServiceImpl implements UserService {
     private Token findTokenByUser(User user) {
         return tokenJPARepository.findByUserId(user.getId())
                 .orElseGet(() -> Token.builder().user(user).build());
+    }
+
+    private EmailCode findEmailCodeByUser(User user) {
+        return emailCodeJPARepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new NotFoundException(BaseException.USER_EMAIL_NOT_FOUND));
     }
 }

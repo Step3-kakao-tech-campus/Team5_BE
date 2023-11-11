@@ -25,9 +25,8 @@ public class ReviewRestController {
 
     // 특정 플래너에게 작성된 리뷰를 모아봄
     @GetMapping("")
-    public ResponseEntity<?> findReviewsByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page,
-                                              @Valid @RequestBody ReviewRequest.FindAllByPlannerDTO request) {
-        ReviewResponse.FindAllByPlannerDTO response = reviewServiceImpl.findReviewsByPlanner(page, request.plannerId());
+    public ResponseEntity<?> findReviewsByPlanner(@RequestParam(defaultValue = "0") @Min(0) Integer page, @RequestParam Long plannerId) {
+        ReviewResponse.FindAllByPlannerDTO response = reviewServiceImpl.findReviewsByPlanner(page, plannerId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
