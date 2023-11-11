@@ -160,6 +160,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Transactional
     public void deletePortfolio(User user) {
+        findPortfolioByUserId(user.getId());
         priceItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
         portfolioImageItemJPARepository.deleteAllByPortfolioPlannerId(user.getId());
         portfolioJPARepository.deleteByPlanner(user);
