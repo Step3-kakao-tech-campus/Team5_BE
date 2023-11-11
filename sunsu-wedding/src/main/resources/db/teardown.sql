@@ -10,7 +10,7 @@ truncate table match_tb;
 truncate table quotation_tb;
 truncate table chat_tb;
 truncate table review_tb;
-truncate table review_imageitem_tb;
+truncate table review_image_item_tb;
 truncate table favorite_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
