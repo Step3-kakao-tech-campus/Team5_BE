@@ -9,6 +9,7 @@ public class FavoriteResponse {
             Long price,
             String location,
             Long contractCount,
+            Double avgStars,
             Boolean isLiked
     ) {}
 }

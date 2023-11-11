@@ -11,6 +11,7 @@ public class PortfolioResponse {
             Long price,
             String location,
             Long contractCount,
+            Double avgStars,
             Boolean isLiked
     ) {
     }
@@ -27,6 +28,7 @@ public class PortfolioResponse {
             String description,
             String career,
             String partnerCompany,
+            Double avgStars,
             PaymentHistoryDTO paymentsHistory,
             Boolean isLiked) {
     }
@@ -68,8 +70,8 @@ public class PortfolioResponse {
 
     public record MyPortfolioDTO(
             String plannerName,
-            List<String> imageItems,
-            List<PriceItemDTO> priceItems,
+            List<PriceItemDTO> items,
+            List<String> images,
             String title,
             String description,
             String location,

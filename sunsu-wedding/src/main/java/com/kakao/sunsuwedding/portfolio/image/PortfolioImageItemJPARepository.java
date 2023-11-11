@@ -10,15 +10,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface ImageItemJPARepository extends JpaRepository<ImageItem, Long> {
-    List<ImageItem> findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(Boolean thumbnail, List<Portfolio> portfolios);
+@Repository
+public interface PortfolioImageItemJPARepository extends JpaRepository<PortfolioImageItem, Long> {
+
+    List<PortfolioImageItem> findAllByThumbnailAndPortfolioInOrderByPortfolioCreatedAtDesc(Boolean thumbnail, List<Portfolio> portfolios);
 
     @EntityGraph("ImageItemWithPortfolioAndPlanner")
-    List<ImageItem> findByPortfolioId(Long id);
+    List<PortfolioImageItem> findByPortfolioId(Long id);
 
     @Modifying
-    @Query("delete from ImageItem i where i.portfolio.id = :portfolioId")
+    @Query("delete from PortfolioImageItem p where p.portfolio.id = :portfolioId")
     void deleteAllByPortfolioId(@Param("portfolioId") Long portfolioId);
 
     void deleteAllByPortfolioPlannerId(Long id);
+
 }

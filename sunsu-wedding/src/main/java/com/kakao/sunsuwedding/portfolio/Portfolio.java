@@ -7,12 +7,17 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "portfolio_tb")
+@Table(
+        name = "portfolio_tb",
+        indexes = {
+                @Index(name = "planner_index", columnList = "planner_id")
+        })
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter
@@ -31,16 +36,16 @@ public class Portfolio {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     @Column(nullable = false)
     private String location;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String career;
 
-    @Column(name = "partner_company", nullable = false)
+    @Column(name = "partner_company", nullable = false, length = 1000)
     private String partnerCompany;
 
     @Column(name = "total_price")
@@ -57,6 +62,9 @@ public class Portfolio {
 
     @Column(name = "max_price")
     private Long maxPrice;
+
+    @Column(name = "avg_stars")
+    private Double avgStars;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -79,6 +87,7 @@ public class Portfolio {
         this.avgPrice = avgPrice;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
+        this.avgStars = 0.0;
         this.createdAt = LocalDateTime.now();
         this.isActive = true;
     }
@@ -99,5 +108,9 @@ public class Portfolio {
         this.avgPrice = avgPrice;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
+    }
+
+    public void updateAvgStars(Double avgStars) {
+        this.avgStars = avgStars;
     }
 }

@@ -29,7 +29,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @TestPropertySource(properties = {
         "security.jwt-config.secret.access=your-test-access-secret",
         "security.jwt-config.secret.refresh=your-test-refresh-secret",
-        "payment.toss.secret=your-test-toss-payment-secret"
+        "payment.toss.secret=your-test-toss-payment-secret",
+        "email.username=test@email.com",
+        "email.password=qweasdzxc",
+        "email.test-code=999999"
 })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class PaymentRestControllerTest {
@@ -54,7 +57,7 @@ public class PaymentRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/payments/save")
+                        .post("/api/payment/save")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -76,7 +79,7 @@ public class PaymentRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/payments/save")
+                        .post("/api/payment/save")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -102,7 +105,7 @@ public class PaymentRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/payments/approve")
+                        .post("/api/payment/approve")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -112,7 +115,7 @@ public class PaymentRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("잘못된 결제 정보입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("400"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("3000"));
     }
 
 

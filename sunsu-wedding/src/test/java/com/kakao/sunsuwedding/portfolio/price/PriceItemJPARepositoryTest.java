@@ -58,7 +58,7 @@ public class PriceItemJPARepositoryTest extends DummyEntity {
 
     @AfterEach
     void afterEach() {
-        entityManager.createNativeQuery("ALTER TABLE priceitem_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE price_item_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE portfolio_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
         entityManager.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN `id` RESTART WITH 1").executeUpdate();
     }

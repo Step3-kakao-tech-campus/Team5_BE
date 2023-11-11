@@ -2,21 +2,27 @@ package com.kakao.sunsuwedding.quotation;
 
 import com.kakao.sunsuwedding._core.utils.DateFormat;
 import com.kakao.sunsuwedding.user.constant.Role;
+import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
+@Component
 public class QuotationDTOConverter {
-    public static List<QuotationResponse.QuotationDTO> toFindByMatchIdDTO(List<Quotation> quotations) {
+    public List<QuotationResponse.QuotationDTO> toFindByMatchIdDTO(List<Quotation> quotations) {
         return quotations
                 .stream()
                 .map(quotation -> new QuotationResponse.QuotationDTO(
                         quotation.getId(), quotation.getTitle(), quotation.getPrice(), quotation.getCompany(),
-                        quotation.getDescription(), quotation.getStatus().toString(), quotation.getModifiedAt()
+                        quotation.getDescription(), quotation.getStatus().toString(),
+                        DateFormat.dateFormatToMinuteKorean(quotation.getModifiedAt())
                 ))
                 .toList();
     }
 
-    public static List<QuotationResponse.QuotationsByChatIdDTO> toQuotationsByChatIdDTO(Map<Long, List<Quotation>> quotationsGroupByChatId,
+    public List<QuotationResponse.QuotationsByChatIdDTO> toQuotationsByChatIdDTO(Map<Long, List<Quotation>> quotationsGroupByChatId,
                                                                                         List<Long> chatIds,
                                                                                         String role) {
         List<QuotationResponse.QuotationsByChatIdDTO> quotationsByChatIdDTOS = new ArrayList<>();
@@ -46,7 +52,7 @@ public class QuotationDTOConverter {
         return quotationsByChatIdDTOS;
     }
 
-    public static List<QuotationResponse.QuotationsCollectDTO> toFindByCoupleDTO(List<Quotation> quotations) {
+    public List<QuotationResponse.QuotationsCollectDTO> toFindByCoupleDTO(List<Quotation> quotations) {
         return quotations.stream()
                 .map(quotation -> new QuotationResponse.QuotationsCollectDTO(quotation.getId(),
                         quotation.getTitle(), quotation.getPrice(), quotation.getCompany(),
@@ -55,7 +61,7 @@ public class QuotationDTOConverter {
                 )).toList();
     }
 
-    public static List<QuotationResponse.QuotationsCollectDTO> toFindByPlannerDTO(List<Quotation> quotations) {
+    public List<QuotationResponse.QuotationsCollectDTO> toFindByPlannerDTO(List<Quotation> quotations) {
         return quotations.stream()
                 .map(quotation -> new QuotationResponse.QuotationsCollectDTO(quotation.getId(),
                         quotation.getTitle(), quotation.getPrice(), quotation.getCompany(),

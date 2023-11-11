@@ -1,11 +1,14 @@
 package com.kakao.sunsuwedding.favorite;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.stream.IntStream;
 
+@Component
 public class FavoriteDTOConverter {
 
-    public static List<FavoriteResponse.FindPortfolioDTO> findAllFavoritePortfolio(List<Favorite> favorites, List<String> images) {
+    public List<FavoriteResponse.FindPortfolioDTO> findAllFavoritePortfolio(List<Favorite> favorites, List<String> images) {
         return IntStream
                 .range(0, favorites.size())
                 .mapToObj(i -> {
@@ -18,6 +21,7 @@ public class FavoriteDTOConverter {
                             favorite.getPortfolio().getTotalPrice(),
                             favorite.getPortfolio().getLocation(),
                             favorite.getPortfolio().getContractCount(),
+                            favorite.getPortfolio().getAvgStars(),
                             true
                     );
                 })

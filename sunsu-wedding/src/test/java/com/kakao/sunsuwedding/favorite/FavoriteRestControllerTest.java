@@ -29,7 +29,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @TestPropertySource(properties = {
         "security.jwt-config.secret.access=your-test-access-secret",
         "security.jwt-config.secret.refresh=your-test-refresh-secret",
-        "payment.toss.secret=your-test-toss-payment-secret"
+        "payment.toss.secret=your-test-toss-payment-secret",
+        "email.username=test@email.com",
+        "email.password=qweasdzxc",
+        "email.test-code=999999"
 })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class FavoriteRestControllerTest {
@@ -53,7 +56,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/favorites/" + portfolioId)
+                        .post("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -71,14 +74,14 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/favorites/" + portfolioId)
+                        .post("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
         logResult(result);
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("이미 존재하는 찜하기 입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("400"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("8001"));
     }
 
     // ============ 찜하기 취소 테스트 ============
@@ -92,7 +95,7 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/favorites/" + portfolioId)
+                        .delete("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -110,25 +113,25 @@ public class FavoriteRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/favorites/" + portfolioId)
+                        .delete("/api/favorite/" + portfolioId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
         logResult(result);
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("존재하지 않는 찜하기 입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("404"));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value("8002"));
     }
 
     // ============ 찜하기 모아보기 테스트 ============
     @DisplayName("찜하기 모아보기 성공 테스트")
     @Test
     @WithUserDetails("planner0@gmail.com")
-    void find_all_favorites_success() throws Exception {
+    void find_all_favorite_success() throws Exception {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/favorites")
+                        .get("/api/favorite")
                         .contentType(MediaType.APPLICATION_JSON)
         );
 

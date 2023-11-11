@@ -26,7 +26,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @TestPropertySource(properties = {
         "security.jwt-config.secret.access=your-test-access-secret",
         "security.jwt-config.secret.refresh=your-test-refresh-secret",
-        "payment.toss.secret=your-test-toss-payment-secret"
+        "payment.toss.secret=your-test-toss-payment-secret",
+        "email.username=test@email.com",
+        "email.password=qweasdzxc",
+        "email.test-code=999999"
 })
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -48,7 +51,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirm?chatId=" + chatId)
         );
 
         logResult(result);
@@ -67,14 +70,14 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirm?chatId=" + chatId)
         );
 
         logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(6000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정되지 않은 견적서가 있습니다."));
     }
 
@@ -88,14 +91,14 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirm?chatId=" + chatId)
         );
 
         logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(6001));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("확정할 견적서가 없습니다."));
     }
 
@@ -109,14 +112,14 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirm?chatId=" + chatId)
         );
 
         logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(5001));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("매칭 내역을 찾을 수 없습니다."));
     }
 
@@ -130,14 +133,14 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/match/confirmAll?chatId=" + chatId)
+                        .post("/api/match/confirm?chatId=" + chatId)
         );
 
         logResult(result);
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(403));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(1000));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("사용할 수 없는 기능입니다."));
     }
 
@@ -149,7 +152,7 @@ public class MatchRestControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/match/reviews")
+                        .get("/api/match/review")
         );
 
         logResult(result);

@@ -5,73 +5,71 @@ import com.kakao.sunsuwedding._core.utils.ApiUtils;
 import com.kakao.sunsuwedding.portfolio.cursor.CursorRequest;
 import com.kakao.sunsuwedding.portfolio.cursor.PageCursor;
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/portfolios")
+@RequestMapping("/api/portfolio")
 public class PortfolioRestController {
-    private final PortfolioService portfolioService;
+    private final PortfolioServiceImpl portfolioServiceImpl;
 
     private static final int PAGE_SIZE = 10;
 
-    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> addPortfolios(@RequestPart PortfolioRequest.AddDTO request,
-                                           @RequestPart MultipartFile[] images,
-                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
-        portfolioService.addPortfolio(request, images, userDetails.getUser().getId());
+    @PostMapping(value = "")
+    public ResponseEntity<?> addPortfolio(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                          @RequestBody @Valid PortfolioRequest.AddDTO request) {
+        portfolioServiceImpl.addPortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getPortfolios(@RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
-                                           @RequestParam @Nullable String name,
-                                           @RequestParam @Nullable String location,
-                                           @RequestParam @Nullable Long minPrice,
-                                           @RequestParam @Nullable Long maxPrice,
-                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> findPortfolios(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @RequestParam(defaultValue = "-1") @Min(-2) Long cursor,
+                                            @RequestParam @Nullable String name,
+                                            @RequestParam @Nullable String location,
+                                            @RequestParam(defaultValue = "0") @Min(0) Long minPrice,
+                                            @RequestParam(defaultValue = "-1") @Min(-1) Long maxPrice) {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
+
         CursorRequest cursorRequest = new CursorRequest(cursor, PAGE_SIZE, name, location, minPrice, maxPrice);
-        PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioService.getPortfolios(cursorRequest, userId);
+        PageCursor<List<PortfolioResponse.FindAllDTO>> response = portfolioServiceImpl.findPortfolios(cursorRequest, userId);
 
         return ResponseEntity.ok().body(ApiUtils.success(response));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPortfolioInDetail(@PathVariable @Min(1) Long id,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> findPortfolioById(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                               @PathVariable @Min(1) Long id) {
 
         Long userId = (userDetails == null) ? -1 : userDetails.getUser().getId();
-        PortfolioResponse.FindByIdDTO portfolio = portfolioService.getPortfolioById(id, userId);
+        PortfolioResponse.FindByIdDTO portfolio = portfolioServiceImpl.findPortfolioById(id, userId);
         return ResponseEntity.ok().body(ApiUtils.success(portfolio));
     }
 
-    @PostMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE} )
-    public ResponseEntity<?> updatePortfolios(@RequestPart PortfolioRequest.UpdateDTO request,
-                                           @RequestPart MultipartFile[] images,
-                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
-        portfolioService.updatePortfolio(request, images, userDetails.getUser().getId());
+    @PutMapping(value = "")
+    public ResponseEntity<?> updatePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                             @Valid @RequestBody PortfolioRequest.UpdateDTO request) {
+        portfolioServiceImpl.updatePortfolio(request, userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @DeleteMapping("")
     public ResponseEntity<?> deletePortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        portfolioService.deletePortfolio(userDetails.getUser());
+        portfolioServiceImpl.deletePortfolio(userDetails.getUser());
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping("/self")
     public ResponseEntity<?> myPortfolio(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        PortfolioResponse.MyPortfolioDTO myPortfolio = portfolioService.myPortfolio(userDetails.getUser().getId());
+        PortfolioResponse.MyPortfolioDTO myPortfolio = portfolioServiceImpl.myPortfolio(userDetails.getUser().getId());
         return ResponseEntity.ok().body(ApiUtils.success(myPortfolio));
     }
 }

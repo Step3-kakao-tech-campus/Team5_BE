@@ -18,7 +18,7 @@ public class QuotationResponse {
             String company,
             String description,
             String status,
-            LocalDateTime modifiedAt
+            String modifiedAt
     ) {}
 
     public record FindByUserDTO(

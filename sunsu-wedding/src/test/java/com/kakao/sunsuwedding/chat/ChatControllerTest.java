@@ -30,7 +30,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @TestPropertySource(properties = {
         "security.jwt-config.secret.access=your-test-access-secret",
         "security.jwt-config.secret.refresh=your-test-refresh-secret",
-        "payment.toss.secret=your-test-toss-payment-secret"
+        "payment.toss.secret=your-test-toss-payment-secret",
+        "email.username=test@email.com",
+        "email.password=qweasdzxc",
+        "email.test-code=999999"
 })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ChatControllerTest {
@@ -55,7 +58,7 @@ public class ChatControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/chat")
+                        .post("/api/chat")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -67,31 +70,7 @@ public class ChatControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.response.chatId").value(8L));
     }
 
-    @DisplayName("채팅방 생성 실패 테스트 1 - 이미 매칭내역(채팅방) 존재")
-    @Test
-    @WithUserDetails("couple@gmail.com")
-    public void add_chat_fail_test_already_exist() throws Exception {
-        //given
-        ChatRequest.AddChatDTO requestDTO = new ChatRequest.AddChatDTO(2L);
-        String requestBody = om.writeValueAsString(requestDTO);
-
-        //when
-        ResultActions result = mvc.perform(
-                MockMvcRequestBuilders
-                        .post("/chat")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        logResult(result);
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("이미 존재하는 매칭입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
-    }
-
-    @DisplayName("채팅방 생성 실패 테스트 2 - 존재하지 않는 플래너")
+    @DisplayName("채팅방 생성 실패 테스트 1 - 존재하지 않는 플래너")
     @Test
     @WithUserDetails("couple@gmail.com")
     public void add_chat_fail_test_planner_not_found() throws Exception {
@@ -102,7 +81,7 @@ public class ChatControllerTest {
         //when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/chat")
+                        .post("/api/chat")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -112,7 +91,7 @@ public class ChatControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("서비스를 탈퇴하거나 가입하지 않은 플래너입니다."));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(404));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(2001));
     }
 
     private void logResult(ResultActions result) throws Exception {

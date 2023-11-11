@@ -18,7 +18,7 @@ public class NotFoundException extends RuntimeException implements CustomExcepti
     }
     
     public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.NOT_FOUND);
+        return ApiUtils.error(exception);
     }
 
     public HttpStatus status(){

@@ -1,8 +1,8 @@
 package com.kakao.sunsuwedding.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.config.SecurityConfig;
+import com.kakao.sunsuwedding._core.security.JWTProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -32,7 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "security.jwt-config.secret.access=your-test-access-secret",
         "security.jwt-config.secret.refresh=your-test-refresh-secret",
-        "payment.toss.secret=your-test-toss-payment-secret"
+        "payment.toss.secret=your-test-toss-payment-secret",
+        "email.username=test@email.com",
+        "email.password=qweasdzxc",
+        "email.test-code=999999"
 })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class UserRestControllerTest {
@@ -59,7 +62,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/signup")
+                        .post("/api/user/signup")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -81,7 +84,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/signup")
+                        .post("/api/user/signup")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -103,7 +106,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/signup")
+                        .post("/api/user/signup")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -112,7 +115,7 @@ public class UserRestControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(2004));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("role은 플래너, 또는 예비 부부만 가능합니다."));
     }
 
@@ -127,7 +130,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/login")
+                        .post("/api/user/login")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -153,7 +156,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/login")
+                        .post("/api/user/login")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -162,7 +165,7 @@ public class UserRestControllerTest {
 
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("false"));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(400));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error.status").value(2003));
         result.andExpect(jsonPath("$.error.message").value("이메일을 찾을 수 없습니다."));
     }
 
@@ -176,7 +179,7 @@ public class UserRestControllerTest {
         // when
         ResultActions result = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/login")
+                        .post("/api/user/login")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -185,7 +188,7 @@ public class UserRestControllerTest {
 
         // then
         result.andExpect(jsonPath("$.success").value("false"));
-        result.andExpect(jsonPath("$.error.status").value(400));
+        result.andExpect(jsonPath("$.error.status").value(2005));
         result.andExpect(jsonPath("$.error.message").value("패스워드를 잘못 입력하셨습니다."));
     }
 
@@ -199,7 +202,7 @@ public class UserRestControllerTest {
 
         // when
         ResultActions result = mvc.perform(
-                MockMvcRequestBuilders.delete("/user")
+                MockMvcRequestBuilders.delete("/api/user")
         );
 
         logResult(result);
@@ -216,7 +219,7 @@ public class UserRestControllerTest {
         // when
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/user/info")
+                        .get("/api/user/info")
         );
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
@@ -233,7 +236,7 @@ public class UserRestControllerTest {
         // when
         ResultActions resultActions = mvc.perform(
                 MockMvcRequestBuilders
-                        .post("/user/token")
+                        .post("/api/user/token")
         );
         // then
         resultActions.andExpect(jsonPath("$.success").value("true"));
