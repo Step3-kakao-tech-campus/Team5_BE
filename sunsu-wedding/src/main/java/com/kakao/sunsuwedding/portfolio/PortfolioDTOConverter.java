@@ -38,7 +38,7 @@ public class PortfolioDTOConverter {
                 .build();
     }
 
-    public List<PriceItem> toPriceItemByPortfolio(List<PortfolioRequest.ItemDTO> items, Portfolio portfolio){
+    public List<PriceItem> toPriceItemByPortfolio(List<PortfolioRequest.PriceItemDTO> items, Portfolio portfolio){
         return items.stream()
                 .map(item -> PriceItem.builder()
                         .portfolio(portfolio)

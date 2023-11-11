@@ -34,10 +34,10 @@ public class Quotation {
     @Column(nullable = false)
     private Long price;
 
-    @Column
+    @Column(nullable = false)
     private String company;
 
-    @Column
+    @Column(nullable = false, length = 500)
     private String description;
 
     @Column(nullable = false)
