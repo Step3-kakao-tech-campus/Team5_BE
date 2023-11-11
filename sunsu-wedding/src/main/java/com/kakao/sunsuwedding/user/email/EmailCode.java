@@ -11,7 +11,11 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="email_code_tb")
+@Table(
+        name="email_code_tb",
+        indexes = {
+                @Index(name = "user_email_index", columnList = "email")
+        })
 @SQLDelete(sql = "UPDATE email_code_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter

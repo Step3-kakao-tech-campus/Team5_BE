@@ -8,7 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "token_tb")
+@Table(
+        name = "token_tb",
+        indexes = {
+                @Index(name = "token_user_index", columnList = "user_id")
+        })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Token {
