@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
         name="user_tb",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"id", "email", "is_active"})
+        },
+        indexes = {
+                @Index(name = "email_index", columnList = "email")
         })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")

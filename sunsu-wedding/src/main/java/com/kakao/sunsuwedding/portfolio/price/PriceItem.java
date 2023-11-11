@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "price_item_tb")
+@Table(
+        name = "price_item_tb",
+        indexes = {
+                @Index(name = "portfolio_price_index", columnList = "portfolio_id")
+        })
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "PriceItemWithPortfolio",

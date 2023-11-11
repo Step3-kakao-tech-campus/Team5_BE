@@ -12,7 +12,11 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="payment_tb")
+@Table(
+        name="payment_tb",
+        indexes = {
+                @Index(name = "user_index", columnList = "user_id")
+        })
 @SQLDelete(sql = "UPDATE payment_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter

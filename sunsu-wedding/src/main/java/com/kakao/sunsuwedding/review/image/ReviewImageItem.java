@@ -8,7 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "review_imageitem_tb")
+@Table(
+        name = "review_imageitem_tb",
+        indexes = {
+                @Index(name = "review_index", columnList = "review_id")
+        })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewImageItem {
