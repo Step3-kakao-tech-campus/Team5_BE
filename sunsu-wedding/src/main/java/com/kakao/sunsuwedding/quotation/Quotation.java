@@ -11,7 +11,11 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name="quotation_tb")
+@Table(
+        name="quotation_tb",
+        indexes = {
+                @Index(name = "match_index", columnList = "match_id")
+        })
 @NamedEntityGraph(name = "QuotationWithMatch",
                   attributeNodes = @NamedAttributeNode("match"))
 @Getter
@@ -30,10 +34,10 @@ public class Quotation {
     @Column(nullable = false)
     private Long price;
 
-    @Column
+    @Column(nullable = false)
     private String company;
 
-    @Column
+    @Column(nullable = false, length = 500)
     private String description;
 
     @Column(nullable = false)

@@ -7,10 +7,11 @@ import com.kakao.sunsuwedding._core.security.JWTProvider;
 import com.kakao.sunsuwedding._core.security.JwtAuthenticationFilter;
 import com.kakao.sunsuwedding._core.security.JwtExceptionFilter;
 import com.kakao.sunsuwedding._core.utils.FilterResponseUtils;
-import com.kakao.sunsuwedding.user.token.TokenService;
+import com.kakao.sunsuwedding.user.token.TokenServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.*;
@@ -30,7 +31,7 @@ public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
     private final FilterResponseUtils filterResponseUtils;
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenServiceImpl;
     private final JWTProvider jwtProvider;
 
     @Bean
@@ -42,7 +43,7 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProvider, tokenService));
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProvider, tokenServiceImpl));
             builder.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
             super.configure(builder);
         }
@@ -81,7 +82,7 @@ public class SecurityConfig {
         // 9. 권한 실패 처리
         http.exceptionHandling((exceptionHandling) ->
                 exceptionHandling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    filterResponseUtils.writeResponse(response, new ForbiddenException(BaseException.USER_PERMISSION_DENIED));
+                    filterResponseUtils.writeResponse(response, new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS));
                 })
         );
 
@@ -89,32 +90,45 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(
-                                new AntPathRequestMatcher("/user/signup"),
-                                new AntPathRequestMatcher("/user/login"),
-                                new AntPathRequestMatcher("/portfolios/**", "GET")
+                                new AntPathRequestMatcher("/api/portfolio/self", "GET")
+                        ).hasAuthority("planner")
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/user/signup"),
+                                new AntPathRequestMatcher("/api/user/login"),
+                                new AntPathRequestMatcher("/api/portfolio/**", "GET"),
+                                new AntPathRequestMatcher("/api/mail/**")
                         ).permitAll()
                         .requestMatchers(
-                                new AntPathRequestMatcher("/user/**"),
-                                new AntPathRequestMatcher("/portfolios/**"),
-                                new AntPathRequestMatcher("/chat/**"),
-                                new AntPathRequestMatcher("/match/**"),
-                                new AntPathRequestMatcher("/quotations/**"),
-                                new AntPathRequestMatcher("/payments/**"),
-                                new AntPathRequestMatcher("/reviews/**"),
-                                new AntPathRequestMatcher("/favorites/**")
-                                ).authenticated()
+                                new AntPathRequestMatcher("/api/chat"),
+                                new AntPathRequestMatcher("/api/match/**"),
+                                new AntPathRequestMatcher("/api/review/all", "GET"),
+                                new AntPathRequestMatcher("/api/review/{reviewId}", "GET"),
+                                new AntPathRequestMatcher("/api/review/**", "POST"),
+                                new AntPathRequestMatcher("/api/review/**", "PUT"),
+                                new AntPathRequestMatcher("/api/review/**", "DELETE")
+                        ).hasAuthority("couple")
                         .requestMatchers(
-                                new AntPathRequestMatcher("/chat", "POST"),
-                                new AntPathRequestMatcher("/quotations/confirmAll/**", "POST")
-                        ).hasRole("couple")
+                                new AntPathRequestMatcher("/api/portfolio", "POST"),
+                                new AntPathRequestMatcher("/api/portfolio", "PUT"),
+                                new AntPathRequestMatcher("/api/portfolio", "DELETE"),
+                                new AntPathRequestMatcher("/api/quotation/**", "PUT"),
+                                new AntPathRequestMatcher("/api/quotation/**", "POST"),
+                                new AntPathRequestMatcher("/api/quotation/**", "DELETE")
+                        ).hasAuthority("planner")
                         .requestMatchers(
-                                new AntPathRequestMatcher("/portfolios", "POST"),
-                                new AntPathRequestMatcher("/portfolios", "PUT"),
-                                new AntPathRequestMatcher("/portfolios", "DELETE"),
-                                new AntPathRequestMatcher("/quotations/**", "PUT"),
-                                new AntPathRequestMatcher("/quotations/**", "POST"),
-                                new AntPathRequestMatcher("/quotations/**", "DELETE")
-                        ).hasRole("planner")
+                                new AntPathRequestMatcher("/api/user/**"),
+                                new AntPathRequestMatcher("/api/portfolio/**"),
+                                new AntPathRequestMatcher("/api/chat/**"),
+                                new AntPathRequestMatcher("/api/match/**"),
+                                new AntPathRequestMatcher("/api/quotation/**"),
+                                new AntPathRequestMatcher("/api/payment/**"),
+                                new AntPathRequestMatcher("/api/review/all", "GET"),
+                                new AntPathRequestMatcher("/api/review/{reviewId}", "GET"),
+                                new AntPathRequestMatcher("/api/review/**", "POST"),
+                                new AntPathRequestMatcher("/api/review/**", "PUT"),
+                                new AntPathRequestMatcher("/api/review/**", "DELETE"),
+                                new AntPathRequestMatcher("/api/favorite/**")
+                        ).authenticated()
                         .anyRequest().permitAll()
         );
 
@@ -124,10 +138,21 @@ public class SecurityConfig {
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedOriginPattern("*");
+
+        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod(HttpMethod.POST);
+        configuration.addAllowedMethod(HttpMethod.PUT);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
+
+        configuration.addAllowedOriginPattern("http://localhost:3000");
+        configuration.addAllowedOriginPattern("https://k0b2de7d86228a.user-app.krampoline.com");
+        configuration.addAllowedOriginPattern("https://k5c1813d97f50a.user-app.krampoline.com"); // 프론트
+
         configuration.setAllowCredentials(true);
+
         configuration.addExposedHeader("Authorization");
+        configuration.addExposedHeader("Refresh");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

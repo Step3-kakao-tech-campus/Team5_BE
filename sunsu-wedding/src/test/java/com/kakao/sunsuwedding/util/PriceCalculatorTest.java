@@ -24,6 +24,8 @@ public class PriceCalculatorTest extends DummyEntity {
     Couple couple2 = newCouple("couple2");
     Match match = newMatch(couple, planner, MatchStatus.UNCONFIRMED,3000L, 3000L);
 
+    private final PriceCalculator priceCalculator = new PriceCalculator();
+
     @DisplayName("포트폴리오 가격 총합 계산 - calculatePortfolioPrice()")
     @Test
     void calculatePortfolioPriceTest(){
@@ -33,7 +35,7 @@ public class PriceCalculatorTest extends DummyEntity {
                 new PortfolioResponse.PriceItemDTO("price3", 3000L)
         );
 
-        Long result = PriceCalculator.calculatePortfolioPrice(priceItems);
+        Long result = priceCalculator.calculatePortfolioPrice(priceItems);
         assertThat(result).isEqualTo(6000L);
     }
 
@@ -45,7 +47,7 @@ public class PriceCalculatorTest extends DummyEntity {
                 newQuotation(match, 100L, QuotationStatus.UNCONFIRMED),
                 newQuotation(match, 10L, QuotationStatus.CONFIRMED)
         );
-        Long result = PriceCalculator.calculateQuotationPrice(quotations);
+        Long result = priceCalculator.calculateQuotationPrice(quotations);
         assertThat(result).isEqualTo(1110L);
     }
 
@@ -57,7 +59,7 @@ public class PriceCalculatorTest extends DummyEntity {
                 newQuotation(match, 200L, QuotationStatus.CONFIRMED),
                 newQuotation(match, 30L, QuotationStatus.UNCONFIRMED)
         );
-        Long result = PriceCalculator.calculateConfirmedQuotationPrice(quotations);
+        Long result = priceCalculator.calculateConfirmedQuotationPrice(quotations);
         assertThat(result).isEqualTo(1200L);
     }
 
@@ -69,7 +71,7 @@ public class PriceCalculatorTest extends DummyEntity {
                 newMatch(couple, planner2, MatchStatus.CONFIRMED, 3000L, 3000L),
                 newMatch(couple2, planner2, MatchStatus.CONFIRMED, 2000L, 0L)
         );
-        Long result = PriceCalculator.getContractCount(matchList);
+        Long result = priceCalculator.getContractCount(matchList);
         assertThat(result).isEqualTo(2L);
     }
 
@@ -82,8 +84,8 @@ public class PriceCalculatorTest extends DummyEntity {
                 newMatch(couple, planner2, MatchStatus.CONFIRMED, 3000L, 3000L),
                 newMatch(couple2, planner2, MatchStatus.UNCONFIRMED, 4000L, 4000L)
         );
-        Long contractCount = PriceCalculator.getContractCount(matchList);
-        Long result = PriceCalculator.calculateAvgPrice(matchList, contractCount);
+        Long contractCount = priceCalculator.getContractCount(matchList);
+        Long result = priceCalculator.calculateAvgPrice(matchList, contractCount);
 
         assertThat(result).isEqualTo(2000L);
     }
@@ -97,7 +99,7 @@ public class PriceCalculatorTest extends DummyEntity {
                 newMatch(couple, planner2, MatchStatus.CONFIRMED, 3000L, 3000L),
                 newMatch(couple2, planner2, MatchStatus.UNCONFIRMED, 4000L, 4000L)
         );
-        Long result = PriceCalculator.calculateMinPrice(matchList);
+        Long result = priceCalculator.calculateMinPrice(matchList);
         assertThat(result).isEqualTo(1000L);
     }
 
@@ -110,7 +112,7 @@ public class PriceCalculatorTest extends DummyEntity {
                 newMatch(couple, planner2, MatchStatus.CONFIRMED, 3000L, 3000L),
                 newMatch(couple2, planner2, MatchStatus.UNCONFIRMED, 4000L, 4000L)
         );
-        Long result = PriceCalculator.calculateMaxPrice(matchList);
+        Long result = priceCalculator.calculateMaxPrice(matchList);
         assertThat(result).isEqualTo(3000L);
     }
 

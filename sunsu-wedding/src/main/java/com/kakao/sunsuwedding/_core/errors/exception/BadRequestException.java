@@ -18,7 +18,7 @@ public class BadRequestException extends RuntimeException implements CustomExcep
     }
 
     public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.BAD_REQUEST);
+        return ApiUtils.error(exception);
     }
 
     public HttpStatus status(){

@@ -15,29 +15,29 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/favorites")
+@RequestMapping("/api/favorite")
 public class FavoriteRestController {
 
-    private final FavoriteService favoriteService;
+    private final FavoriteServiceImpl favoriteServiceImpl;
 
     @PostMapping("/{portfolioId}")
     public ResponseEntity<?> like(@AuthenticationPrincipal CustomUserDetails userDetails,
                                   @PathVariable @Min(1) Long portfolioId){
-        favoriteService.likePortfolio(userDetails.getUser(), portfolioId);
+        favoriteServiceImpl.likePortfolio(userDetails.getUser(), portfolioId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @DeleteMapping("/{portfolioId}")
     public ResponseEntity<?> unlike(@AuthenticationPrincipal CustomUserDetails userDetails,
                                     @PathVariable @Min(1) Long portfolioId){
-        favoriteService.unlikePortfolio(userDetails.getUser(), portfolioId);
+        favoriteServiceImpl.unlikePortfolio(userDetails.getUser(), portfolioId);
         return ResponseEntity.ok().body(ApiUtils.success(null));
     }
 
     @GetMapping("")
     public ResponseEntity<?> findFavorites(@AuthenticationPrincipal CustomUserDetails userDetails,
                                            @PageableDefault(size=10, page=0, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable){
-        List<FavoriteResponse.FindPortfolioDTO> favorites = favoriteService.getFavoritePortfolios(userDetails.getUser(), pageable);
+        List<FavoriteResponse.FindPortfolioDTO> favorites = favoriteServiceImpl.findFavoritePortfoliosByUser(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(ApiUtils.success(favorites));
     }
 

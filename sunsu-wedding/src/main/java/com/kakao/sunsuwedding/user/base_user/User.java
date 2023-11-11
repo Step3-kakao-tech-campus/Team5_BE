@@ -6,15 +6,24 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name="user_tb")
+@Table(
+        name="user_tb",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"id", "email", "is_active"})
+        },
+        indexes = {
+                @Index(name = "email_index", columnList = "email")
+        })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
+@SQLDelete(sql = "UPDATE user_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,13 +34,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
-    @Column(length = 256, nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(length = 45, nullable = false)
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)

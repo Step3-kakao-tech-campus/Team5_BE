@@ -1,14 +1,16 @@
 SET REFERENTIAL_INTEGRITY FALSE;
 truncate table user_tb;
 truncate table token_tb;
+truncate table email_code_tb;
 truncate table payment_tb;
 truncate table portfolio_tb;
-truncate table imageitem_tb;
-truncate table priceitem_tb;
+truncate table portfolio_image_item_tb;
+truncate table price_item_tb;
 truncate table match_tb;
 truncate table quotation_tb;
 truncate table chat_tb;
 truncate table review_tb;
+truncate table review_image_item_tb;
 truncate table favorite_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 
@@ -42,47 +44,67 @@ INSERT INTO user_tb (`id`,`email`,`password`,`username`,`created_at`,`upgrade_at
 INSERT INTO token_tb (`id`,`user_id`,`access_token`,`refresh_token`) VALUES ('1', '3','accesToken1', 'refreshToken1');
 INSERT INTO token_tb (`id`,`user_id`,`access_token`,`refresh_token`) VALUES ('2', '4','accesToken2', 'refreshToken2');
 
+-- mail code
+INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('1', 'ssarmango@nate.com', '123456', 'true', '2023-11-06 09:00:00.00', 'true');
+INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('2', 'asdf@naver.com', '123456', 'true', '2023-11-06 10:00:00.00', 'true');
+INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('3', 'test@naver.com', '123456', 'false', '2023-11-06 13:00:00.00', 'true');
+INSERT INTO email_code_tb (`id`, `email`, `code`, `confirmed`, `created_at`, `is_active`) VALUES ('4', 'couple@gmail.com', '123456', 'true', '2023-11-06 13:00:00.00', 'true');
+
 -- payment
 INSERT INTO payment_tb (`id`,`user_id`,`order_id`,`payment_key`, `payed_amount`, `created_at`, `payed_at`, `is_active`) VALUES ('1', '4','order', 'payment', '1000', '2023-10-16 01:06:55.00', '2023-10-16 01:06:55.10', 'true');
 INSERT INTO payment_tb (`id`,`user_id`,`order_id`,`payment_key`, `payed_amount`, `created_at`, `payed_at`, `is_active`) VALUES ('2', '10','order2', 'payment2', '1000', '2023-10-16 01:06:55.00', '2023-10-16 01:06:55.10', 'true');
 
 
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('1', '2', 'planner1', 'test1', 'test1', '부산', 'none', 'none', '1000000', '10', '1000000', '1000000', '1000000', '2023-09-15 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('2', '3', 'planner2', 'test2', 'test2', '부산', 'none', 'none', '2000000', '20', '2000000', '2000000', '2000000', '2023-09-22 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('3', '6', 'planner3', 'test3', 'test3', '부산', 'none', 'none', '2000000', '30', '2000000', '2000000', '2000000', '2023-09-23 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('4', '7', 'planner4', 'test4', 'test4', '부산', 'none', 'none', '2000000', '40', '2000000', '2000000', '2000000', '2023-09-24 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('5', '8', 'planner5', 'test5', 'test5', '부산', 'none', 'none', '2000000', '50', '2000000', '2000000', '2000000', '2023-09-25 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('6', '9', 'planner6', 'test6', 'test6', '부산', 'none', 'none', '2000000', '60', '2000000', '2000000', '2000000', '2023-09-26 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('7', '10','planner7', 'test7', 'test7', '부산', 'none', 'none', '2000000', '70', '2000000', '2000000', '2000000', '2023-09-27 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('8', '11','planner8', 'test8', 'test8', '부산', 'none', 'none', '2000000', '80', '2000000', '2000000', '2000000', '2023-09-28 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('9', '12','planner9', 'test9', 'test9', '부산', 'none', 'none', '2000000', '90', '2000000', '2000000', '2000000', '2023-09-29 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('10', '13','planner10', 'test10', 'test10', '부산', 'none', 'none', '2000000', '100', '2000000', '2000000', '2000000', '2023-09-30 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('11', '14','planner11', 'test11', 'test11', '부산', 'none', 'none', '2000000', '110', '2000000', '2000000', '2000000', '2023-10-01 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('12', '15','planner12', 'test12', 'test12', '부산', 'none', 'none', '2000000', '120', '2000000', '2000000', '2000000', '2023-10-02 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('13', '16','planner13', 'test13', 'test13', '부산', 'none', 'none', '2000000', '130', '2000000', '2000000', '2000000', '2023-10-03 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('14', '17','planner14', 'test14', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('15', '19','planner15', '탈퇴한 플래너의 포트폴리오', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00', 'true');
-INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `created_at`, `is_active`) VALUES ('16', '20','planner16', '포트폴리오 삭제 테스트 데이터', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', '2023-10-04 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('1', '2', 'planner1', 'test1', 'test1', '부산', 'none', 'none', '1000000', '10', '1000000', '1000000', '1000000', 5, '2023-09-15 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('2', '3', 'planner2', 'test2', 'test2', '부산', 'none', 'none', '2000000', '20', '2000000', '2000000', '2000000', 5, '2023-09-22 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('3', '6', 'planner3', 'test3', 'test3', '부산', 'none', 'none', '2000000', '30', '2000000', '2000000', '2000000', 5, '2023-09-23 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('4', '7', 'planner4', 'test4', 'test4', '부산', 'none', 'none', '2000000', '40', '2000000', '2000000', '2000000', 5, '2023-09-24 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('5', '8', 'planner5', 'test5', 'test5', '부산', 'none', 'none', '2000000', '50', '2000000', '2000000', '2000000', 5, '2023-09-25 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('6', '9', 'planner6', 'test6', 'test6', '부산', 'none', 'none', '2000000', '60', '2000000', '2000000', '2000000', 5, '2023-09-26 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('7', '10','planner7', 'test7', 'test7', '부산', 'none', 'none', '2000000', '70', '2000000', '2000000', '2000000', 5, '2023-09-27 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('8', '11','planner8', 'test8', 'test8', '부산', 'none', 'none', '2000000', '80', '2000000', '2000000', '2000000', 5, '2023-09-28 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('9', '12','planner9', 'test9', 'test9', '부산', 'none', 'none', '2000000', '90', '2000000', '2000000', '2000000', 5, '2023-09-29 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('10', '13','planner10', 'test10', 'test10', '부산', 'none', 'none', '2000000', '100', '2000000', '2000000', '2000000', 5, '2023-09-30 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('11', '14','planner11', 'test11', 'test11', '부산', 'none', 'none', '2000000', '110', '2000000', '2000000', '2000000', 5, '2023-10-01 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('12', '15','planner12', 'test12', 'test12', '부산', 'none', 'none', '2000000', '120', '2000000', '2000000', '2000000', 5, '2023-10-02 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('13', '16','planner13', 'test13', 'test13', '부산', 'none', 'none', '2000000', '130', '2000000', '2000000', '2000000', 5, '2023-10-03 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('14', '17','planner14', 'test14', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', 5, '2023-10-04 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('15', '19','planner15', '탈퇴한 플래너의 포트폴리오', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', 5, '2023-10-04 15:26:55.00', 'true');
+INSERT INTO portfolio_tb (`id`, `planner_id`, `planner_name`, `title`, `description`, `location`, `career`, `partner_company`, `total_price`, `contract_count`, `avg_price`, `min_price`, `max_price`, `avg_stars`, `created_at`, `is_active`) VALUES ('16', '20','planner16', '포트폴리오 삭제 테스트 데이터', 'test14', '부산', 'none', 'none', '2000000', '140', '2000000', '2000000', '2000000', 5, '2023-10-04 15:26:55.00', 'true');
 
 
-INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('1', '1', '스튜디오1', '500000');
-INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('2', '1', '드레스1', '300000');
-INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('3', '1', '메이크업1', '200000');
-INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('4', '2', '스튜디오2', '500000');
-INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('5', '2', '드레스2', '300000');
-INSERT INTO priceitem_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('6', '2', '메이크업2', '200000');
+INSERT INTO price_item_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('1', '1', '스튜디오1', '500000');
+INSERT INTO price_item_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('2', '1', '드레스1', '300000');
+INSERT INTO price_item_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('3', '1', '메이크업1', '200000');
+INSERT INTO price_item_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('4', '2', '스튜디오2', '500000');
+INSERT INTO price_item_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('5', '2', '드레스2', '300000');
+INSERT INTO price_item_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('6', '2', '메이크업2', '200000');
+INSERT INTO price_item_tb (`id`, `portfolio_id`, `item_title`, `item_price`) VALUES ('7', '2', '메이크업2', '200000');
 
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('1', '1', '1-1.jpg', './images/image1.jpg', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('2', '1', '1-2.jpg', './images/image2.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('3', '1', '1-3.jpg', './images/image3.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('4', '1', '1-4.jpg', './images/image4.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('5', '1', '1-5.jpg', './images/image5.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('6', '2', '2-1.jpg', './images/image1.jpg', '522499', 'true');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('7', '2', '2-2.jpg', './images/image2.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('8', '2', '2-3.jpg', './images/image3.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('9', '2', '2-4.jpg', './images/image4.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('10', '2', '2-5.jpg', './images/image5.jpg', '522499', 'false');
-INSERT INTO imageitem_tb (`id`, `portfolio_id`, `origin_file_name`, `file_path`, `file_size`, `thumbnail`) VALUES  ('11', '15', '2-5.jpg', './images/image5.jpg', '522499', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('1', '1', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('2', '1', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('3', '1', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('4', '1', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('5', '1', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('6', '2', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('7', '2', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('8', '2', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('9', '2', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('10', '2', '/wAA', 'false');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('11', '3', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('12', '4', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('14', '5', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('15', '6', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('16', '7', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('17', '8', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('18', '9', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('19', '10', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('20', '11', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('21', '12', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('22', '13', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('23', '14', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('24', '15', '/wAA', 'true');
+INSERT INTO portfolio_image_item_tb (`id`, `portfolio_id`, `image`, `thumbnail`) VALUES  ('25', '16', '/wAA', 'true');
 
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (1, '2023-10-08 08:30:12.00', true);
 INSERT INTO chat_tb (`id`, `created_at`, `is_active`) VALUES (2, '2023-10-08 08:30:12.00', true);
@@ -110,7 +132,18 @@ INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `descri
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('7', '7', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 INSERT INTO quotation_tb (`id`, `match_id`, `title`, `price`, `company`, `description`, `status`, `modified_at`, `created_at`, `is_active`) VALUES ('8', '7', 'test2', '1000000', 'abc2', 'asdf2', 'CONFIRMED', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', 'true');
 
-INSERT INTO review_tb (`id`, `match_id`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (1, 1, '최고의 플래너!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);
+INSERT INTO review_tb (`id`, `match_id`, `stars`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (1, 1, 5, '최고의 플래너!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);
+INSERT INTO review_tb (`id`, `match_id`, `stars`, `content`, `created_at`, `modified_at`, `is_active`) VALUES (2, 6, 5, '님 진짜 최고셈!', '2023-10-08 08:30:12.00', '2023-10-08 08:30:12.00', true);
+
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('1', '1', '/wAA', 'true');
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('2', '1', '/wAA', 'false');
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('3', '1', '/wAA', 'false');
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('4', '1', '/wAA', 'false');
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('5', '1', '/wAA', 'false');
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('6', '2', '/wAA', 'true');
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('7', '2', '/wAA', 'false');
+INSERT INTO review_image_item_tb (`id`, `review_id`, `image`, `thumbnail`) VALUES  ('8', '2', '/wAA', 'false');
+
 
 
 INSERT INTO favorite_tb (`id`, `user_id`, `portfolio_id`,`created_at`) VALUES(1, 1, 1, '2023-10-08 08:30:12.00');

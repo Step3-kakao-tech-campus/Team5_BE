@@ -17,7 +17,12 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name="match_tb")
+@Table(
+        name="match_tb",
+        indexes = {
+                @Index(name = "match_couple_planner_index", columnList = "couple_id,planner_id"),
+                @Index(name = "match_chat_index", columnList = "chat_id")
+        })
 @SQLDelete(sql = "UPDATE match_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter

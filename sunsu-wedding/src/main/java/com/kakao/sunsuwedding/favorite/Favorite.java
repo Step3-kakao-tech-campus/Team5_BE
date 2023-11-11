@@ -11,7 +11,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="favorite_tb")
+@Table(
+        name="favorite_tb",
+        indexes = {
+                @Index(name = "user_portfolio_index", columnList = "user_id,portfolio_id")
+        })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Favorite {

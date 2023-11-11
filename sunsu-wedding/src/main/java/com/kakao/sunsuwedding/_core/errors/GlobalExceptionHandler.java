@@ -9,6 +9,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return response(ApiUtils.error(errors.get(0).getDefaultMessage(), status), status);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> argumentTypeException() {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return response(ApiUtils.error(BaseException.INVALID_METHOD_ARGUMENTS), status);
     }
 
     // database에 잘못된 값이 들어온 경우
@@ -64,7 +71,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> unknownServerError(Exception e){
-        ApiUtils.ApiResult<?> apiResult = ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        return response(apiResult, HttpStatus.INTERNAL_SERVER_ERROR);
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return response(ApiUtils.error(BaseException.UNEXPECTED_EXCEPTION), status);
     }
 }

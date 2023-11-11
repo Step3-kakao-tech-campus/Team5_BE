@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "imageitem_tb")
+@Table(
+        name = "portfolio_image_item_tb",
+        indexes = {
+                @Index(name = "portoflio_image_index", columnList = "portfolio_id")
+        })
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "ImageItemWithPortfolio",
@@ -23,7 +27,7 @@ import lombok.NoArgsConstructor;
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ImageItem {
+public class PortfolioImageItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,25 +35,17 @@ public class ImageItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Portfolio portfolio;
 
-    @Column(name = "origin_file_name", nullable = false)
-    private String originFileName;
-
-    @Column(name = "file_path", nullable = false)
-    private String filePath;
-
-    @Column(name = "file_size", nullable = false)
-    private Long fileSize;
+    @Lob
+    private String image;
 
     @Column(nullable = false)
     private Boolean thumbnail;
 
     @Builder
-    public ImageItem(Long id, Portfolio portfolio, String originFileName, String filePath, Long fileSize, Boolean thumbnail) {
+    public PortfolioImageItem(Long id, Portfolio portfolio, String image, Boolean thumbnail) {
         this.id = id;
         this.portfolio = portfolio;
-        this.originFileName = originFileName;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
+        this.image = image;
         this.thumbnail = thumbnail;
     }
 }
