@@ -83,13 +83,14 @@
 
 
 ## 링크 모음
-| 기획 | 디자인 | 개발 | 배포 |
-|------|-------|------|------|
-| [노션](https://unmarred-belief-362.notion.site/f11783c42731479ca1f6c9a97a738324?pvs=4) | [와이어프레임](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/SUNSU-WEDDING?type=design&node-id=0%3A1&mode=design&t=5PnD2GPs3WktbNNy-1) | [프론트 깃허브](https://github.com/Step3-kakao-tech-campus/Team5_FE) | [풀스택 배포 주소](https://k6f3d3b1a0696a.user-app.krampoline.com) |
-| [기획안 PPT](https://www.figma.com/file/A81sCNiwoLUfSe5aqXEHXr/%EC%B9%B4%ED%85%8C%EC%BA%A0-5%EC%A1%B0---%EA%B8%B0%ED%9A%8D%EC%95%88?type=design&node-id=972-145&mode=design&t=QdcoBgtPZi631myk-0) |  | [ERD](https://www.erdcloud.com/d/fww6HRj7oXL9cdp5t) | [프론트 테스트용 배포 주소](https://k5c1813d97f50a.user-app.krampoline.com/)
-| [Survey](https://unmarred-belief-362.notion.site/Survey-a4c9ba9b8114456f88faa61b33f232c9) | | [API 문서](https://unmarred-belief-362.notion.site/6fd74038970941a2ad02df0045705095?v=545b8da990c74661b2b6b560009766ff) | |
-| | | [테스트 시나리오 명세서](https://unmarred-belief-362.notion.site/BE-3d4e69e38d6a498d8f9e790945660790?pvs=4) | |
-| | | [테스트 결과 보고서](https://unmarred-belief-362.notion.site/BE-d5eade6a1d6f4bed9933eebd5899b6a8?pvs=4) | |
+| 기획 | 디자인 | 개발                                                                                                                | 배포                                                              |
+|------|-------|-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| [노션](https://unmarred-belief-362.notion.site/f11783c42731479ca1f6c9a97a738324?pvs=4) | [와이어프레임](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/SUNSU-WEDDING?type=design&node-id=0%3A1&mode=design&t=5PnD2GPs3WktbNNy-1) | [백엔드 깃허브](https://github.com/Step3-kakao-tech-campus/Team5_BE) | [프론트 배포 주소](https://k5c1813d97f50a.user-app.krampoline.com/) |
+| [기획안 PPT](https://www.figma.com/file/A81sCNiwoLUfSe5aqXEHXr/%EC%B9%B4%ED%85%8C%EC%BA%A0-5%EC%A1%B0---%EA%B8%B0%ED%9A%8D%EC%95%88?type=design&node-id=972-145&mode=design&t=QdcoBgtPZi631myk-0) |  | [ERD](https://www.erdcloud.com/d/fww6HRj7oXL9cdp5t)   | [백엔드 / 풀스택 배포 주소](https://k0b2de7d86228a.user-app.krampoline.com/) |
+| [Survey](https://unmarred-belief-362.notion.site/Survey-a4c9ba9b8114456f88faa61b33f232c9) | | [API 문서](https://unmarred-belief-362.notion.site/6fd74038970941a2ad02df0045705095?v=545b8da990c74661b2b6b560009766ff) |   |
+| | | [테스트 시나리오 명세서](https://unmarred-belief-362.notion.site/FE-93d000ab86f44dcf8ea1c99d8d0b1fa4?pvs=4)                 |         [유튜브](https://youtu.be/WfDcwd8AQNQ)                                                        |
+| | | [테스트 결과 보고서](https://unmarred-belief-362.notion.site/FE-abc1a99b7e14459ea5e8ee25957a3053?pvs=4)                   |                                                                 |
+
 
 <br>
 
