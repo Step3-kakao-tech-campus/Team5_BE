@@ -32,6 +32,8 @@ public class QuotationServiceImpl implements QuotationService {
     private final PriceCalculator priceCalculator;
     private final QuotationDTOConverter quotationDTOConverter;
 
+    private final static int QUOTATION_PAGE_SIZE = 10;
+
     @Transactional
     public void addQuotation(User user, Long chatId, QuotationRequest.Add request) {
         Match match = findMatchByChatIdAndPlannerId(user, chatId);
@@ -68,7 +70,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     // 견적서 모아보기
     public QuotationResponse.FindByUserDTO findQuotationsByUser(User user, int page) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, QUOTATION_PAGE_SIZE);
 
         Page<Quotation> pageContent = findQuotationsByUser(user.getDtype(), user.getId(), pageable);
         List<Quotation> quotations = pageContent.getContent();
