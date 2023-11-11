@@ -2,6 +2,7 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.persistence.*;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,7 +13,11 @@ import org.hibernate.annotations.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "portfolio_tb")
+@Table(
+        name = "portfolio_tb",
+        indexes = {
+                @Index(name = "planner_index", columnList = "planner_id")
+        })
 @SQLDelete(sql = "UPDATE portfolio_tb SET is_active = false WHERE id = ?")
 @Where(clause = "is_active = true")
 @Getter
