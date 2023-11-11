@@ -1,6 +1,20 @@
 # Team5_BE
 
-## 📌 프로젝트 소개
+> 목차 
+> - [📌 프로젝트 소개](#프로젝트-소개)
+> - [👩‍👩‍👧‍👧 팀원 소개](#팀원-소개)
+> - [✏️ 주요 기능](#주요-기능)
+> - [🔗 링크 모음(배포 주소 포함)](#링크-모음)
+> - [📜 ERD](#erd)
+> - [📄 API 모아보기](#api-모아보기)
+> - [📁 파일 구조](#파일-구조)
+> - [🚩 시작 가이드](#시작-가이드)
+> - [🖥️ 기술 스택](#기술-스택)
+> - [©️ License: The MIT License (MIT)](#license)
+
+<br>
+
+## 프로젝트 소개
 
 ![순수웨딩 소개](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/ebb9b772-69cd-413d-9d17-cb10fefdf714)
 
@@ -71,9 +85,11 @@
 ## 링크 모음
 | 기획 | 디자인 | 개발 | 배포 |
 |------|-------|------|------|
-| [노션](https://unmarred-belief-362.notion.site/f11783c42731479ca1f6c9a97a738324?pvs=4) | [와이어프레임](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/SUNSU-WEDDING?type=design&node-id=0%3A1&mode=design&t=5PnD2GPs3WktbNNy-1) | [프론트 깃허브](https://github.com/Step3-kakao-tech-campus/Team5_FE) | [크램폴린 배포 주소](https://k6f3d3b1a0696a.user-app.krampoline.com/) |
-| [기획안 PPT](https://www.figma.com/file/A81sCNiwoLUfSe5aqXEHXr/%EC%B9%B4%ED%85%8C%EC%BA%A0-5%EC%A1%B0---%EA%B8%B0%ED%9A%8D%EC%95%88?type=design&node-id=972-145&mode=design&t=QdcoBgtPZi631myk-0) |  | [ERD](https://www.erdcloud.com/d/fww6HRj7oXL9cdp5t) |
+| [노션](https://unmarred-belief-362.notion.site/f11783c42731479ca1f6c9a97a738324?pvs=4) | [와이어프레임](https://www.figma.com/file/Wcz9d59GIQqwTEAfIEmRly/SUNSU-WEDDING?type=design&node-id=0%3A1&mode=design&t=5PnD2GPs3WktbNNy-1) | [프론트 깃허브](https://github.com/Step3-kakao-tech-campus/Team5_FE) | [풀스택 배포 주소](https://k6f3d3b1a0696a.user-app.krampoline.com) |
+| [기획안 PPT](https://www.figma.com/file/A81sCNiwoLUfSe5aqXEHXr/%EC%B9%B4%ED%85%8C%EC%BA%A0-5%EC%A1%B0---%EA%B8%B0%ED%9A%8D%EC%95%88?type=design&node-id=972-145&mode=design&t=QdcoBgtPZi631myk-0) |  | [ERD](https://www.erdcloud.com/d/fww6HRj7oXL9cdp5t) | [프론트 테스트용 배포 주소](https://k5c1813d97f50a.user-app.krampoline.com/)
 | [Survey](https://unmarred-belief-362.notion.site/Survey-a4c9ba9b8114456f88faa61b33f232c9) | | [API 문서](https://unmarred-belief-362.notion.site/6fd74038970941a2ad02df0045705095?v=545b8da990c74661b2b6b560009766ff) | |
+| | | [테스트 시나리오 명세서](https://unmarred-belief-362.notion.site/BE-3d4e69e38d6a498d8f9e790945660790?pvs=4) | |
+| | | [테스트 결과 보고서](https://unmarred-belief-362.notion.site/BE-d5eade6a1d6f4bed9933eebd5899b6a8?pvs=4) | |
 
 <br>
 
@@ -137,6 +153,8 @@
 ## 시작 가이드
 
 > Requirements: Java 17, Spring 3.1.4
+> 
+> 순수웨딩 환경 변수 설정이 완료되어야 프로젝트가 실행됩니다.
 
 1. 프로젝트 클론
 ```
@@ -155,21 +173,13 @@ java -jar sunsu-wedding-0.0.1-SNAPSHOT.jar
 
 <br>
 
-## 프레임워크/라이브러리
-- Spring Boot
-- Spring Framework
-- Spring Boot Starter
-- Lombok
-- H2 Database
-- MySQL
-- JUnit 5
-- Spring REST Docs
-- Spring Security
-- AsciiDoc Plugin
+## 기술 스택
+
+![기술 스택)](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/1710fc38-9fc3-44d1-b9f9-e2893129eda1)
 
 <br>
 
-## License - The MIT License (MIT)
+## License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
