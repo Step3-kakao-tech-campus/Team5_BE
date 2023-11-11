@@ -36,6 +36,10 @@ public class QuotationServiceImpl implements QuotationService {
     public void addQuotation(User user, Long chatId, QuotationRequest.Add request) {
         Match match = findMatchByChatIdAndPlannerId(user, chatId);
 
+        if (match.getCouple() == null) {
+            throw new ForbiddenException(BaseException.MATCHING_USER_NOT_FOUND);
+        }
+
         if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
             throw new BadRequestException(BaseException.MATCHING_ALREADY_CONFIRMED);
         }

@@ -64,6 +64,7 @@ public enum BaseException {
     MATCHING_NOT_FOUND("매칭 내역을 찾을 수 없습니다.", 5001, 404),
     MATCHING_ALREADY_EXIST("이미 존재하는 매칭입니다.", 5002, 400),
     MATCHING_NOT_CONFIRMED("견적서 전체 확정이 되지 않았습니다.", 5003, 400),
+    MATCHING_USER_NOT_FOUND("매칭 유저가 존재하지 않기 때문에 견적서를 추가할 수 없습니다.", 5004, 404),
 
     // 견적서 관련 6000
     QUOTATIONS_NOT_ALL_CONFIRMED("확정되지 않은 견적서가 있습니다.", 6000, 400),
