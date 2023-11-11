@@ -75,11 +75,6 @@ public class PaymentServiceImpl implements PaymentService {
         // 토스페이먼츠 승인 api 요청
         String basicToken = "Basic " + Base64.getEncoder().encodeToString((secretKey + ":").getBytes());
 
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("paymentKey", requestDTO.paymentKey());
-        parameters.put("orderId", requestDTO.orderId());
-        parameters.put("amount", requestDTO.amount().toString());
-
         WebClient webClient =
                 WebClient
                         .builder()
@@ -94,7 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
                             headers.add(HttpHeaders.AUTHORIZATION, basicToken);
                             headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
                         })
-                        .bodyValue(parameters)
+                        .bodyValue(requestDTO)
                         .retrieve()
                         .bodyToMono(TossPaymentResponse.TosspayDTO.class)
                         .onErrorResume(e -> {
