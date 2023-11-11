@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Table(
         name="match_tb",
         indexes = {
-                @Index(name = "match_couple_planner_index", columnList = "planner_id,couple_id"),
+                @Index(name = "match_couple_planner_index", columnList = "couple_id,planner_id"),
                 @Index(name = "match_chat_index", columnList = "chat_id")
         })
 @SQLDelete(sql = "UPDATE match_tb SET is_active = false WHERE id = ?")
