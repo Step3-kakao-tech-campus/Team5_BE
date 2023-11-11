@@ -71,13 +71,11 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponse.FindAllByPlannerDTO findReviewsByPlanner(int page, Long plannerId) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         Page<Review> pageContent = reviewJPARepository.findAllByMatchPlannerId(plannerId, pageable);
-        System.out.println("1번!");
+
         List<Review> reviews = pageContent.getContent();
-        System.out.println("2번!");
         List<Long> reviewIds = reviews.stream().map(Review::getId).toList();
-        System.out.println("3번!");
         List<ReviewImageItem> reviewImageItems = reviewImageItemJPARepository.findAllByReviewIds(reviewIds);
-        System.out.println("4번!");
+
         return reviewDTOConverter.getFindAllByPlannerDTO(reviews, reviewImageItems);
     }
 

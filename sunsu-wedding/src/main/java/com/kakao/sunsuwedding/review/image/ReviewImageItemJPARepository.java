@@ -10,12 +10,12 @@ import java.util.List;
 public interface ReviewImageItemJPARepository extends JpaRepository<ReviewImageItem, Long> {
 
     @Modifying
-    @Query("delete from ReviewImageItem i where i.review.id = :reviewId")
+    @Query("delete from ReviewImageItem r where r.review.id = :reviewId")
     void deleteAllByReviewId(@Param("reviewId") Long reviewId);
 
-    @Query("select i from ReviewImageItem i join fetch i.review r where r.id in :reviewIds")
+    @Query("select ri from ReviewImageItem ri join fetch ri.review r where r.id in :reviewIds")
     List<ReviewImageItem> findAllByReviewIds(@Param("reviewIds") List<Long> reviewIds);
 
-    @Query("select i.image from ReviewImageItem i where i.review.id = :reviewId")
+    @Query("select r.image from ReviewImageItem r where r.review.id = :reviewId")
     List<String> findByReviewId(@Param("reviewId") Long reviewId);
 }
