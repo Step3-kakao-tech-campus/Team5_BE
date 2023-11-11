@@ -54,9 +54,7 @@ public class MatchServiceImpl implements MatchService {
 
     public MatchResponse.FindAllWithNoReviewDTO findMatchesWithNoReview(User user) {
 
-        Couple couple = coupleJPARepository.findById(user.getId()).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND)
-        );
+        Couple couple = findCoupleByUser(user);
 
         List<Match> matches = matchJPARepository.findAllByCouple(couple);
         List<Match> confirmedMatches = findConfirmedMatches(matches);
@@ -70,8 +68,7 @@ public class MatchServiceImpl implements MatchService {
     // Match Update : 확정 상태, 가격, 확정 날짜
     @Transactional
     public void confirm(User user, Long chatId) {
-        Match match = matchJPARepository.findByChatId(chatId).orElseThrow(
-                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
+        Match match = findMatchByChatId(chatId);
 
         // 유저 본인의 채팅방이 맞는지 확인
         permissionCheck(user.getDtype(), user.getId(), match);
@@ -79,10 +76,7 @@ public class MatchServiceImpl implements MatchService {
         // 플래너가 1개씩 전부 확정한 후에 예비 부부가 전체 확정 가능
         List<Quotation> quotations = quotationJPARepository.findAllByMatch(match);
 
-        if (!isAllConfirmed(quotations)) {
-            // 확정되지 않은 견적서가 있을 때 에러 반환
-            throw new BadRequestException(BaseException.QUOTATIONS_NOT_ALL_CONFIRMED);
-        }
+        checkAllQuotationConfirmed(quotations);
 
         match.updateStatusConfirmed();
         match.updateConfirmedPrice(match.getPrice());
@@ -90,6 +84,13 @@ public class MatchServiceImpl implements MatchService {
 
         // 견적서 전체 확정 후 플래너 포트폴리오의 avg, min, max price 업데이트 하기
         portfolioServiceImpl.updateConfirmedPrices(match.getPlanner());
+    }
+
+    private void checkAllQuotationConfirmed(List<Quotation> quotations) {
+        if (!isAllConfirmed(quotations)) {
+            // 확정되지 않은 견적서가 있을 때 에러 반환
+            throw new BadRequestException(BaseException.QUOTATIONS_NOT_ALL_CONFIRMED);
+        }
     }
 
 
@@ -110,6 +111,17 @@ public class MatchServiceImpl implements MatchService {
         if (isInvalidUser){
             throw new ForbiddenException(BaseException.PERMISSION_DENIED_METHOD_ACCESS);
         }
+    }
+
+    private Couple findCoupleByUser(User user) {
+        return coupleJPARepository.findById(user.getId()).orElseThrow(
+                () -> new NotFoundException(BaseException.USER_NOT_FOUND)
+        );
+    }
+
+    private Match findMatchByChatId(Long chatId) {
+        return matchJPARepository.findByChatId(chatId).orElseThrow(
+                () -> new NotFoundException(BaseException.MATCHING_NOT_FOUND));
     }
 
     private List<Match> findConfirmedMatches(List<Match> matches) {

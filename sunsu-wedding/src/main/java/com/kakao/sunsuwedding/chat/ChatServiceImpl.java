@@ -27,10 +27,8 @@ public class ChatServiceImpl implements ChatService {
         Long coupleId = user.getId();
         Long plannerId = requestDTO.plannerId();
 
-        Couple couple = coupleJPARepository.findById(coupleId).orElseThrow(
-                () -> new NotFoundException(BaseException.USER_NOT_FOUND));
-        Planner planner = plannerJPARepository.findById(plannerId).orElseThrow(
-                () -> new NotFoundException(BaseException.PLANNER_NOT_FOUND));
+        Couple couple = findCoupleById(coupleId);
+        Planner planner = findPlannerById(plannerId);
 
         Chat chat = chatJPARepository.save(Chat.builder().build());
 
