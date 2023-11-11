@@ -36,9 +36,8 @@ public class QuotationServiceImpl implements QuotationService {
     public void addQuotation(User user, Long chatId, QuotationRequest.Add request) {
         Match match = findMatchByChatIdAndPlannerId(user, chatId);
 
-        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
-            throw new BadRequestException(BaseException.MATCHING_ALREADY_CONFIRMED);
-        }
+        checkCoupleExist(match);
+        checkMatchingConfirmed(match);
 
         // 기존 매칭 가격에서 해당 견적서 가격 업데이터
         Long previousPrice = match.getPrice();
@@ -181,5 +180,17 @@ public class QuotationServiceImpl implements QuotationService {
         return role.equals(Role.PLANNER.getRoleName()) ?
                 quotationJPARepository.findAllByMatchPlannerIdOrderByModifiedAtDesc(id, pageable) :
                 quotationJPARepository.findAllByMatchCoupleIdOrderByModifiedAtDesc(id, pageable);
+    }
+    
+    private static void checkMatchingConfirmed(Match match) {
+        if (match.getStatus().equals(MatchStatus.CONFIRMED)) {
+            throw new BadRequestException(BaseException.MATCHING_ALREADY_CONFIRMED);
+        }
+    }
+
+    private static void checkCoupleExist(Match match) {
+        if (match.getCouple() == null) {
+            throw new ForbiddenException(BaseException.MATCHING_USER_NOT_FOUND);
+        }
     }
 }
