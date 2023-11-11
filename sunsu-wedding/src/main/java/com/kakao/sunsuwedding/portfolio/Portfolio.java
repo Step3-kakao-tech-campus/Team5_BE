@@ -2,13 +2,13 @@ package com.kakao.sunsuwedding.portfolio;
 
 import com.kakao.sunsuwedding.user.planner.Planner;
 import jakarta.persistence.*;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -36,16 +36,16 @@ public class Portfolio {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     @Column(nullable = false)
     private String location;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String career;
 
-    @Column(name = "partner_company", nullable = false)
+    @Column(name = "partner_company", nullable = false, length = 1000)
     private String partnerCompany;
 
     @Column(name = "total_price")

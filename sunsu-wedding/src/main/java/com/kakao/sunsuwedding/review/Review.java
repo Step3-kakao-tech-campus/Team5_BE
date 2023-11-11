@@ -32,7 +32,7 @@ public class Review {
     @Column(nullable = false)
     Integer stars;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     String content;
 
     @Column(name = "created_at", nullable = false)
