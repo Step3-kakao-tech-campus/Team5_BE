@@ -1,7 +1,5 @@
 package com.kakao.sunsuwedding.review.image;
 
-import com.kakao.sunsuwedding.review.image.ReviewImageItem;
-import com.kakao.sunsuwedding.review.image.ReviewImageItemJDBCRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,7 @@ public class ReviewImageItemJDBCRepositoryImpl implements ReviewImageItemJDBCRep
     }
 
     public void batchInsertImageItems(List<ReviewImageItem> reviewImageItems) {
-        String sql = "INSERT INTO review_imageitem_tb (review_id, image, thumbnail) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO review_image_item_tb (review_id, image, thumbnail) VALUES (?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql, reviewImageItems, reviewImageItems.size(),
                 (ps, imageItem) -> {
