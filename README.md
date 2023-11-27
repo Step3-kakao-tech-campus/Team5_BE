@@ -54,12 +54,11 @@
 <br>
 
 ## 팀원 소개
-| | <img src="https://github.com/1jeongg.png" width="100"> | <img src="https://github.com/seokwns.png" width="100"> | <img src="https://github.com/chaee813.png" width="100"> | <img src="https://github.com/Rizingblare.png" width="100"> |
-|:--:|:----------:|:----------:|:----------:|:----------:|
-| 이름 | [남원정](https://github.com/1jeongg) | [문석준](https://github.com/seokwns) | [천영채](https://github.com/chaee813)|[김정도](https://github.com/Rizingblare) |
-| 개발 범위 | 회원, 결제, 찜하기 | 토큰, 이메일, 포트폴리오, 견적서 | 채팅, 매칭, 견적서, 리뷰 | 포트폴리오 |
 
-<br>
+|          [김찬호](https://github.com/kimchanho97)          |          [이현빈](https://github.com/blackhblee)          |          [남원정](https://github.com/1jeongg)          |          [문석준](https://github.com/seokwns)          |          [천영채](https://github.com/chaee813)          |          [김정도](https://github.com/Rizingblare)          |
+| :--------------------------------------------------------: | :-------------------------------------------------------: | :----------------------------------------------------: | :----------------------------------------------------: | :-----------------------------------------------------: | :--------------------------------------------------------: |
+| <img src="https://github.com/kimchanho97.png" width="100"> | <img src="https://github.com/blackhblee.png" width="100"> | <img src="https://github.com/1jeongg.png" width="100"> | <img src="https://github.com/seokwns.png" width="100"> | <img src="https://github.com/chaee813.png" width="100"> | <img src="https://github.com/Rizingblare.png" width="100"> |
+|                             FE                             |                            FE                             |                           BE                           |                           BE                           |                           BE                            |                             BE                             |
 
 
 ## 주요 기능
@@ -68,16 +67,30 @@
 > - 📜 견적서
 > - 💯 리뷰
 
-|분류|기능1|기능2|
-|------|------|---|
-|포트폴리오| ![포트폴리오 조회](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/add60899-8a8f-433f-9ca0-dd68d22970cb) | ![포트폴리오 등록](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/65bad53a-0916-40fe-9e3b-7f001034c890) |
-|         | • 플래너가 등록한 정보, 이미지, 리뷰 등 조회 <br> • 검색과 필터링 <br> • 멤버십 사용자 - 지난 계약 정보(진행 가격, 업체 등) 조회  <br> • 찜하기  | • 플래너의 소개, 가격 등의 정보를 등록 <br> • 수정 및 삭제 |
-|채팅 상담| ![채팅 상담](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/5741cb65-a3ff-4260-954d-be354dc25964)| | 
-|견적서| ![예비 부부 견적서](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/20fbc800-3808-4e73-a545-63356b9ff47c) | ![플래너 견적서](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/764d33a5-e988-4667-9329-ccbc245169df) |
-|  |  • 견적서 전체 리스트 조회 <br>  • 견적서 매칭별 리스트 조회 <br>  • 매칭 확정 |  • 견적서 등록, 수정, 삭제 <br> • 견적서 1개 확정 |
-| 리뷰 | ![리뷰](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/7e4d7927-9f1d-4468-b062-b598f80cb84b) | |
-| | • 리뷰 전체 리스트 조회 <br> • 리뷰 플래너별 리스트 조회 <br> • 리뷰 상세 조회 <br> • 등록 수정 삭제  | |
+| 포트폴리오 탐색                                                                                                                   | 검색 및 필터링                                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/18e4e9cc-87ed-4053-bec3-fd25e48fda29"> | <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/a52c056e-9912-4062-b926-b1c64eb78eb9"> |
+| • 플래너가 등록한 정보, 이미지, 리뷰 등 조회 <br> • 멤버십 사용자 - 이전 계약 정보(가격, 업체 등) 조회 <br>                       | • 지역과 가격 등 필터링 조건 설정 <br> • 플래너 이름 검색                                                                         |
 
+| 채팅 전송                                                                                                              | 채팅 응답                                                                                                                         |
+| ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| <img width="380" src="https://github.com/kimchanho97/algorithm/assets/104095041/d3b0faf7-d20c-4e83-9d66-00d2c38253c6"> | <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/0863820b-a151-4551-8c01-c8478e3a49ad"> |
+| • 이미지 전송                                                                                                          | • 읽음 유무 표시 <br> • 안 읽은 메시지 개수 표시                                                                                  |
+
+| 포트폴리오 작성 / 수정                                                                                                            | 견적서 작성 / 수정                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/2474a94c-6a19-4e02-b047-500b80b307a6"> | <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/7c2c1e74-4bb1-4682-b26f-51fb07015f1a"> |
+| • 플래너의 소개, 가격 등의 정보를 등록 <br> • 수정 및 삭제                                                                        | • 견적서 항목에 대한 정보 등록 <br> • 수정 및 삭제                                                                                |
+
+| 리뷰 작성 / 수정                                                                                                                  | 리뷰 조회                                                                                                                         |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/aed20cd4-a50d-4084-ba63-99c00e160de7"> | <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/4997bb5f-aa6e-47d5-a60c-aea1d166f75c"> |
+| • 플래너의 별점 및 후기 등록 <br> • 수정 및 삭제                                                                                  | • 해당 플래너의 리뷰 조회                                                                                                         |
+
+| 결제                                                                                                                              | 찜하기                                                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/1a03508c-5e5a-43c1-a367-3a8a82f92dcb"> | <img width="380" src="https://github.com/Step3-kakao-tech-campus/Team5_FE/assets/104095041/452e1f91-7115-46f2-83de-7e0e007fce99"> |
+| • 토스 페이먼츠 연동 <br> • 결제 승인 & 유저 등급 업그레이드                                                                      | • 찜하기 등록 및 삭제 <br> • 찜하기 모아보기                                                                                      |
 
 <br>
 
@@ -175,11 +188,11 @@ java -jar sunsu-wedding-0.0.1-SNAPSHOT.jar
 
 ## 기술 스택
 
-![기술 스택)](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/1710fc38-9fc3-44d1-b9f9-e2893129eda1)
+![기술스택](https://github.com/Step3-kakao-tech-campus/Team5_BE/assets/84652886/62444da9-f45d-4c7a-a046-449da0445592)
 
 <br>
 
-## License
+## License - MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
